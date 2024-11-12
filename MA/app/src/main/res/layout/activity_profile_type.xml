@@ -1,8 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/superior_white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/superior_white">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,18 +16,19 @@
 
     <RadioGroup
         android:id="@+id/profile_type_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <RadioButton
             android:id="@+id/radio_event_planner"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Event Planner" />
 
         <RadioButton
             android:id="@+id/radio_product_seller"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Product Seller" />
     </RadioGroup>
@@ -34,6 +37,7 @@
         android:id="@+id/button_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/freaky_green"
-        android:text="@string/next_button" />
+        android:text="Next"
+        android:background="@color/freaky_green" />
+
 </LinearLayout>

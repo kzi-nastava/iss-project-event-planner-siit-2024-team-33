@@ -8,11 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentTransaction;
-import android.view.View;
-import android.widget.Button;
 
-import com.example.myapplication.fragments.ProfileTypeFragment;
+import android.widget.Button;
 
 public class EventPlannerActivityMandatory extends AppCompatActivity {
 
@@ -32,11 +29,9 @@ public class EventPlannerActivityMandatory extends AppCompatActivity {
         Button nextButton = findViewById(R.id.next_button);
 
         previousButton.setOnClickListener(view -> {
-            com.example.myapplication.fragments.ProfileTypeFragment profileTypeFragment = new ProfileTypeFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, profileTypeFragment)
-                    .addToBackStack(null)
-                    .commit();
+            Intent intent = new Intent(EventPlannerActivityMandatory.this, ProfileTypeActivity.class);
+            startActivity(intent);
+            finish();
         });
 
         nextButton.setOnClickListener(view -> {

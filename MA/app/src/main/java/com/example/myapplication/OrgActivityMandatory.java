@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.button.MaterialButton;
 
 public class OrgActivityMandatory extends AppCompatActivity {
 
@@ -22,7 +21,7 @@ public class OrgActivityMandatory extends AppCompatActivity {
         Button previousButton = findViewById(R.id.previous_button);
 
         previousButton.setOnClickListener(v ->{
-            Intent intent = new Intent(OrgActivityMandatory.this, com.example.myapplication.fragments.ProfileTypeFragment.class);
+            Intent intent = new Intent(OrgActivityMandatory.this, ProfileTypeActivity.class);
             startActivity(intent);
         });
     }

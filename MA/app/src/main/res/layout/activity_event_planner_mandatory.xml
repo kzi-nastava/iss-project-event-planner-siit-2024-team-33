@@ -118,7 +118,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="<- Previous"
+            android:text="$lt- Previous"
             android:backgroundTint="@color/freaky_green"
             android:textColor="#FFFFFF"
             android:id="@+id/previous_button"

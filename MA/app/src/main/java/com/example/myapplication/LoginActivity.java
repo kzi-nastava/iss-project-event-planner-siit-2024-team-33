@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -36,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         TextView textViewRegister = findViewById(R.id.login_register_text);
 
         textViewRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this,com.example.myapplication.fragments.ProfileTypeFragment.class);
+            Intent intent = new Intent(LoginActivity.this, ProfileTypeActivity.class);
             startActivity(intent);
         });
     }
