@@ -15,6 +15,7 @@ public class Offer
     public Availability Availability;
     public Date CreationDate;
     public Boolean IsPending;
+    public Boolean IsDeleted;
     
     public OfferCategory Category;
     public Provider Provider;
