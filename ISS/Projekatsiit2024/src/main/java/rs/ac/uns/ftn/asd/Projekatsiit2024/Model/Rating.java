@@ -6,5 +6,6 @@ public class Rating
     public String Comment;
     public Boolean Accepted;
 
-    public Offer Offer ;
+    public AuthentifiedUser Author;
+    public Offer Offer;
 }

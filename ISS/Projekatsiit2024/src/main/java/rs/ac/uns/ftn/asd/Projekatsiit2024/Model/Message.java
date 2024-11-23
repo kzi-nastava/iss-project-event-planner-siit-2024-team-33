@@ -11,4 +11,5 @@ public class Message
     public Duration Time;
 
     public Chat Chat;
+    public AuthentifiedUser Sender;
 }

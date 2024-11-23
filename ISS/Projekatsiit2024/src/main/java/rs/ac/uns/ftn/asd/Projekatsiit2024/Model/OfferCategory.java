@@ -4,10 +4,10 @@ import java.util.List;
 
 public class OfferCategory
 {
-    public String Name ;
-    public String Description ;
-    public Boolean IsAccepted ;
-    public Boolean IsEnabled ;
+    public String Name;
+    public String Description;
+    public Boolean IsAccepted;
+    public Boolean IsEnabled;
 
-    public List<Offer> Offers ;
+    public List<Offer> Offers;
 }

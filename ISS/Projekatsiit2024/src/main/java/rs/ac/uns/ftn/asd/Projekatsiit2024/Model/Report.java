@@ -6,11 +6,12 @@ import ch.qos.logback.core.util.Duration;
 
 public class Report
 {
-    public String Content ;
+    public String Content;
     public Date DateOfSending;
-    public Duration Time ;
+    //TODO: What is duration lol
+    public Duration Time;
     
-    //Opciono msm
-    public AuthentifiedUser User;
+    public AuthentifiedUser Author;
+    public AuthentifiedUser Receiver;
 
 }

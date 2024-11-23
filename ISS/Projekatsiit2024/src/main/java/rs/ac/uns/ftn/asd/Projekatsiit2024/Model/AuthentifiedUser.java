@@ -8,8 +8,11 @@ public class AuthentifiedUser
     public String Password;
     public String Name;
     public String Surname;
+    public List<String> Pictures;
 
-    public List<FavoriteOffer> FavoriteOffers;
-    public List<FavoriteEvent> FavoriteEvents;
+    public List<Offer> FavoriteOffers;
+    public List<Event> FavoriteEvents;
     public List<Chat> Chats;
+    public List<AuthentifiedUser> BlockedUsers;
+    public List<Notification> Notifications;
 }

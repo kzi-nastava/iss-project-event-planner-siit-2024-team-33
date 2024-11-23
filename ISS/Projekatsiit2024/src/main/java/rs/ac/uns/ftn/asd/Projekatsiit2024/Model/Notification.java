@@ -6,7 +6,9 @@ import ch.qos.logback.core.util.Duration;
 
 public class Notification
 {
-    public String Content ;
-    public Date DateOfSending ;
-    public Duration Time ;
+    public String Content;
+    public Date DateOfSending;
+    public Duration Time;
+    
+    public AuthentifiedUser Receiver;
 }

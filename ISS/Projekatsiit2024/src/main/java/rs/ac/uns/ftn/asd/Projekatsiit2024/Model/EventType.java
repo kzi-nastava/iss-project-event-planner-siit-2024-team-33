@@ -6,7 +6,8 @@ public class EventType
 {
     public String Name ;
     public String Description ;
-    public Boolean IsActive ;
-
-    public List<Event> Events;
+    public Boolean IsActive;
+    
+    
+    public List<OfferCategory> RecommendedCategories;
 }

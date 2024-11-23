@@ -4,11 +4,10 @@ import java.util.List;
 
 public class Provider
 {
-    public String Description ;
-    public String PhoneNumber ;
-    public String ProviderName ;
-    public String Residency ;
-    public List<String> Pictures;
+    public String Description;
+    public String PhoneNumber;
+    public String ProviderName;
+    public String Residency;
 
     public List<Offer> Offers;
 }

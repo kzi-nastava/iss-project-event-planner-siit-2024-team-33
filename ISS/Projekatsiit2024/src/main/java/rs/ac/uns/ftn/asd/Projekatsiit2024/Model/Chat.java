@@ -5,6 +5,7 @@ import java.util.List;
 public class Chat
 {
     public List<Message> Messages;
-    public List<AuthentifiedUser> Participants;
+    public AuthentifiedUser Participant1;
+    public AuthentifiedUser Participant2;
 }
 

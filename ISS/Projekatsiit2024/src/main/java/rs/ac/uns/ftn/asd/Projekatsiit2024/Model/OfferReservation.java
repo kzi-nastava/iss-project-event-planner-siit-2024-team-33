@@ -4,9 +4,9 @@ import java.sql.Date;
 
 public class OfferReservation
 {
-    public Date DateOfReservation ;
+    public Date DateOfReservation;
 
-    public Offer Offer ;
-    public AuthentifiedUser User;
+    public Offer Offer;
+    public Event Event;
 }
 

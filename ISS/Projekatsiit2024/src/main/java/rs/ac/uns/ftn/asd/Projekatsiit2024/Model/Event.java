@@ -10,9 +10,11 @@ public class Event
     public int NumOfAttendees ;
     public Boolean IsPrivate ;
     public String Place ;
-    public Date DateOfEvent ;
-    public EventType EventType ;
-    public List<OfferReservation> OfferReservations;
-    public int Budget;
-    //Budget ili ovde  ili moze i kao zasebna klasa
+    public Double Latitude;
+    public Double Longitude;
+    public Date DateOfEvent;
+    
+    public List<EventType> EventTypes ;
+    public List<OfferReservation> Reservations;
+    public List<BudgetItem> BudgetItems;
 }
