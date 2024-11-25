@@ -1,7 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
-
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
