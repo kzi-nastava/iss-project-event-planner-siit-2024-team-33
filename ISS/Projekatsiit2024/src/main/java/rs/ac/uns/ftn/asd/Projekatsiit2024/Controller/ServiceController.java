@@ -25,7 +25,7 @@ public class ServiceController {
 	
 	
 	@GetMapping("/details")
-	public ResponseEntity<GetServiceDTO> GetDetails(@RequestAttribute() Integer id) {
+	public ResponseEntity<GetServiceDTO> GetDetails(@RequestAttribute Integer id) {
 		return ResponseEntity.ok(new GetServiceDTO(id));
 	}
 	
@@ -48,7 +48,7 @@ public class ServiceController {
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<Service> DeleteService(@RequestAttribute() Integer id){
+	public ResponseEntity<Service> DeleteService(@RequestAttribute Integer id){
 		return ResponseEntity.ok(null);
 	}
 	
