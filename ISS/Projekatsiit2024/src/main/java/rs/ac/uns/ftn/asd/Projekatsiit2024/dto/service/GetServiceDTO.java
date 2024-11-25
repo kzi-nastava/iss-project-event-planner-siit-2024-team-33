@@ -3,8 +3,6 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service;
 import java.util.List;
 
 public class GetServiceDTO {
-	public String CategoryName;
-	public String CategoryDescription;
 	public String Name;
 	public String Description;
 	public Double Price;
