@@ -10,6 +10,4 @@ public class PostServiceReservationDTO {
     private Date ReservationDate;
     private Time StartTime;
     private Time EndTime;
-    
-
 }
