@@ -41,11 +41,6 @@ public class ServiceController {
 		return ResponseEntity.ok(null);
 	}
 	
-	@PostMapping("/favorites")
-	public ResponseEntity<GetServiceDTO> AddToFavorites(@RequestAttribute Integer OfferID){
-		return ResponseEntity.ok(null);
-	}
-	
 	@PutMapping
 	public ResponseEntity<GetServiceDTO> PutService(@RequestBody PostServiceDTO data){
 		//TODO: Edit Service and return it's details
@@ -56,9 +51,4 @@ public class ServiceController {
 	public ResponseEntity<GetServiceDTO> DeleteService(@RequestAttribute Integer id){
 		return ResponseEntity.ok(null);
 	}
-	
-	@DeleteMapping("/favorites")
-	public ResponseEntity<GetServiceDTO> DeleteFromFavorites(@RequestAttribute Integer OfferID){
-		return ResponseEntity.ok(null);
-		}
 }
