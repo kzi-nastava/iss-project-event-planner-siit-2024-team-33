@@ -8,7 +8,6 @@ public class Notification
 {
     public String Content;
     public Date DateOfSending;
-    public Duration Time;
     
     public AuthentifiedUser Receiver;
 }
