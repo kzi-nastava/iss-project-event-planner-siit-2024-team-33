@@ -2,9 +2,11 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
 import java.util.List;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
-public class Provider
+@Entity
+public class Provider extends AuthentifiedUser
 {
     public String Description;
     public String PhoneNumber;
