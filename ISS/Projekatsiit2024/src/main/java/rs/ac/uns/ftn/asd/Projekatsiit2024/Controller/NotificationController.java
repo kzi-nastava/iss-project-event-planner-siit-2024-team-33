@@ -10,7 +10,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.InvitationNotificatio
 import java.util.List;
 
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping("/api/notifications")
 public class NotificationController {
 
 
@@ -24,13 +24,8 @@ public class NotificationController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/invitations")
-    public ResponseEntity<String> sendInvitations(@RequestBody List<InvitationNotificationDTO> invitationDTOs) {
-        return ResponseEntity.ok(null);
-    }
-    
-    @DeleteMapping
-    public ResponseEntity<String> deleteNotification(@RequestParam int notificationId) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteNotification(@PathVariable Integer id) {
         return ResponseEntity.ok(null);
     }
     

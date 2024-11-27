@@ -9,26 +9,26 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
 import java.util.List;
 
 @RestController
-@RequestMapping("/invitations")
+@RequestMapping("/api/events/{eventID}/invitations")
 public class InvitationController {
 
     @PostMapping
-    public ResponseEntity<String> createInvitations(@RequestBody PostInvitationDTO postInvitationDTO) {
+    public ResponseEntity<String> createInvitations(@PathVariable Integer eventID, @RequestBody PostInvitationDTO postInvitationDTO) {
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/event/{eventId}")
-    public ResponseEntity<List<GetInvitationDTO>> getInvitationsForEvent(@RequestAttribute int eventId) {
+    @GetMapping
+    public ResponseEntity<List<GetInvitationDTO>> getInvitationsForEvent(@PathVariable Integer eventID) {
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/{invitationId}")
-    public ResponseEntity<GetInvitationDTO> getInvitationById(@RequestAttribute int invitationId) {
+    public ResponseEntity<GetInvitationDTO> getInvitationById(@PathVariable Integer invitationId) {
         return ResponseEntity.ok(null);
     }
     
-    @DeleteMapping
-    public ResponseEntity<String> deleteInvitation(@RequestParam int invitationId) {
+    @DeleteMapping("/{invitationId}")
+    public ResponseEntity<String> deleteInvitation(@PathVariable Integer invitationId) {
         return ResponseEntity.ok(null);
     }
 }

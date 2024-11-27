@@ -8,7 +8,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.report.PostReportDTO;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reports")
+@RequestMapping("/api/reports")
 public class ReportController {
 
     @PostMapping
@@ -17,12 +17,12 @@ public class ReportController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetReportDTO>> getAllReports(@RequestParam(required = false) String status) {
+    public ResponseEntity<List<GetReportDTO>> GetReports(@RequestParam(required = false) String status) {
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/{reportId}")
-    public ResponseEntity<GetReportDTO> getReportById(@RequestAttribute() int reportId) {
+    public ResponseEntity<GetReportDTO> GetReport(@PathVariable int reportId) {
         return ResponseEntity.ok(null);
     }
 

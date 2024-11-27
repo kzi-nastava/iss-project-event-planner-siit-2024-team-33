@@ -10,27 +10,23 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.PostServiceRese
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/serviceReservations")
+@RequestMapping("/api/services/{serviceID}/reservations")
 public class ServiceReservationController {
 
     @PostMapping
-    public ResponseEntity<CreatedServiceReservationDTO> createServiceReservation(@RequestBody PostServiceReservationDTO postServiceReservationDTO) {
+    public ResponseEntity<CreatedServiceReservationDTO> ReserveService(@PathVariable Integer serviceID, @RequestBody PostServiceReservationDTO postServiceReservationDTO) {
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/{reservationId}")
-    public ResponseEntity<GetServiceReservationDTO> getServiceReservationById(@RequestAttribute() int reservationId) {
-        return ResponseEntity.ok(null);
-    }
-
-    @GetMapping("/events/{eventId}")
-    public ResponseEntity<List<GetServiceReservationDTO>> getAllReservationsForEvent(@RequestAttribute() int eventId) {
+    public ResponseEntity<GetServiceReservationDTO> getServiceReservationById(@PathVariable Integer serviceID, @PathVariable int reservationId) {
         return ResponseEntity.ok(null);
     }
 
     @PutMapping("/{reservationId}")
     public ResponseEntity<CreatedServiceReservationDTO> updateServiceReservation(
-    		@RequestAttribute() int reservationId, 
+    		@PathVariable Integer serviceID,
+    		@PathVariable Integer reservationId, 
             @RequestBody PostServiceReservationDTO postServiceReservationDTO) {
         return ResponseEntity.ok(null);
     }

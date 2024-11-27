@@ -77,9 +77,8 @@ public class ProductController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
-	
-	@PostMapping
-	public ResponseEntity<GetProductDTO> BuyProduct(@RequestBody PostProductPurchaseDTO data){
+	@PostMapping("/{id}/buy")
+	public ResponseEntity<GetProductDTO> buyProduct(@PathVariable Integer id, @RequestBody PostProductPurchaseDTO data){
 		return ResponseEntity.ok(null);
 	}
 }

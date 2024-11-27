@@ -4,8 +4,7 @@ import java.sql.Date;
 import java.sql.Time;
 
 public class PostServiceReservationDTO {
-    private int serviceId;
-    private int eventId;
+    private Integer eventId;
   
     private Date ReservationDate;
     private Time StartTime;
