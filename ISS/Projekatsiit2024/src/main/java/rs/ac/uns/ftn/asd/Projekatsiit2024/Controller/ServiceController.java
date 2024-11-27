@@ -20,7 +20,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 
 
 @RestController
-@RequestMapping("/services")
+@RequestMapping("/api/services")
 public class ServiceController {
 	
 	

@@ -14,7 +14,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.comment.PostCommentDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.OfferDTO;
 
 @RestController
-@RequestMapping("/offers")
+@RequestMapping("/api/offers")
 public class OfferController {
 	@PostMapping("/comment")
 	public ResponseEntity<GetCommentDTO> PostComment(@RequestBody PostCommentDTO data){

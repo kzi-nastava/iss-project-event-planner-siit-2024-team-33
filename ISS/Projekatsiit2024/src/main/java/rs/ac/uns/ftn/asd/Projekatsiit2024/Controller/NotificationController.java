@@ -10,7 +10,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.InvitationNotificatio
 import java.util.List;
 
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping("/api/notifications")
 public class NotificationController {
 
 

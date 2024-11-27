@@ -12,7 +12,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.chat.GetChatDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.chat.PostMessageDTO;
 
 @RestController
-@RequestMapping("/chat")
+@RequestMapping("/api/chat")
 public class ChatController {
 	@GetMapping
 	public ResponseEntity<GetChatDTO> GetChatMessages(@RequestAttribute Integer OtherUserID){

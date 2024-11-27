@@ -14,7 +14,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.prices.GetPricesDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.prices.PutPriceDTO;
 
 @RestController
-@RequestMapping("/prices")
+@RequestMapping("/api/prices")
 public class PriceController {
 	
 	@GetMapping

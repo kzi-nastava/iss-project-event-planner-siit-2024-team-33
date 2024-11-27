@@ -14,7 +14,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.GetBudgetDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.PostBudgetItemDTO;
 
 @RestController
-@RequestMapping("/budget")
+@RequestMapping("/api/budget")
 public class BudgetController {
 	
 	@GetMapping

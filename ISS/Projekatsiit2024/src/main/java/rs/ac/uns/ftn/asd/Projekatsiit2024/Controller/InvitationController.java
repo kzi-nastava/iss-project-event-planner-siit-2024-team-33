@@ -9,7 +9,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
 import java.util.List;
 
 @RestController
-@RequestMapping("/invitations")
+@RequestMapping("/api/invitations")
 public class InvitationController {
 
     @PostMapping

@@ -16,7 +16,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.GetRatingDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.PostRatingDTO;
 
 @RestController
-@RequestMapping("/ratings")
+@RequestMapping("/api/ratings")
 public class RatingController {
 	
 	@PostMapping

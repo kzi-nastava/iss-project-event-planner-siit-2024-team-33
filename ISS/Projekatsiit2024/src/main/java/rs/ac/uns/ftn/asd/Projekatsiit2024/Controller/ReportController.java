@@ -8,7 +8,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.report.PostReportDTO;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reports")
+@RequestMapping("/api/reports")
 public class ReportController {
 
     @PostMapping

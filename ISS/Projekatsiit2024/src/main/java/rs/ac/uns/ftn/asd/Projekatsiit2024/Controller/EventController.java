@@ -15,7 +15,7 @@ import java.security.Provider.Service;
 import java.util.List;
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("/api/events")
 public class EventController {
 
 	@GetMapping("/top5")

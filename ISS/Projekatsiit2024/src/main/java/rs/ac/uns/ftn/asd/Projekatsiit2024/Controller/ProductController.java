@@ -13,7 +13,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 
 @RestController
 public class ProductController {
-	@GetMapping("/details")
+	@GetMapping("/api/details")
 	public ResponseEntity<GetProductDTO> GetDetails(@RequestAttribute Integer id) {
 		return ResponseEntity.ok(null);
 	}
