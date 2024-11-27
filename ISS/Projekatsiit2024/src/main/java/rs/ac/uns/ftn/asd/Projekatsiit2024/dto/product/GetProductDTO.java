@@ -1,6 +1,14 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product;
 
+import java.sql.Date;
 import java.util.List;
+
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Rating;
 
 public class GetProductDTO {
 	private Integer Id;
@@ -9,10 +17,15 @@ public class GetProductDTO {
 	private Double Price;
 	private Double Discount;
 	private List<String> Pictures;
-	private List<Integer> ValidEventCategories;
-	private Double AvgRating;
-	private Boolean isVisible;
-	private Boolean isAvailable;
+	public Availability Availability;
+    public Date CreationDate;
+    public Boolean IsPending;
+    public Boolean IsDeleted;
+    public OfferCategory Category;
+    public Provider Provider;
+    public List<EventType> ValidEvents;
+    public List<OfferReservation> OfferReservations;
+    public List<Rating> Ratings; 
 	public String getName() {
 		return Name;
 	}
@@ -42,30 +55,6 @@ public class GetProductDTO {
 	}
 	public void setPictures(List<String> pictures) {
 		Pictures = pictures;
-	}
-	public List<Integer> getValidEventCategories() {
-		return ValidEventCategories;
-	}
-	public void setValidEventCategories(List<Integer> validEventCategories) {
-		ValidEventCategories = validEventCategories;
-	}
-	public Double getAvgRating() {
-		return AvgRating;
-	}
-	public void setAvgRating(Double avgRating) {
-		AvgRating = avgRating;
-	}
-	public Boolean getIsAvailable() {
-		return isAvailable;
-	}
-	public void setIsAvailable(Boolean isAvailable) {
-		this.isAvailable = isAvailable;
-	}
-	public Boolean getIsVisible() {
-		return isVisible;
-	}
-	public void setIsVisible(Boolean isVisible) {
-		this.isVisible = isVisible;
 	}
 	public Integer getId() {
 		return Id;
