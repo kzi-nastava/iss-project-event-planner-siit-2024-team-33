@@ -16,21 +16,21 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.GetRatingDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.PostRatingDTO;
 
 @RestController
-@RequestMapping("/api/ratings")
+@RequestMapping("/api/offers/{offerID}/ratings")
 public class RatingController {
 	
 	@PostMapping
-    public ResponseEntity<String> createRating(@RequestBody PostRatingDTO postRatingDTO) {
+    public ResponseEntity<String> RateOffer(@PathVariable Integer offerID, @RequestBody PostRatingDTO postRatingDTO) {
         return ResponseEntity.ok(null);
     }
 
     @GetMapping
-    public ResponseEntity<List<GetRatingDTO>> getRatingsByOffer(@RequestParam int offerId) {
+    public ResponseEntity<List<GetRatingDTO>> GetRatings(@PathVariable Integer offerID) {
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/{ratingId}")
-    public ResponseEntity<GetRatingDTO> getRatingById(@RequestAttribute int ratingId) {
+    public ResponseEntity<GetRatingDTO> GetRating(@PathVariable int ratingId) {
         return ResponseEntity.ok(null);
     }
 

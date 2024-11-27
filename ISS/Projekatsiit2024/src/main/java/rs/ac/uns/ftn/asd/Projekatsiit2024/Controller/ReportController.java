@@ -17,12 +17,12 @@ public class ReportController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetReportDTO>> getAllReports(@RequestParam(required = false) String status) {
+    public ResponseEntity<List<GetReportDTO>> GetReports(@RequestParam(required = false) String status) {
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/{reportId}")
-    public ResponseEntity<GetReportDTO> getReportById(@RequestAttribute() int reportId) {
+    public ResponseEntity<GetReportDTO> GetReport(@PathVariable int reportId) {
         return ResponseEntity.ok(null);
     }
 

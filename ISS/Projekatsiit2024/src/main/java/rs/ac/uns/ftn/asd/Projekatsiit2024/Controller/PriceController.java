@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,16 +15,16 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.prices.GetPricesDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.prices.PutPriceDTO;
 
 @RestController
-@RequestMapping("/api/prices")
+@RequestMapping("/api/user/{providerID}/offer-prices")
 public class PriceController {
 	
 	@GetMapping
-	public ResponseEntity<GetPricesDTO> GetMyPrices(){
+	public ResponseEntity<GetPricesDTO> GetMyPrices(@PathVariable Integer providerID){
 		return ResponseEntity.ok(null);
 	}
 	
 	@GetMapping("/pdf")
-	public ResponseEntity<Byte[]> GetPricesPDF(){
+	public ResponseEntity<Byte[]> GetPricesPDF(@PathVariable Integer providerID){
 		Byte[] PDFData = {};
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_PDF);
@@ -32,8 +33,8 @@ public class PriceController {
 		return response;
 	}
 	
-	@PutMapping
-	public ResponseEntity<GetPricesDTO> PutPrice(@RequestBody PutPriceDTO NewPrice){
+	@PutMapping("/{offerID}")
+	public ResponseEntity<GetPricesDTO> PutPrice(@PathVariable Integer providerID, @PathVariable Integer offerID, @RequestBody PutPriceDTO NewPrice){
 		return ResponseEntity.ok(null);
 	}
 }
