@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating;
 
 import java.sql.Date;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Rating;
+
 public class GetRatingDTO {
     private int ratingId;
     private int offerId;
@@ -12,4 +14,7 @@ public class GetRatingDTO {
     private String Comment;
     private Boolean isAccepted;
     
+    public GetRatingDTO(Rating R) {
+    	
+    }
 }
