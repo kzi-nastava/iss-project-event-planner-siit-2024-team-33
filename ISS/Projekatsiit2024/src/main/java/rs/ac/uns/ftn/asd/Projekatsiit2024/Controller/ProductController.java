@@ -86,6 +86,21 @@ public class ProductController {
 	
 	@PostMapping("/{id}/purchase")
 	public ResponseEntity<GetProductDTO> buyProduct(@PathVariable Integer id, @RequestBody PostProductPurchaseDTO data){
+		//403: Forbidden if user isn't logged in
+		Boolean loggedOut = false;
+		if(loggedOut)
+			return ResponseEntity.status(403).build();
+		
+		//404: Product not found
+		Boolean notFound = false;
+		if(notFound)
+			return ResponseEntity.notFound().build();
+		
+		//409: Conflict if product is already purchased
+		Boolean alreadyFavorite = false;
+		if(alreadyFavorite)
+			return ResponseEntity.status(409).build();
+		
 		return ResponseEntity.ok(null);
 	}
 }

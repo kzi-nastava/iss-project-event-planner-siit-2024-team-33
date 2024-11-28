@@ -20,11 +20,22 @@ public class PriceController {
 	
 	@GetMapping
 	public ResponseEntity<GetPricesDTO> GetMyPrices(@PathVariable Integer providerID){
+		//403: Forbidden if user isn't a provider
+		Boolean wrongUser = false;
+		if(wrongUser)
+			return ResponseEntity.status(403).build();
+		
+		//Return a list
 		return ResponseEntity.ok(null);
 	}
 	
 	@GetMapping("/pdf")
 	public ResponseEntity<Byte[]> GetPricesPDF(@PathVariable Integer providerID){
+		//403: Forbidden if user isn't a provider
+		Boolean wrongUser = false;
+		if(wrongUser)
+			return ResponseEntity.status(403).build();
+		
 		Byte[] PDFData = {};
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_PDF);
@@ -34,7 +45,17 @@ public class PriceController {
 	}
 	
 	@PutMapping("/{offerID}")
-	public ResponseEntity<GetPricesDTO> PutPrice(@PathVariable Integer providerID, @PathVariable Integer offerID, @RequestBody PutPriceDTO NewPrice){
-		return ResponseEntity.ok(null);
+	public ResponseEntity<GetPricesDTO> ChangePrice(@PathVariable Integer providerID, @PathVariable Integer offerID, @RequestBody PutPriceDTO NewPrice){
+		//403: Forbidden if user isn't the offer provider
+		Boolean wrongUser = false;
+		if(wrongUser)
+			return ResponseEntity.status(403).build();
+		
+		//404: Offer not found
+		Boolean notFound = false;
+		if(notFound)
+			return ResponseEntity.notFound().build();
+		
+		return ResponseEntity.noContent().build();
 	}
 }
