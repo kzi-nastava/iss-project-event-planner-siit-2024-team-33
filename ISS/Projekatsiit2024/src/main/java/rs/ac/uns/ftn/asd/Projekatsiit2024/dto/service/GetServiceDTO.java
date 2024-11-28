@@ -2,9 +2,9 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service;
 
 import java.util.List;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
+
 public class GetServiceDTO {
-	public String CategoryName;
-	public String CategoryDescription;
 	public String Name;
 	public String Description;
 	public Double Price;
@@ -21,7 +21,7 @@ public class GetServiceDTO {
 	public int MinLengthInMins;
 	public int MaxLengthInMins;
 	
-	public GetServiceDTO(Integer ServiceID) {
+	public GetServiceDTO(Service s) {
 		
 	}
 }
