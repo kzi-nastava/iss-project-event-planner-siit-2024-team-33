@@ -19,13 +19,14 @@ public class AuthentifiedUser
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer ID;
+	public Integer Id;
 	@Column(unique = true)
     public String Email;
     public String Password;
     public String Name;
     public String Surname;
     public List<String> Pictures;
+    public Boolean isDeleted;
 
     @ManyToMany
     public List<Offer> FavoriteOffers;
