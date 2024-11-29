@@ -21,8 +21,8 @@ public class Offer
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int ID;
-    public int OfferID;
+    public Integer ID;
+    public Integer OfferID;
     public String Name;
     public String Description;
     public Double Price;
