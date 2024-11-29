@@ -1,7 +1,9 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.GetEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreateProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreatedProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.GetProductDTO;
@@ -31,6 +35,36 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 @RequestMapping("/api/products")
 public class ProductController {
 	
+	
+	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<GetProductDTO>> GetTop5Products() {
+	    List<GetProductDTO> products = new ArrayList<>();
+
+	    for (int i = 1; i <= 5; i++) {
+	        GetProductDTO product = new GetProductDTO();
+	        product.setId(i);
+	        product.setName("Top Product " + i);
+	        product.setDescription("Description for top product " + i);
+	        product.setPrice(100.0 + i);
+	        product.setDiscount(10.0 + i);
+	        product.setPictures(List.of("image" + i + ".jpg"));
+	        product.Availability = Availability.Available;
+	        product.CreationDate = new Date(System.currentTimeMillis());
+	        product.IsPending = false;
+	        product.IsDeleted = false;
+	        product.Category = new OfferCategory();
+	        product.Provider = new Provider();
+	        product.ValidEvents = new ArrayList<>();
+	        product.OfferReservations = new ArrayList<>();
+	        product.Ratings = new ArrayList<>();
+
+	        products.add(product);
+	    }
+
+	    return new ResponseEntity<>(products, HttpStatus.OK);
+	}
+
+    
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<GetProductDTO>> getProducts(
 			@RequestParam(required = false) String name,
