@@ -7,17 +7,65 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Rating
-{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public int ID;
-    public int Value;
-    public String Comment;
-    public Boolean Accepted;
+public class Rating {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private int value;
+    private String comment; 
+    private Boolean accepted;
 
     @ManyToOne
-    public AuthentifiedUser Author;
+    private AuthentifiedUser author;
+    
     @ManyToOne
-    public Offer Offer;
+    private Offer offer; 
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public Boolean getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        this.accepted = accepted;
+    }
+
+    public AuthentifiedUser getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(AuthentifiedUser author) {
+        this.author = author;
+    }
+
+    public Offer getOffer() {
+        return offer;
+    }
+
+    public void setOffer(Offer offer) {
+        this.offer = offer;
+    }
 }

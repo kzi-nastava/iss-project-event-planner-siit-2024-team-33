@@ -17,31 +17,37 @@ import jakarta.persistence.OneToMany;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Offer
-{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer ID;
-    public Integer OfferID;
-    public String Name;
-    public String Description;
-    public Double Price;
-    public Double Discount;
-    public List<String> Pictures;
+public class Offer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private Integer offerID;
+    private String name;
+    private String description;
+    private Double price;
+    private Double discount;
+    private List<String> pictures;
+    
     @Enumerated(EnumType.STRING)
-    public Availability Availability;
-    public Date CreationDate;
-    public Boolean IsPending;
-    public Boolean IsDeleted;
+    private Availability availability;
+    
+    private Date creationDate;
+    private Boolean isPending;
+    private Boolean isDeleted;
     
     @ManyToOne
-    public OfferCategory Category;
+    private OfferCategory category;
+    
     @ManyToOne
-    public Provider Provider;
+    private Provider provider;
+    
     @ManyToMany
-    public List<EventType> ValidEvents;
-    @OneToMany(mappedBy = "Offer")
-    public List<OfferReservation> OfferReservations;
-    @OneToMany(mappedBy = "Offer")
-    public List<Rating> Ratings; 
+    private List<EventType> validEvents;
+    
+    @OneToMany(mappedBy = "offer") 
+    private List<OfferReservation> offerReservations;
+    
+    @OneToMany(mappedBy = "offer") 
+    private List<Rating> ratings; 
+
 }

@@ -44,7 +44,7 @@ public class RatingController {
     @GetMapping("/{ratingId}")
     public ResponseEntity<GetRatingDTO> GetRating(@PathVariable int ratingId) {
         Rating rating = null;
-        rating.ID = 1;
+        rating.setId(1);
         if (ratingId == 1) {
             rating = new Rating();
         }
