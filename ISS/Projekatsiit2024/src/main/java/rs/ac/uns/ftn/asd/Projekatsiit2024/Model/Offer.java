@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -14,34 +15,65 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Setter
+@Getter
 public class Offer
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer ID;
-    public Integer OfferID;
-    public String Name;
-    public String Description;
-    public Double Price;
-    public Double Discount;
-    public List<String> Pictures;
+	private Integer ID;
+	private Integer OfferID;
+	private OfferType type;
+	private String Name;
+	private String Description;
+	private Double Price;
+	private Double Discount;
+	private List<String> Pictures;
     @Enumerated(EnumType.STRING)
-    public Availability Availability;
-    public Date CreationDate;
-    public Boolean IsPending;
-    public Boolean IsDeleted;
+    private Availability Availability;
+    private Date CreationDate;
+    private Boolean IsPending;
+    private Boolean IsDeleted;
     
     @ManyToOne
-    public OfferCategory Category;
+    private OfferCategory Category = null;
     @ManyToOne
-    public Provider Provider;
+    private Provider Provider = null;
     @ManyToMany
-    public List<EventType> ValidEvents;
+    private List<EventType> ValidEvents = new ArrayList<EventType>();
     @OneToMany(mappedBy = "Offer")
-    public List<OfferReservation> OfferReservations;
+    private List<OfferReservation> OfferReservations;
     @OneToMany(mappedBy = "Offer")
-    public List<Rating> Ratings; 
+    private List<Rating> Ratings;
+    
+    public Offer() {
+    	
+    }
+    
+	public Offer(
+			String name,
+			String description,
+			Double price,
+			Double discount,
+			List<String> pictures,
+			OfferCategory category,
+			Provider provider) {
+		super();
+		Name = name;
+		Description = description;
+		Price = price;
+		Discount = discount;
+		Pictures = pictures;
+		Category = category;
+		Provider = provider;
+		this.CreationDate = new Date(System.currentTimeMillis());
+		this.Availability = Availability.AVAILABLE;
+	}
+    
+    
 }

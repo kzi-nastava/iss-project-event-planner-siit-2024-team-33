@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PostServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
@@ -25,6 +27,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 @RestController
 @RequestMapping("/api/services")
 public class ServiceController {
+	
+	@Autowired
+	private ServiceService serviceService;
 
 	
 	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,20 +40,20 @@ public class ServiceController {
 	        Service mockService = new Service();
 	        GetServiceDTO service = new GetServiceDTO(mockService);
 
-	        service.Name = "Top Service " + i;
-	        service.Description = "Description for top service " + i;
-	        service.Price = 100.0 + i;
-	        service.Discount = 10.0 + i;
-	        service.Pictures = List.of("service_image" + i + ".jpg");
-	        service.ValidEventCategories = List.of(i, i + 1, i + 2);
-	        service.AvgRating = 4.5 + (i * 0.1);
-	        service.isVisible = true;
-	        service.isAvailable = true;
-	        service.ReservationInHours = 24 + i;
-	        service.CancellationInHours = 12 + i;
-	        service.isAutomatic = (i % 2 == 0);
-	        service.MinLengthInMins = 30;
-	        service.MaxLengthInMins = 120;
+//	        service.Name = "Top Service " + i;
+//	        service.Description = "Description for top service " + i;
+//	        service.Price = 100.0 + i;
+//	        service.Discount = 10.0 + i;
+//	        service.Pictures = List.of("service_image" + i + ".jpg");
+//	        service.ValidEventCategories = List.of(i, i + 1, i + 2);
+//	        service.AvgRating = 4.5 + (i * 0.1);
+//	        service.isVisible = true;
+//	        service.isAvailable = true;
+//	        service.ReservationInHours = 24 + i;
+//	        service.CancellationInHours = 12 + i;
+//	        service.isAutomatic = (i % 2 == 0);
+//	        service.MinLengthInMins = 30;
+//	        service.MaxLengthInMins = 120;
 
 	        services.add(service);
 	    }
@@ -78,15 +83,14 @@ public class ServiceController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<GetServiceDTO> createService(@RequestBody PostServiceDTO data){
-		Service s1 = new Service();
-		Boolean error = false;
+	public ResponseEntity createService(@RequestBody PostServiceDTO data){
+		try {
+			Service s1 = serviceService.create(data.CategoryID, data.Name, data.Description, data.Price, data.Discount, data.Pictures, data.ProviderID, data.ReservationInHours, data.CancellationInHours, data.isAutomatic, data.MinDurationInMins, data.MaxDurationInMins, data.ValidEventTypeIDs);
+			return ResponseEntity.ok(new GetServiceDTO(s1));
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 		
-		if(error)
-			return ResponseEntity.unprocessableEntity().build();
-		
-		//TODO: Edit Service and return it's details
-		return ResponseEntity.ok(new GetServiceDTO(s1));
 	}
 	
 	@PutMapping("/{id}")

@@ -1,13 +1,46 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Setter
+@Getter
 public class Service extends Offer
 {
-    public int ReservationInHours;
-    public int CancellationInHours;
-    public Boolean IsAutomatic;
-    public int MinLengthInMins;
-    public int MaxLengthInMins;
+	private int ReservationInHours;
+    private int CancellationInHours;
+    private Boolean IsAutomatic;
+    private int MinLengthInMins;
+    private int MaxLengthInMins;
+    
+    public Service() {
+    	super();
+    	setType(OfferType.SERVICE);
+    }
+    
+    public Service(
+    		String name,
+    		String description,
+    		Double price,
+    		Double discount,
+			List<String> pictures,
+			OfferCategory category,
+			Provider provider,
+			Integer reservationInHours,
+			Integer cancellationInHours,
+			Boolean isAutomatic,
+			Integer minLengthInMins,
+			Integer maxLengthInMins) {
+		super(name, description, price, discount, pictures, category, provider);
+		this.ReservationInHours = reservationInHours;
+		this.CancellationInHours = cancellationInHours;
+		this.IsAutomatic = isAutomatic;
+		this.MinLengthInMins = minLengthInMins;
+		this.MaxLengthInMins = maxLengthInMins;
+    	setType(OfferType.SERVICE);
+	}
 }

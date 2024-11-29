@@ -48,7 +48,7 @@ public class ProductController {
 	        product.setPrice(100.0 + i);
 	        product.setDiscount(10.0 + i);
 	        product.setPictures(List.of("image" + i + ".jpg"));
-	        product.Availability = Availability.Available;
+//	        product.Availability = Availability.Available;
 	        product.CreationDate = new Date(System.currentTimeMillis());
 	        product.IsPending = false;
 	        product.IsDeleted = false;
