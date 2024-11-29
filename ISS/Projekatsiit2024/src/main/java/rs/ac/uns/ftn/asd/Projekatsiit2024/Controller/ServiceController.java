@@ -26,7 +26,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 public class ServiceController {
 
 	@GetMapping
-	public ResponseEntity<List<GetServiceDTO>> getServices(@RequestBody ServiceFilterDTO FilterParameters){
+	public ResponseEntity<List<GetServiceDTO>> getServices(@RequestBody(required = false) ServiceFilterDTO FilterParameters){
 		Service s1 = new Service();
 		Service s2 = new Service();
 		ArrayList<GetServiceDTO> serviceList = new ArrayList<GetServiceDTO>();
