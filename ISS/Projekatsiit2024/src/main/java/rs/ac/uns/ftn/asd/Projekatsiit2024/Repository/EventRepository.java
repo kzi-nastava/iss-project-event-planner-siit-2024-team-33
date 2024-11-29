@@ -8,6 +8,9 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Integer>{
-//    List<Event> findTop5ByCityAndIsPrivateFalse(String city);
-//    List<Event> findAllByCityAndIsPrivateFalse(String city, String searchQuery, String sortBy);
+    List<Event> findTop5ByPlaceAndIsPrivateFalse(String city);
+    List<Event> findAllByPlaceAndIsPrivateFalse(String city, String searchQuery, String sortBy);
+
+
+
 }
