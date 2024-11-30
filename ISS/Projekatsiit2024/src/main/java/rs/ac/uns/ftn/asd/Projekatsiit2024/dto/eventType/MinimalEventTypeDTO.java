@@ -1,7 +1,11 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class MinimalEventTypeDTO {
 	private Integer id;
 	private String name;

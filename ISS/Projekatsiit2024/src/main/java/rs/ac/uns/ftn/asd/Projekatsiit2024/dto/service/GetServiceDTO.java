@@ -29,7 +29,7 @@ public class GetServiceDTO {
 		this.price = s.getPrice();
 		this.discount = s.getDiscount();
 		this.pictures = s.getPictures();
-//		this.validEventCategories = s.getValidEvents().stream().map(eventType -> new MinimalEventTypeDTO(eventType)).toList();
+		this.validEventCategories = s.getValidEvents().stream().map(eventType -> new MinimalEventTypeDTO(eventType)).toList();
 		this.avgRating = null;
 		//If it is available, it's visible
 		this.isVisible = s.getAvailability() == Availability.AVAILABLE;
