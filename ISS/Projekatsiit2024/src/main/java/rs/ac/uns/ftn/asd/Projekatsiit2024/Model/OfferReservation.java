@@ -29,4 +29,6 @@ public class OfferReservation {
     
     private Time startTime;
     private Time endTime;
+    
+    
 }

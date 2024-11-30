@@ -23,4 +23,8 @@ public interface OfferReservationRepository extends JpaRepository<OfferReservati
         @Param("startTime") Time startTime,
         @Param("endTime") Time endTime
     );
+    
+    @Query("SELECT r FROM OfferReservation r WHERE r.offer.id = :offerId")
+    List<OfferReservation> findByOfferId(@Param("offerId") Integer offerId);
+
 }

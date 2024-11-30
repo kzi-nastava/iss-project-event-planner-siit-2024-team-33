@@ -1,39 +1,37 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
 import java.util.List;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class AuthentifiedUser
-{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer Id;
-	@Column(unique = true)
-    public String Email;
-    public String Password;
-    public String Name;
-    public String Surname;
-    public List<String> Pictures;
-    public Boolean isDeleted;
+public class AuthentifiedUser {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(unique = true)
+    private String email;
+
+    private String password;
+    private String name;
+    private String surname;
+
+    @ElementCollection
+    private List<String> pictures;
+
+    private Boolean isDeleted;
 
     @ManyToMany
-    public List<Offer> FavoriteOffers;
+    private List<Offer> favoriteOffers;
+
     @ManyToMany
-    public List<Event> FavoriteEvents;
+    private List<Event> favoriteEvents;
+
     @ManyToMany
-    public List<AuthentifiedUser> BlockedUsers;
-    @OneToMany(mappedBy = "Receiver")
-    public List<Notification> Notifications;
+    private List<AuthentifiedUser> blockedUsers;
+
+    @OneToMany(mappedBy = "receiver")
+    private List<Notification> notifications;
+
 }

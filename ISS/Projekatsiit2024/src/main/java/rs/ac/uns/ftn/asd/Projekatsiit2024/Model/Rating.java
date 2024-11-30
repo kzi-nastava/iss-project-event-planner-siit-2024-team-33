@@ -24,4 +24,8 @@ public class Rating {
     
     @ManyToOne
     private Offer offer; 
+
+    public void setId(int ID) {
+    	id=ID;
+    }
 }

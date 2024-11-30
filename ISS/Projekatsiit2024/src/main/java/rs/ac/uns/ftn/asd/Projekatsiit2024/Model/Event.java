@@ -24,6 +24,7 @@ public class Event {
     private Double latitude;
     private Double longitude;
     private Date dateOfEvent;
+    private Date endOfEvent;
 
     @ManyToMany
     private List<EventType> eventTypes;
@@ -99,6 +100,14 @@ public class Event {
         this.longitude = longitude;
     }
 
+    public Date getEndOfEvent() {
+        return endOfEvent;
+    }
+
+    public void setEndOfEvent(Date endOfEvent) {
+        this.endOfEvent = endOfEvent;
+    }
+    
     public Date getDateOfEvent() {
         return dateOfEvent;
     }

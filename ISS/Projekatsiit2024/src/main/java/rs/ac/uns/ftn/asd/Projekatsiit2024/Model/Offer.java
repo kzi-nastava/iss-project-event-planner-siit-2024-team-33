@@ -77,5 +77,7 @@ public class Offer
 		this.creationDate = new Date(System.currentTimeMillis());
 		this.validEvents = validEvents;
 		this.availability = availability.AVAILABLE;
+		this.isPending = false;
+		this.isDeleted =false;
 	}
 }

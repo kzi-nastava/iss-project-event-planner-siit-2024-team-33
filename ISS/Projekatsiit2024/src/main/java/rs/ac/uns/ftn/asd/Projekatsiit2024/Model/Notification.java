@@ -14,11 +14,11 @@ public class Notification
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer ID;
+	public Integer id;
 	
-    public String Content;
-    public Date TimeOfSending;
+    public String content;
+    public Date timeOfSending;
     
     @ManyToOne
-    public AuthentifiedUser Receiver;
+    public AuthentifiedUser receiver;
 }

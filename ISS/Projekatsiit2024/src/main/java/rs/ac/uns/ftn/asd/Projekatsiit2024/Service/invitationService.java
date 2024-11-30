@@ -1,0 +1,83 @@
+package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
+
+import java.sql.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Invitation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.InvitationRepository;
+
+@Service
+public class invitationService {
+
+    @Autowired
+    private EventRepository eventRepo;
+
+    @Autowired
+    private AuthentifiedUserRepository authentifiedUserRepo;
+
+    @Autowired
+    private InvitationRepository invitationRepo;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Transactional
+    public void createInvitations(
+        Integer eventId,
+        List<String> emails,
+        String invitationText,
+        Date invitationDate,
+        Integer authentifiedUserId,
+        String senderEmail,
+        String senderPassword) {
+        Event event = eventRepo.findById(eventId)
+            .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + eventId));
+        AuthentifiedUser inviter = authentifiedUserRepo.findById(authentifiedUserId)
+            .orElseThrow(() -> new IllegalArgumentException("Inviter not found with ID: " + authentifiedUserId));
+
+        for (String email : emails) {
+            AuthentifiedUser invitedUser = authentifiedUserRepo.findByEmail(email).orElse(null);
+
+            Invitation invitation = new Invitation();
+            invitation.setText(invitationText);
+            invitation.setDate(invitationDate);
+            invitation.setEvent(event);
+            invitation.setInviter(inviter);
+            invitationRepo.saveAndFlush(invitation);
+
+            String subject = "Invitation to " + event.getName();
+            String body = invitedUser != null
+                ? "You are invited to join the event. Please log in to accept the invitation."
+                : "You are invited to join the event. Click here to register and accept the invitation.";
+
+            sendEmail(senderEmail, senderPassword, email, subject, body);
+        }
+    }
+
+
+    public void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
+        JavaMailSender mailSender = DynamicMailSender.createMailSender(senderEmail, senderPassword);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
+        message.setTo(recipientEmail);
+        message.setSubject(subject);
+        message.setText(body);
+
+        try {
+            mailSender.send(message);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+}

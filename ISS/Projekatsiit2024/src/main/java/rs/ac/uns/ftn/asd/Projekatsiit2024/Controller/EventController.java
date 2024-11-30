@@ -23,7 +23,6 @@ public class EventController {
     public ResponseEntity<List<GetEventDTO>> GetTop5Events() {
         List<GetEventDTO> events = new ArrayList<>();
         
-        // Simulate top 5 events
         for (int i = 1; i <= 5; i++) {
             GetEventDTO event = new GetEventDTO();
             event.id = i;
