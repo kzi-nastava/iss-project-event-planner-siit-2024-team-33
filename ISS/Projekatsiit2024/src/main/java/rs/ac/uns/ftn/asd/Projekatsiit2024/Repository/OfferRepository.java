@@ -14,4 +14,10 @@ public interface OfferRepository extends JpaRepository<Offer,Integer>{
     @Query("SELECT o FROM Offer o WHERE (:searchQuery IS NULL OR LOWER(o.name) LIKE LOWER(CONCAT('%', :searchQuery, '%'))) " +
            "ORDER BY CASE WHEN :sortBy = 'price' THEN o.price END ASC")
     List<Offer> findAllWithFilters(@Param("searchQuery") String searchQuery, @Param("sortBy") String sortBy);
+    
+    @Query("SELECT o FROM Offer o WHERE o.category.id=:categoryId")
+    List<Offer> findOffersByCategoryID(@Param("categoryId") Integer categoryId);
+
+    @Query("SELECT CASE WHEN count(o)> 0 THEN true ELSE false END FROM Offer o WHERE o.category.id=:categoryId")
+    Boolean existsByCategoryID(@Param("categoryId") Integer categoryId);
 }

@@ -1,0 +1,15 @@
+package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory;
+
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
+
+public class MinimalOfferCategoryDTO {
+	public Integer id;
+	public String name;
+	public String description;
+	
+	public MinimalOfferCategoryDTO(OfferCategory oc) {
+		this.id = oc.getId();
+		this.name = oc.getName();
+		this.description = oc.getDescription();
+	}
+}
