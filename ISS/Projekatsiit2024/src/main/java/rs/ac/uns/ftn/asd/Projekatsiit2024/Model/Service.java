@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;

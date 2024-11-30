@@ -21,6 +21,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PostServiceDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PutServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 
 
@@ -98,11 +99,15 @@ public class ServiceController {
 		
 	}
 	
-	@PutMapping("/{id}")
-	public ResponseEntity<GetServiceDTO> editService(@PathVariable Integer id, @RequestBody PostServiceDTO data){
-		Service s1 = new Service();
-		//TODO: Edit Service and return it's details
-		return ResponseEntity.ok(new GetServiceDTO(s1));
+	@PutMapping("/{offerID}")
+	public ResponseEntity editService(@PathVariable Integer offerID, @RequestBody PutServiceDTO data){
+		try {
+			Service s;
+			s = serviceService.editService(offerID, data.name, data.description, data.price, data.discount, data.pictures, data.reservationInHours, data.cancellationInHours, data.isAutomatic, data.minDurationInMins, data.maxDurationInMins, data.validEventTypeIDs);			
+			return ResponseEntity.ok(new GetServiceDTO(s));
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@DeleteMapping("/{id}")
