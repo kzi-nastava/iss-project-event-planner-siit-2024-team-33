@@ -225,4 +225,8 @@ public class ServiceService {
 		
 		return newService;
 	}
+	
+	public void deleteService() {
+		
+	}
 }
