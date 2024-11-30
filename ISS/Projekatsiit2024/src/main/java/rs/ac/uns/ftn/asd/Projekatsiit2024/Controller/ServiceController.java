@@ -85,8 +85,13 @@ public class ServiceController {
 	@PostMapping
 	public ResponseEntity createService(@RequestBody PostServiceDTO data){
 		try {
-			Service s1 = serviceService.create(data.CategoryID, data.Name, data.Description, data.Price, data.Discount, data.Pictures, data.ProviderID, data.ReservationInHours, data.CancellationInHours, data.isAutomatic, data.MinDurationInMins, data.MaxDurationInMins, data.ValidEventTypeIDs);
-			return ResponseEntity.ok(new GetServiceDTO(s1));
+			Service s;
+			if(data.categoryID != null)
+				s = serviceService.create(data.categoryID, data.name, data.description, data.price, data.discount, data.pictures, data.providerID, data.reservationInHours, data.cancellationInHours, data.isAutomatic, data.minDurationInMins, data.maxDurationInMins, data.validEventTypeIDs);
+			else
+				s = serviceService.createWithCategory(data.categoryName, data.categoryDescription, data.name, data.description, data.price, data.discount, data.pictures, data.providerID, data.reservationInHours, data.cancellationInHours, data.isAutomatic, data.minDurationInMins, data.maxDurationInMins, data.validEventTypeIDs);
+			
+			return ResponseEntity.ok(new GetServiceDTO(s));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

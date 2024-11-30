@@ -5,10 +5,13 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ServiceRepository;
@@ -21,9 +24,13 @@ public class ServiceService {
 	private OfferCategoryRepository offerCategoryRepo;
 	@Autowired
 	private ProviderRepository providerRepo;
+	@Autowired
+	private EventTypeRepository eventTypeRepo;
+	
+	@Autowired 
+	OfferCategoryService offerCategoryService;
 	
 	private void validateArguments(
-			Integer categoryID,
 			String name,
 			String description,
 			Double price,
@@ -111,10 +118,12 @@ public class ServiceService {
 		List<Integer> validEventIDs
 		) {
 		
-		validateArguments(categoryID, name, description, price, discount, pictures, providerID, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+		validateArguments(name, description, price, discount, pictures, providerID, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 		
 	    Optional<OfferCategory> category = offerCategoryRepo.findById(categoryID);
 	    if(category.isEmpty())
+	    	throw new IllegalArgumentException("Inavlid argument, no category with that ID exists");
+	    if(category.get().getIsEnabled() == false)
 	    	throw new IllegalArgumentException("Inavlid argument, no category with that ID exists");
 	    
 	    //TODO: GET PROVIDER THROUGH COOKIE OR SOMETHING
@@ -122,10 +131,59 @@ public class ServiceService {
 	    if(provider.isEmpty())
 	    	throw new IllegalArgumentException("Inavlid argument, no provider with that ID exists");
 
-	    
-	    Service service = new Service(name, description, price, discount, pictures, category.get(), provider.get(), reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+	    List<EventType> validEvents = eventTypeRepo.findAllById(validEventIDs);
+	    //In case some of the event types don't exist
+	    if(validEvents.size() < validEventIDs.size())
+	    	throw new IllegalArgumentException("Inavlid argument, no event type with that ID exists");
+	    //In case some of the event types are disabled
+	    if(validEvents.stream().anyMatch(eventType -> !eventType.getIsActive()))
+	    	throw new IllegalArgumentException("Inavlid argument, no event type with that ID exists");
+	    	
+	    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, pictures, category.get(), provider.get(), validEvents, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 	    serviceRepo.saveAndFlush(service);
 	    
 		return service;
 	}
+	
+	@Transactional
+	public Service createWithCategory(
+			String categoryName,
+			String categoryDescription,
+			String name,
+			String description,
+			Double price,
+			Double discount,
+			List<String> pictures,
+			Integer providerID,
+			Integer reservationInHours,
+			Integer cancellationInHours,
+			Boolean isAutomatic,
+			Integer minLengthInMins,
+			Integer maxLengthInMins,
+			List<Integer> validEventIDs
+			) {
+			
+			validateArguments(name, description, price, discount, pictures, providerID, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+		    
+		    //TODO: GET PROVIDER THROUGH COOKIE OR SOMETHING
+		    Optional<Provider> provider = providerRepo.findById(providerID);
+		    if(provider.isEmpty())
+		    	throw new IllegalArgumentException("Inavlid argument, no provider with that ID exists");
+
+		    List<EventType> validEvents = eventTypeRepo.findAllById(validEventIDs);
+		    //In case some of the event types don't exist
+		    if(validEvents.size() < validEventIDs.size())
+		    	throw new IllegalArgumentException("Inavlid argument, no event type with that ID exists");
+		    //In case some of the event types are disabled
+		    if(validEvents.stream().anyMatch(eventType -> !eventType.getIsActive()))
+		    	throw new IllegalArgumentException("Inavlid argument, no event type with that ID exists");
+		    
+		    OfferCategory oc = offerCategoryService.createSuggestion(categoryName, categoryDescription);
+		    
+		    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, pictures, oc, provider.get(), validEvents, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+		    serviceRepo.save(service);
+		    
+			return service;
+		}
+	
 }

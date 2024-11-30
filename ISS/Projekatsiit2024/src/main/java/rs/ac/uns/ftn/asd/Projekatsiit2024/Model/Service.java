@@ -23,6 +23,7 @@ public class Service extends Offer
     }
     
     public Service(
+    		Integer offerID,
     		String name,
     		String description,
     		Double price,
@@ -30,12 +31,13 @@ public class Service extends Offer
 			List<String> pictures,
 			OfferCategory category,
 			Provider provider,
+			List<EventType> validEvents,
 			Integer reservationInHours,
 			Integer cancellationInHours,
 			Boolean isAutomatic,
 			Integer minLengthInMins,
 			Integer maxLengthInMins) {
-		super(name, description, price, discount, pictures, category, provider);
+		super(offerID, name, description, price, discount, pictures, category, provider, validEvents);
 		this.ReservationInHours = reservationInHours;
 		this.CancellationInHours = cancellationInHours;
 		this.IsAutomatic = isAutomatic;

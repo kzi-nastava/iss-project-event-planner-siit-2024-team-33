@@ -56,14 +56,17 @@ public class Offer
     }
     
 	public Offer(
+			Integer offerID,
 			String name,
 			String description,
 			Double price,
 			Double discount,
 			List<String> pictures,
 			OfferCategory category,
-			Provider provider) {
+			Provider provider,
+			List<EventType> validEvents) {
 		super();
+		this.offerID = offerID;
 		this.name = name;
 		this.description = description;
 		this.price = price;
@@ -72,6 +75,7 @@ public class Offer
 		this.category = category;
 		this.provider = provider;
 		this.creationDate = new Date(System.currentTimeMillis());
+		this.validEvents = validEvents;
 		this.availability = availability.AVAILABLE;
 	}
 }

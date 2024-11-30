@@ -52,7 +52,7 @@ public class ProductController {
 	        product.CreationDate = new Date(System.currentTimeMillis());
 	        product.IsPending = false;
 	        product.IsDeleted = false;
-	        product.Category = new OfferCategory();
+//	        product.Category = new OfferCategory();
 	        product.Provider = new Provider();
 	        product.ValidEvents = new ArrayList<>();
 	        product.OfferReservations = new ArrayList<>();

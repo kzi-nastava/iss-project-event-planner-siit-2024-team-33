@@ -6,23 +6,23 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
 
 public class PostServiceDTO {
 	//DTO Will either contain this
-	public Integer CategoryID;
+	public Integer categoryID;
 	//or these
-	public String CategoryName;
-	public String CategoryDescription;
+	public String categoryName;
+	public String categoryDescription;
 	
-	public String Name;
-	public Double Price;
-	public String Description;
-	public Double Discount;
-	public Integer ReservationInHours;
-	public Integer CancellationInHours;
-	public Integer MinDurationInMins;
-	public Integer MaxDurationInMins;
-	public Availability Availability;
-	public List<String> Pictures;
+	public String name;
+	public Double price;
+	public String description;
+	public Double discount;
+	public Integer reservationInHours;
+	public Integer cancellationInHours;
+	public Integer minDurationInMins;
+	public Integer maxDurationInMins;
+	public Availability availability;
+	public List<String> pictures;
 	public Boolean isAutomatic;
 	
-	public Integer ProviderID;
-	public List<Integer> ValidEventTypeIDs;
+	public Integer providerID;
+	public List<Integer> validEventTypeIDs;
 }

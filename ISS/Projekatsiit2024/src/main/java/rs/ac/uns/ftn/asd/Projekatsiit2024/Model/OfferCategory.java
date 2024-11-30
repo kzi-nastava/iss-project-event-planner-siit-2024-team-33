@@ -16,11 +16,20 @@ public class OfferCategory
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer id;
-    public String name;
-    public String description;
-    public Boolean isAccepted;
-    public Boolean isEnabled;
+	private Integer id;
+    private String name;
+    private String description;
+    private Boolean isAccepted;
+    private Boolean isEnabled;
+    
+    public OfferCategory(String name, String description, Boolean isAccepted, Boolean isEnabled) {
+		this.name = name;
+		this.description = description;
+		this.isAccepted = isAccepted;
+		this.isEnabled = isEnabled;
+	}
+    
+    public OfferCategory() {}
 
     @OneToMany(mappedBy = "category")
     private List<Offer> offers;
