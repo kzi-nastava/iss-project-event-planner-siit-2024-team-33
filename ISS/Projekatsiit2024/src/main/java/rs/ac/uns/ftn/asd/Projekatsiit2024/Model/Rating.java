@@ -5,19 +5,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-public class Rating
-{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public int ID;
-    public int Value;
-    public String Comment;
-    public Boolean Accepted;
+@Setter
+@Getter
+public class Rating {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private int ratingValue;
+    private String comment; 
+    private Boolean accepted;
 
     @ManyToOne
-    public AuthentifiedUser Author;
+    private AuthentifiedUser author;
+    
     @ManyToOne
-    public Offer Offer;
+    private Offer offer; 
 }

@@ -26,30 +26,30 @@ public class Offer
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer ID;
-	private Integer OfferID;
+	private Integer id;
+	private Integer offerID;
 	private OfferType type;
-	private String Name;
-	private String Description;
-	private Double Price;
-	private Double Discount;
-	private List<String> Pictures;
+	private String name;
+	private String description;
+	private Double price;
+	private Double discount;
+	private List<String> pictures;
     @Enumerated(EnumType.STRING)
-    private Availability Availability;
-    private Date CreationDate;
-    private Boolean IsPending;
-    private Boolean IsDeleted;
+    private Availability availability;
+    private Date creationDate;
+    private Boolean isPending;
+    private Boolean isDeleted;
     
     @ManyToOne
-    private OfferCategory Category = null;
+    private OfferCategory category = null;
     @ManyToOne
-    private Provider Provider = null;
+    private Provider provider = null;
     @ManyToMany
-    private List<EventType> ValidEvents = new ArrayList<EventType>();
-    @OneToMany(mappedBy = "Offer")
-    private List<OfferReservation> OfferReservations;
-    @OneToMany(mappedBy = "Offer")
-    private List<Rating> Ratings;
+    private List<EventType> validEvents = new ArrayList<EventType>();
+    @OneToMany(mappedBy = "offer")
+    private List<OfferReservation> offerReservations;
+    @OneToMany(mappedBy = "offer")
+    private List<Rating> ratings;
     
     public Offer() {
     	
@@ -64,16 +64,14 @@ public class Offer
 			OfferCategory category,
 			Provider provider) {
 		super();
-		Name = name;
-		Description = description;
-		Price = price;
-		Discount = discount;
-		Pictures = pictures;
-		Category = category;
-		Provider = provider;
-		this.CreationDate = new Date(System.currentTimeMillis());
-		this.Availability = Availability.AVAILABLE;
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.discount = discount;
+		this.pictures = pictures;
+		this.category = category;
+		this.provider = provider;
+		this.creationDate = new Date(System.currentTimeMillis());
+		this.availability = availability.AVAILABLE;
 	}
-    
-    
 }

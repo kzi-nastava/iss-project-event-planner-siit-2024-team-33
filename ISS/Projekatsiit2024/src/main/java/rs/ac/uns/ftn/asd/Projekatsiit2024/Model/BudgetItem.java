@@ -10,11 +10,11 @@ import jakarta.persistence.ManyToOne;
 public class BudgetItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer ID;
-	public double Budget;
+    private Integer id;
+	private double budget;
 	
 	@ManyToOne
-	public Event Event;
-	@ManyToOne
-	public OfferCategory BudgetCategory;
+    private Event event;
+    @ManyToOne
+    private OfferCategory budgetCategory;
 }

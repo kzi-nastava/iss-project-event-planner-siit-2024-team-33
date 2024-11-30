@@ -6,4 +6,5 @@ public class PostInvitationDTO {
     private int inviterId;
     private List<String> emailAddresses;
     private String message;
+    
 }
