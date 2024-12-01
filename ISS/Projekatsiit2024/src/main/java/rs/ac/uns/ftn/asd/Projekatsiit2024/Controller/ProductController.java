@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ProductService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerReservationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.GetEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreateProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreatedProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.GetProductDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.MinimalProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.UpdateProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.UpdatedProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.productPurchase.PostProductPurchaseDTO;
@@ -35,6 +40,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 @RequestMapping("/api/products")
 public class ProductController {
 	
+	@Autowired
+	private ProductService productService;
 	
 	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<GetProductDTO>> GetTop5Products() {
@@ -118,23 +125,14 @@ public class ProductController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
-	@PostMapping("/{id}/purchase")
-	public ResponseEntity<GetProductDTO> buyProduct(@PathVariable Integer id, @RequestBody PostProductPurchaseDTO data){
-		//403: Forbidden if user isn't logged in
-		Boolean loggedOut = false;
-		if(loggedOut)
-			return ResponseEntity.status(403).build();
-		
-		//404: Product not found
-		Boolean notFound = false;
-		if(notFound)
-			return ResponseEntity.notFound().build();
-		
-		//409: Conflict if product is already purchased
-		Boolean alreadyFavorite = false;
-		if(alreadyFavorite)
-			return ResponseEntity.status(409).build();
-		
-		return ResponseEntity.ok(null);
+	@PostMapping("/{id}/reservations")
+	public ResponseEntity buyProduct(@PathVariable Integer id, @RequestBody PostProductPurchaseDTO data){
+		try {
+			return ResponseEntity.ok(new MinimalProductDTO(productService.buyProduct(id, data.EventID)));
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(404).body(e.toString());
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.toString());
+		}
 	}
 }

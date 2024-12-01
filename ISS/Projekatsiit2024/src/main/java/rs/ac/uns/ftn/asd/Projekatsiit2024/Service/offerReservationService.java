@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferReservationRepository;
@@ -51,6 +52,17 @@ public class offerReservationService {
             throw new IllegalArgumentException("Invalid argument: End time cannot be earlier than start time.");
     }
 
+    public OfferReservation createProductReservation(Product product, Event event) {
+    	OfferReservation reservation = new OfferReservation();
+    	//TODO
+    	reservation.setDateOfReservation(event.getDateOfEvent());
+    	reservation.setEvent(event);
+    	reservation.setOffer(product);
+    	
+    	reservation = offerReservationRepo.save(reservation);
+    	return reservation;
+    }
+    
     public OfferReservation createOfferReservation(
             Date dateOfReservation,
             Integer offerId,
