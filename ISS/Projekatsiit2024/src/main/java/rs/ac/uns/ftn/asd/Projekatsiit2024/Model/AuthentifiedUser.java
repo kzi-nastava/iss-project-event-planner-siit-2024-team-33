@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
+import java.sql.Date;
 import java.util.List;
 import jakarta.persistence.*;
 
@@ -19,7 +20,9 @@ public class AuthentifiedUser {
 
     @ElementCollection
     private List<String> pictures;
-
+    //Added for reports
+    public Date suspensionEndDate;
+    
     private Boolean isDeleted;
 
     @ManyToMany
@@ -122,7 +125,17 @@ public class AuthentifiedUser {
 		this.notifications = notifications;
 	}
 
-    
+	public Date getSuspensionEndDate() {
+	    return suspensionEndDate;
+	}
+
+	public void setSuspensionEndDate(Date suspensionEndDate) {
+	    this.suspensionEndDate = suspensionEndDate;
+	}
+
+    public boolean isSuspended() {
+        return suspensionEndDate != null && suspensionEndDate.after(new Date(System.currentTimeMillis()));
+    }
     
     
 }
