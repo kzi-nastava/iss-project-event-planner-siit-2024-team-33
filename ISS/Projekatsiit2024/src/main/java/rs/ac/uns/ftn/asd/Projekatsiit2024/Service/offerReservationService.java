@@ -138,8 +138,18 @@ public class offerReservationService {
         return start1.before(end2) && end1.after(start2); 
     }
 
-    
-    
+//TODO:FIX THIS PLEASE    
+//    public void cancelService(OfferReservation reservation) {
+//        Service service = (Service) reservation.getOffer();
+//        long timeUntilCancellation = reservation.getDateOfReservation().getTime() - System.currentTimeMillis();
+//        long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000;
+//
+//        if (timeUntilCancellation < cancellationDeadline) {
+//            throw new IllegalArgumentException("Cannot cancel the service less than " + service.getCancellationInHours() + " hours before the reservation.");
+//        }
+//
+//        offerReservationRepo.delete(reservation);
+//    }
     
     
 }

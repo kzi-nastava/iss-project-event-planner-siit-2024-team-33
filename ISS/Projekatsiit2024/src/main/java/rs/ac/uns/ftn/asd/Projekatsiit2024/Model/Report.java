@@ -14,13 +14,13 @@ public class Report
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer ID;
+	public Integer id;
 	
-    public String Content;
-    public Date DateOfSending;
+    public String content;
+    public Date dateOfSending;
 
     @ManyToOne
-    public AuthentifiedUser Author;
+    public AuthentifiedUser author;
     @ManyToOne
-    public AuthentifiedUser Receiver;
+    public AuthentifiedUser receiver;
 }
