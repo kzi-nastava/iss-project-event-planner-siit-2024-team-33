@@ -8,8 +8,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategory
 public class GetBudgetDTO {
 	public Integer EventID;
 	public String EventName;
+	public List<MinimalOfferCategoryDTO> TakenOfferTypes;
 	public List<MinimalOfferCategoryDTO> RecommendedOfferTypes;
-	
 	public List<BudgetItemDTO> Items;
-	public List<OfferDTO> RecommendedOffers;
 }

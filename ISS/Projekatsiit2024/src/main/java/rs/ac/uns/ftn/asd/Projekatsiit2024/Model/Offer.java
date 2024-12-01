@@ -80,4 +80,8 @@ public class Offer
 		this.isPending = false;
 		this.isDeleted =false;
 	}
+	
+	public Integer getCategoryId() {
+		return category.getId();
+	}
 }
