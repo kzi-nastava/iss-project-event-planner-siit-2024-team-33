@@ -52,9 +52,25 @@ public class authentifiedUserService {
 	        	throw new IllegalArgumentException("One of two users not found.");
 	        }
 	    }
-		
-		
-		
+	}
+	
+	public void unblockAUser(Integer blockerID, Integer blockedID) {
+	    Optional<AuthentifiedUser> blockerOptional = UserRepo.findById(blockerID);
+	    Optional<AuthentifiedUser> blockedOptional = UserRepo.findById(blockedID);
+
+	    if (blockerOptional.isPresent() && blockedOptional.isPresent()) {
+	        AuthentifiedUser blocker = blockerOptional.get();
+	        AuthentifiedUser blocked = blockedOptional.get();
+	        
+	        List<AuthentifiedUser> blockedUsers = blocker.getBlockedUsers();
+	        if(blockedUsers.contains(blocked)) {
+	            blockedUsers.remove(blocked);
+	            blocker.setBlockedUsers(blockedUsers);
+	            UserRepo.save(blocker);
+	        }else {
+	        	throw new IllegalArgumentException("One of two users not found.");
+	        }
+	    }
 	}
 	
 	
