@@ -41,9 +41,9 @@ public class invitationService {
         String senderEmail,
         String senderPassword) {
         Event event = eventRepo.findById(eventId)
-            .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + eventId));
+            .orElseThrow(() -> new IllegalArgumentException(""));
         AuthentifiedUser inviter = authentifiedUserRepo.findById(authentifiedUserId)
-            .orElseThrow(() -> new IllegalArgumentException("Inviter not found with ID: " + authentifiedUserId));
+            .orElseThrow(() -> new IllegalArgumentException(""));
 
         for (String email : emails) {
             AuthentifiedUser invitedUser = authentifiedUserRepo.findByEmail(email).orElse(null);

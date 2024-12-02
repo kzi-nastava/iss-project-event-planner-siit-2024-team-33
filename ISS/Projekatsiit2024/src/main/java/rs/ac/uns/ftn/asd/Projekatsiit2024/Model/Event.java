@@ -29,7 +29,7 @@ public class Event {
     private Double longitude;
     private Date dateOfEvent;
     private Date endOfEvent;
-    
+    private Boolean itsJoever;
     
     
     @ManyToOne
