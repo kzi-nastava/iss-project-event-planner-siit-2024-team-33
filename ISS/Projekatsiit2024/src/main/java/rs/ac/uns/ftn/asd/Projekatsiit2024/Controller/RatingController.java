@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,11 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Rating;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.GetRatingDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.PostRatingDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.RatingService;
 
 @RestController
 @RequestMapping("/api/offers/{offerID}/ratings")
 public class RatingController {
 
+	@Autowired
+	private RatingService ratingService;
+	
+	
+	
     @PostMapping
     public ResponseEntity<String> RateOffer(@PathVariable Integer offerID, @RequestBody PostRatingDTO postRatingDTO) {
         Rating rating = new Rating();

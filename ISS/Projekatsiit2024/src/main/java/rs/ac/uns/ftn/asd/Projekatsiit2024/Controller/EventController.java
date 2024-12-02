@@ -4,11 +4,13 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.EventService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.FilterEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.GetEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.PostEventDTO;
@@ -18,21 +20,13 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.GetServiceReser
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
-
+	
+	@Autowired
+	EventService eventService;
+	
     @GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<GetEventDTO>> GetTop5Events() {
         List<GetEventDTO> events = new ArrayList<>();
-        
-        for (int i = 1; i <= 5; i++) {
-            GetEventDTO event = new GetEventDTO();
-            event.id = i;
-            event.Name = "Top Event " + i;
-            event.Description = "Description for top event " + i;
-            event.Place = "Place " + i;
-            event.DateOfEvent = new Date(System.currentTimeMillis());
-            event.NumOfAttendees = 100 + i;
-            events.add(event);
-        }
 
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
@@ -41,30 +35,12 @@ public class EventController {
     public ResponseEntity<List<GetEventDTO>> GetEventList(@RequestBody FilterEventDTO filterParameters) {
         List<GetEventDTO> events = new ArrayList<>();
 
-        for (int i = 1; i <= 3; i++) {
-            GetEventDTO event = new GetEventDTO();
-            event.id = i;
-            event.Name = "Top Event " + i;
-            event.Description = "Description for top event " + i;
-            event.Place = "Place " + i;
-            event.DateOfEvent = new Date(System.currentTimeMillis());
-            event.NumOfAttendees = 100 + i;
-            events.add(event);
-        }
-
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
     @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetEventDTO> PostEvent(@PathVariable Integer id, @RequestBody PostEventDTO data) {
         GetEventDTO createdEvent = new GetEventDTO();
-        
-        createdEvent.id = 1;
-        createdEvent.Name = "Top Event " + 1;
-        createdEvent.Description = "Description for top event " + 1;
-        createdEvent.Place = "Place " + 1;
-        createdEvent.DateOfEvent = new Date(System.currentTimeMillis());
-        createdEvent.NumOfAttendees = 100 + 1;
 
         return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
     }
@@ -72,13 +48,6 @@ public class EventController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetEventDTO> PutEvent(@PathVariable Integer id, @RequestBody UpdateEventDTO data) {
         GetEventDTO updatedEvent = new GetEventDTO();
-
-        updatedEvent.id = 1;
-        updatedEvent.Name = "Top Event " + 1;
-        updatedEvent.Description = "Description for top event " + 1;
-        updatedEvent.Place = "Place " + 1;
-        updatedEvent.DateOfEvent = new Date(System.currentTimeMillis());
-        updatedEvent.NumOfAttendees = 100 + 1;
 
         return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
     }
@@ -91,11 +60,6 @@ public class EventController {
     @GetMapping(value = "/{eventId}/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<GetServiceReservationDTO>> getAllReservationsForEvent(@PathVariable int eventId) {
         List<GetServiceReservationDTO> reservations = new ArrayList<>();
-
-        for (int i = 1; i <= 2; i++) {
-            GetServiceReservationDTO reservation = new GetServiceReservationDTO(null);
-            reservations.add(reservation);
-        }
 
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }

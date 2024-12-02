@@ -35,6 +35,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.UpdateProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.UpdatedProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.productPurchase.PostProductPurchaseDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerService;
 
 @RestController
 @RequestMapping("/api/products")
@@ -42,6 +43,8 @@ public class ProductController {
 	
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private offerService offerService;
 	
 	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<GetProductDTO>> GetTop5Products() {

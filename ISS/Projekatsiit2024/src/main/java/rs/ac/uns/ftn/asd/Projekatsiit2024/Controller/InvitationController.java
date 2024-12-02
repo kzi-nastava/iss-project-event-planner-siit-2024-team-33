@@ -1,9 +1,11 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.GetInvitationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.invitationService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,9 @@ import java.util.List;
 @RequestMapping("/api/events/{eventID}/invitations")
 public class InvitationController {
 
+	@Autowired
+	invitationService invitationService;
+	
     @PostMapping
     public ResponseEntity<String> createInvitations(@PathVariable Integer eventID, @RequestBody PostInvitationDTO postInvitationDTO) {
         if (eventID == null || eventID <= 0) {

@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.GetServiceReservationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.CreatedServiceReservationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.PostServiceReservationDTO;
 
@@ -14,7 +16,16 @@ import java.util.List;
 @RequestMapping("/api/services/{serviceID}/reservations")
 public class ServiceReservationController {
 
-    @PostMapping
+	@Autowired
+	private offerService offerService;
+	@Autowired
+	private ServiceService serviceService;
+	@Autowired
+	private ServiceReservationController SRC;
+	
+	
+	
+	@PostMapping
     public ResponseEntity<CreatedServiceReservationDTO> ReserveService(@PathVariable Integer serviceID, @RequestBody PostServiceReservationDTO postServiceReservationDTO) {
 
         // TODO: Add logic to check if the service exists

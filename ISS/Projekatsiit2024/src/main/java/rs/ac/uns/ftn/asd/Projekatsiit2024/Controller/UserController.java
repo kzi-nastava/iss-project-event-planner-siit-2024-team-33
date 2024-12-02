@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreateProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreatedProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.GetProductDTO;
@@ -30,10 +32,14 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreatedUserDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.GetUserDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUserDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatedUserDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.authentifiedUserService;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+	
+	@Autowired
+	private authentifiedUserService userRepo;
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<GetUserDTO>> getUsers() {
