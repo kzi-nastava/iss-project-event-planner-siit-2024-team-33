@@ -76,11 +76,6 @@
 	        <version>1.18.36</version>
 	        <scope>provided</scope>
 	    </dependency>
-	    <dependency>
-	    	<groupId>rs.ac.uns.ftn.informatika</groupId>
-	    	<artifactId>jpa-example</artifactId>
-	    	<version>0.0.1-SNAPSHOT</version>
-	    </dependency>
 	</dependencies>
 
 	<build>

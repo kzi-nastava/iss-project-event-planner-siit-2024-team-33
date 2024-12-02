@@ -1,9 +1,12 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
+import java.security.Timestamp;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,15 +31,17 @@ public class Offer
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private Integer offerID;
+    @Enumerated(EnumType.STRING)
 	private OfferType type;
 	private String name;
+	@Column(length = 2048)
 	private String description;
 	private Double price;
 	private Double discount;
 	private List<String> pictures;
     @Enumerated(EnumType.STRING)
     private Availability availability;
-    private Date creationDate;
+    private LocalDateTime creationDate;
     private Boolean isPending;
     private Boolean isDeleted;
     
@@ -74,13 +79,13 @@ public class Offer
 		this.pictures = pictures;
 		this.category = category;
 		this.provider = provider;
-		this.creationDate = new Date(System.currentTimeMillis());
+		this.creationDate = LocalDateTime.now();
 		this.validEvents = validEvents;
 		this.availability = availability.AVAILABLE;
 		this.isPending = false;
 		this.isDeleted =false;
 	}
-	
+
 	public Integer getCategoryId() {
 		return category.getId();
 	}
