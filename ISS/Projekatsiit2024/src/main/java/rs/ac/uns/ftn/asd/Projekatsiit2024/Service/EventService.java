@@ -15,6 +15,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OrganizerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,12 +35,17 @@ public class EventService {
             Date dateOfEvent,
             Date endOfEvent,
             Integer organizerId,
+            Integer price,
             List<EventType> eventTypes) {
 
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("");
         }
-
+        
+        if (price == null || price<0) {
+            throw new IllegalArgumentException("");
+        }
+        
         if (place == null || place.isBlank()) {
             throw new IllegalArgumentException("");
         }
@@ -86,6 +92,7 @@ public class EventService {
         return filteredEvents;
     }
     
+    //TODO: Check if to get events for the city or ALL events.
     public List<Event> getRestEvents(String city, Integer id) {
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
@@ -98,7 +105,7 @@ public class EventService {
         List<Event> allEvents = eventRepository.findAll();
 
         List<Event> top5Events = allEvents.stream()
-                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
+                //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
                 .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
                 .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
                 .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
@@ -106,7 +113,7 @@ public class EventService {
                 .toList();
 
         List<Event> restEvents = allEvents.stream()
-                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
+                //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
                 .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
                 .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
                 .filter(event -> !top5Events.contains(event))
@@ -189,12 +196,12 @@ public class EventService {
             Date endOfEvent,
             int numOfAttendees,
             Boolean isPrivate,
+            Integer price,
+            String picutre,
             Integer organizerId,
-            List<EventType> eventTypes,
-            List<OfferReservation> reservations,
-            List<BudgetItem> budgetItems) {
+            List<EventType> eventTypes) {
 
-        validateEventArguments(name, place, dateOfEvent, endOfEvent, organizerId, eventTypes);
+        validateEventArguments(name, place, dateOfEvent, endOfEvent,price , organizerId, eventTypes);
 
         Organizer organizer = organRepo.findById(organizerId)
                 .orElseThrow(() -> new RuntimeException(""));
@@ -211,10 +218,11 @@ public class EventService {
         event.setIsPrivate(isPrivate);
         event.setItsJoever(false);
         event.setOrganizer(organizer);
+        event.setPicture(picutre);
+        event.setPrice(price);
         event.setEventTypes(eventTypes);
-        event.setReservations(reservations);
-        event.setBudgetItems(budgetItems);
-
+        event.setReservations(new ArrayList<>());
+        event.setBudgetItems(new ArrayList<>());
         eventRepository.save(event);
         return event;
     }
@@ -229,13 +237,13 @@ public class EventService {
             Date endOfEvent,
             int numOfAttendees,
             Boolean isPrivate,
+            Integer price,
+            String picture,
             Integer organizerId,
-            List<EventType> eventTypes,
-            List<OfferReservation> reservations,
-            List<BudgetItem> budgetItems) {
+            List<EventType> eventTypes) {
 
         Event event = createEvent(name, description, place, latitude, longitude, dateOfEvent, endOfEvent,
-                numOfAttendees, isPrivate, organizerId, eventTypes, reservations, budgetItems);
+                numOfAttendees, isPrivate, price ,picture, organizerId, eventTypes);
         eventRepository.flush();
         return event;
     }
@@ -250,10 +258,12 @@ public class EventService {
             Date endOfEvent,
             int numOfAttendees,
             Boolean isPrivate,
+            Integer price,
+            String picture,
             Integer organizerId,
             List<EventType> eventTypes) {
 
-        validateEventArguments(name, place, dateOfEvent, endOfEvent, organizerId, eventTypes);
+        validateEventArguments(name, place, dateOfEvent, endOfEvent,price, organizerId, eventTypes);
 
         Organizer organizer = organRepo.findById(organizerId)
                 .orElseThrow(() -> new RuntimeException(""));
@@ -268,10 +278,58 @@ public class EventService {
         event.setEndOfEvent(endOfEvent);
         event.setNumOfAttendees(numOfAttendees);
         event.setIsPrivate(isPrivate);
+        event.setPrice(price);
+        event.setPicture(picture);
         event.setOrganizer(organizer);
         event.setEventTypes(eventTypes);
         event.setItsJoever(false);
         eventRepository.save(event);
         return event;
     }
+    
+    public Event editEvent(
+            Integer id,
+            String name,
+            String description,
+            String place,
+            Double latitude,
+            Double longitude,
+            Date dateOfEvent,
+            Date endOfEvent,
+            int numOfAttendees,
+            Boolean isPrivate,
+            Integer price,
+            String picture,
+            List<EventType> eventTypes) {
+
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event with ID " + id + " not found"));
+
+        if (name != null) event.setName(name);
+        if (description != null) event.setDescription(description);
+        if (place != null) event.setPlace(place);
+        if (latitude != null) event.setLatitude(latitude);
+        if (longitude != null) event.setLongitude(longitude);
+        if (dateOfEvent != null) event.setDateOfEvent(dateOfEvent);
+        if (endOfEvent != null) event.setEndOfEvent(endOfEvent);
+        event.setNumOfAttendees(numOfAttendees);
+        if (isPrivate != null) event.setIsPrivate(isPrivate);
+        if (price != null) event.setPrice(price);
+        if (picture != null) event.setPicture(picture);
+        if (eventTypes != null) event.setEventTypes(eventTypes);
+
+        eventRepository.save(event);
+        return event;
+    }
+    public void deleteEvent(Integer id) {
+        Optional<Event> event = eventRepository.findById(id);
+        
+        if(event.isEmpty()) {
+        	throw new IllegalArgumentException("");
+        }
+    	
+        eventRepository.delete(event.get());
+    }
+
+
 }

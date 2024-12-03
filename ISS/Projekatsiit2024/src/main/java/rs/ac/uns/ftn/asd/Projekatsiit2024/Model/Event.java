@@ -30,6 +30,8 @@ public class Event {
     private Date dateOfEvent;
     private Date endOfEvent;
     private Boolean itsJoever;
+    private String picture;
+    private Integer price;
     
     
     @ManyToOne

@@ -29,7 +29,7 @@ public class NotificationService {
         Optional<AuthentifiedUser> receiverOptional = userRepo.findById(receiverId);
 
         if (receiverOptional.isEmpty()) {
-            throw new IllegalArgumentException("Receiver not found with the provided ID.");
+            throw new IllegalArgumentException("");
         }
 
         AuthentifiedUser receiver = receiverOptional.get();
@@ -88,6 +88,14 @@ public class NotificationService {
     	
     }
     
+    public void deleteNotification(Integer notifId) {
+        Optional<Notification> notificationOptional = notifRepo.findById(notifId);
+        if (notificationOptional.isEmpty()) {
+            throw new IllegalArgumentException("");
+        }
+        notifRepo.delete(notificationOptional.get());
+    }
+
     
     public void deleteSelectedNotifications(Integer userID) {
     	Optional<AuthentifiedUser> optionalUser= userRepo.findById(userID);

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PostServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PutServiceDTO;
@@ -31,7 +32,8 @@ public class ServiceController {
 	
 	@Autowired
 	private ServiceService serviceService;
-
+	@Autowired
+	private offerService offerService;
 	
 	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<GetServiceDTO>> GetTop5Services() {

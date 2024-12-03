@@ -1,14 +1,28 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
 import java.sql.Date;
+import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Organizer;
+
+@Setter
+@Getter
 public class UpdateEventDTO {
-    private Long id;
-    private String Name;
-    private String Description;
-    private String Place;
-    private Date DateOfEvent;
+    private String name;
+    private String description;
+    private String place;
+    private Double latitude;
+    private Double longitude;
+    private Date dateOfEvent;
+    private Date endOfEvent;
+    private int numOfAttendees;
     private Boolean isPrivate;
+    private Integer price;
+    private String picture;
+    private List<EventType> eventTypes;
 
 
 }

@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -80,4 +81,36 @@ public class invitationService {
             System.err.println(e);
         }
     }
+    
+    public List<Invitation> getInvitationsByForEvent(Integer id){
+    	Optional<Event> ev = eventRepo.findById(id);
+    	
+    	if(ev.isEmpty()) {
+    		throw new IllegalArgumentException("");
+    	}
+    	Event event = ev.get();
+    	List<Invitation> invs = invitationRepo.findByEvent(event);
+		return invs;
+    	
+    }
+    
+    public Invitation getInvitationById(Integer id) {
+    	Optional<Invitation> invitationOPT = invitationRepo.findById(id);
+    	if(invitationOPT.isEmpty()) {
+    		throw new IllegalArgumentException("");
+    	}
+    	Invitation invitation = invitationOPT.get();
+    	
+    	return invitation;
+    }
+    
+    public void deleteInvitationById(Integer id) {
+        Optional<Invitation> invitationOpt = invitationRepo.findById(id);
+        if (invitationOpt.isEmpty()) {
+            throw new IllegalArgumentException("");
+        }
+        
+        invitationRepo.delete(invitationOpt.get());
+    }
+
 }

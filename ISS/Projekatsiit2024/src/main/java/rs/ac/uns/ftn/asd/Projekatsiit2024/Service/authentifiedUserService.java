@@ -1,15 +1,19 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreatedUserDTO;
 
+
+@Service
 public class authentifiedUserService {
 
 	@Autowired

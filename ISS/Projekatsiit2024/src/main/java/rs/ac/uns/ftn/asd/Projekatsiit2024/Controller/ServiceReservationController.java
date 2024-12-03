@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.GetServiceReservationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerReservationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.CreatedServiceReservationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.PostServiceReservationDTO;
@@ -21,7 +22,7 @@ public class ServiceReservationController {
 	@Autowired
 	private ServiceService serviceService;
 	@Autowired
-	private ServiceReservationController SRC;
+	private offerReservationService oRS;
 	
 	
 	

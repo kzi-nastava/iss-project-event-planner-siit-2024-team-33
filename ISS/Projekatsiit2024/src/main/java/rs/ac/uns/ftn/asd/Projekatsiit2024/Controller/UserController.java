@@ -84,4 +84,29 @@ public class UserController {
 	public ResponseEntity<?> deleteUser(@PathVariable("id") Long Id) {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+	
+    @PostMapping(value = "/{blockerId}/block/{blockedId}")
+    public ResponseEntity<String> blockUser(@PathVariable Integer blockerId, @PathVariable Integer blockedId) {
+        try {
+            userRepo.blockAUser(blockerId, blockedId);
+            return ResponseEntity.ok("");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
+        }
+    }
+
+    @DeleteMapping(value = "/{blockerId}/block/{blockedId}")
+    public ResponseEntity<String> unblockUser(@PathVariable Integer blockerId, @PathVariable Integer blockedId) {
+        try {
+            userRepo.unblockAUser(blockerId, blockedId);
+            return ResponseEntity.ok("");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
+        }
+    }
+    
 }

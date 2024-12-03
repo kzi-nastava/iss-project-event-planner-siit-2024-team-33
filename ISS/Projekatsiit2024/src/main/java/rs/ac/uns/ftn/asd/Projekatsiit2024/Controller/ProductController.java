@@ -49,28 +49,6 @@ public class ProductController {
 	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<GetProductDTO>> GetTop5Products() {
 	    List<GetProductDTO> products = new ArrayList<>();
-
-	    for (int i = 1; i <= 5; i++) {
-	        GetProductDTO product = new GetProductDTO();
-	        product.setId(i);
-	        product.setName("Top Product " + i);
-	        product.setDescription("Description for top product " + i);
-	        product.setPrice(100.0 + i);
-	        product.setDiscount(10.0 + i);
-	        product.setPictures(List.of("image" + i + ".jpg"));
-//	        product.Availability = Availability.Available;
-	        product.CreationDate = new Date(System.currentTimeMillis());
-	        product.IsPending = false;
-	        product.IsDeleted = false;
-//	        product.Category = new OfferCategory();
-	        product.Provider = new Provider();
-	        product.ValidEvents = new ArrayList<>();
-	        product.OfferReservations = new ArrayList<>();
-	        product.Ratings = new ArrayList<>();
-
-	        products.add(product);
-	    }
-
 	    return new ResponseEntity<>(products, HttpStatus.OK);
 	}
 

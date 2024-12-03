@@ -10,6 +10,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.RatingRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,10 +48,10 @@ public class RatingService {
             rating.setAccepted(true);
             ratingRepository.save(rating);
         } else {
-            throw new IllegalArgumentException("Comment not found.");
+            throw new IllegalArgumentException("");
         }
     }
-
+    //Made it so that the rating is deleted
     public void deleteComment(int commentId) {
         Optional<Rating> ratingOpt = ratingRepository.findById(commentId);
         if (ratingOpt.isPresent()) {
@@ -58,7 +59,16 @@ public class RatingService {
             rating.setAccepted(null);
             ratingRepository.save(rating);
         } else {
-            throw new IllegalArgumentException("Comment not found.");
+            throw new IllegalArgumentException("");
         }
+    }
+    
+    public List<Rating> getRatingsByOfferId(int offerId) {
+        return ratingRepository.findByOfferId(offerId);
+    }
+
+    public Rating getRatingById(int ratingId) {
+        return ratingRepository.findById(ratingId)
+                .orElseThrow(() -> new IllegalArgumentException(""));
     }
 }

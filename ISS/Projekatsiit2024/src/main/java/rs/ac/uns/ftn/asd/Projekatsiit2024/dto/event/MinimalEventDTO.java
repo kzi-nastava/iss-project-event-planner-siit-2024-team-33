@@ -9,14 +9,14 @@ public class MinimalEventDTO {
     private double cost;
 
     
-    private MinimalEventDTO mapToDto(Event event) {
-    	MinimalEventDTO dto = new MinimalEventDTO();
-        dto.setImage("");
-        dto.setName(event.getName());
-        dto.setDescription(event.getDescription());
-        dto.setCost(0);
-        return dto;
+    public MinimalEventDTO(Event event) {
+        this.setImage(event.getPicture());
+        this.setName(event.getName());
+        this.setDescription(event.getDescription());
+        this.setCost(event.getPrice());
     }
+    
+    
 
     
     public String getImage() {
