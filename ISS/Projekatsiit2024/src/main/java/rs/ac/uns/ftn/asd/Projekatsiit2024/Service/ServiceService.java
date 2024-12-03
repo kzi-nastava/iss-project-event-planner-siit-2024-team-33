@@ -236,11 +236,7 @@ public class ServiceService {
 	}
 	
 	public Boolean checkIfServiceExists(Integer id) {
-		if(serviceRepo.findById(id) !=null) {
-			return true;
-		}
-		
-		return false;
+		return serviceRepo.findById(id).isPresent();
 	}
 	
 	
