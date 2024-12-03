@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
@@ -107,6 +108,14 @@ public class ServiceService {
 	    if(validEventIDs.size() == 0) {
 	    	throw new IllegalArgumentException("Inavlid argument, no valid event types provided");
 	    }
+	}
+	
+	public Service get(Integer serviceID) {
+		Optional<Service> s = serviceRepo.findById(serviceID);
+		if(s.isEmpty())
+			throw new EntityNotFoundException("Service with that id doesn't exist");
+		
+		return s.get();
 	}
 	
 	public Service create(
@@ -227,6 +236,6 @@ public class ServiceService {
 	}
 	
 	public void deleteService() {
-		
+		//TODO
 	}
 }

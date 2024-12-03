@@ -29,6 +29,7 @@ public class OfferCategoryController {
 	
 	@GetMapping
 	public ResponseEntity getAcceptedCategories() {
+		System.out.println("-------------------GET CATEGORIES-------------------");
 		List<OfferCategory> ocs = offerCategoryService.getOffers(true);
 		List<MinimalOfferCategoryDTO> miniOcs = ocs.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
 		return ResponseEntity.ok(miniOcs);
