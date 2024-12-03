@@ -8,8 +8,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
+import lombok.Getter;
+import lombok.Setter;
+@Setter
+@Getter
 @Entity
 public class Event {
 
@@ -25,7 +29,14 @@ public class Event {
     private Double longitude;
     private Date dateOfEvent;
     private Date endOfEvent;
-
+    private Boolean itsJoever;
+    private String picture;
+    private Integer price;
+    
+    
+    @ManyToOne
+    private Organizer organizer;
+    
     @ManyToMany
     private List<EventType> eventTypes;
 

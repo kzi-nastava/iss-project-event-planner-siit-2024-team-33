@@ -1,7 +1,12 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
@@ -9,10 +14,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferReservationRepository;
-
-import java.sql.Date;
-import java.sql.Time;
-import java.util.List;
 
 @Service
 public class offerReservationService {
@@ -138,18 +139,47 @@ public class offerReservationService {
         return start1.before(end2) && end1.after(start2); 
     }
 
-//TODO:FIX THIS PLEASE    
-//    public void cancelService(OfferReservation reservation) {
-//        Service service = (Service) reservation.getOffer();
-//        long timeUntilCancellation = reservation.getDateOfReservation().getTime() - System.currentTimeMillis();
-//        long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000;
-//
-//        if (timeUntilCancellation < cancellationDeadline) {
-//            throw new IllegalArgumentException("Cannot cancel the service less than " + service.getCancellationInHours() + " hours before the reservation.");
-//        }
-//
-//        offerReservationRepo.delete(reservation);
-//    }
+    public void cancelService(OfferReservation reservation) {
+        rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service service = (rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service) reservation.getOffer();
+        long timeUntilCancellation = reservation.getDateOfReservation().getTime() - System.currentTimeMillis();
+        long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000;
+
+        if (timeUntilCancellation < cancellationDeadline) {
+            throw new IllegalArgumentException("Cannot cancel the service less than " + service.getCancellationInHours() + " hours before the reservation.");
+        }
+
+        offerReservationRepo.delete(reservation);
+    }
+    
+	public OfferReservation findReservationByIdAndService(Integer serviceId, int reservationId) {
+	    return offerReservationRepo.findById(reservationId)
+	            .filter(r -> r.getOffer().getId().equals(serviceId))
+	            .orElse(null);
+	}
+	
+	public OfferReservation updateReservation(
+	        Integer reservationId,
+	        Integer serviceId,
+	        Date reservationDate,
+	        Time startTime,
+	        Time endTime) {
+
+	    OfferReservation reservation = offerReservationRepo.findById(reservationId)
+	            .orElseThrow(() -> new IllegalArgumentException("Reservation not found."));
+
+	    if (!reservation.getOffer().getId().equals(serviceId)) {
+	        throw new IllegalArgumentException("Service mismatch.");
+	    }
+
+	    validateArguments(reservationDate, serviceId, reservation.getEvent().getId(), startTime, endTime);
+
+	    reservation.setDateOfReservation(reservationDate);
+	    reservation.setStartTime(startTime);
+	    reservation.setEndTime(endTime);
+
+	    return offerReservationRepo.save(reservation);
+	}
+
     
     
 }

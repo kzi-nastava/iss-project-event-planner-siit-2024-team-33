@@ -20,4 +20,6 @@ public interface OfferRepository extends JpaRepository<Offer,Integer>{
 
     @Query("SELECT CASE WHEN count(o)> 0 THEN true ELSE false END FROM Offer o WHERE o.category.id=:categoryId")
     Boolean existsByCategoryID(@Param("categoryId") Integer categoryId);
+    
+    List<Offer> findByName(String name);
 }

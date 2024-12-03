@@ -20,48 +20,39 @@ public class ReportController {
 
     @PostMapping
     public ResponseEntity<String> submitReport(@RequestBody PostReportDTO postReportDTO) {
-        if (postReportDTO == null || postReportDTO.getContent() == null 
-                || postReportDTO.getReporterId() == null || postReportDTO.getReportedUserId() == null) {
-            return ResponseEntity.badRequest().body("Invalid report data provided.");
-        }
-
-        try {
-            reportService.createReport(
+        reportService.createReport(
                 postReportDTO.getContent(),
                 postReportDTO.getReporterId(),
-                postReportDTO.getReportedUserId()
-            );
-            return ResponseEntity.ok("Report submitted successfully.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to submit the report.");
-        }
+                postReportDTO.getReportedUserId());
+        return ResponseEntity.ok("");
     }
 
     @GetMapping
     public ResponseEntity<List<GetReportDTO>> getReports() {
-        try {
-            List<Report> reports = reportService.getAllReports();
-            List<GetReportDTO> reportDTOs = reports.stream()
-                                                   .map(GetReportDTO::new)
-                                                   .collect(Collectors.toList());
-            return ResponseEntity.ok(reportDTOs);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
+        List<Report> reports = reportService.getAllReports();
+        List<GetReportDTO> reportDTOs = reports.stream()
+                .map(GetReportDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(reportDTOs);
     }
 
     @GetMapping("/{reportId}")
     public ResponseEntity<GetReportDTO> getReport(@PathVariable int reportId) {
-        try {
-            Report report = reportService.getReportById(reportId);
-            if (report == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(new GetReportDTO(report));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
+        Report report = reportService.getReportById(reportId);
+        return ResponseEntity.ok(new GetReportDTO(report));
     }
+    
+    @PostMapping("/suspend/{userId}")
+    public ResponseEntity<String> suspendUser(@PathVariable Integer userId) {
+            reportService.suspendUser(userId);
+            return ResponseEntity.ok("");
+    }
+    
+    @GetMapping("/suspension-time/{userId}")
+    public ResponseEntity<Long> getSuspensionTimeRemaining(@PathVariable Integer userId) {
+            long suspensionTimeRemaining = reportService.getSuspensionTimeRemaining(userId);
+            return ResponseEntity.ok(suspensionTimeRemaining);
+    }
+    
+    
 }

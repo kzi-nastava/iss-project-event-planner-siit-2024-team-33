@@ -1,58 +1,55 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Rating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.RatingService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.GetRatingDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.PostRatingDTO;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/offers/{offerID}/ratings")
+@RequestMapping("/api/ratings")
 public class RatingController {
 
+    @Autowired
+    private RatingService ratingService;
+
     @PostMapping
-    public ResponseEntity<String> RateOffer(@PathVariable Integer offerID, @RequestBody PostRatingDTO postRatingDTO) {
-        Rating rating = new Rating();
-
-
-        return ResponseEntity.ok("");
+    public ResponseEntity<Rating> submitRating(@RequestBody PostRatingDTO postRatingDTO, 
+                                               @RequestParam int userId, 
+                                               @RequestParam int offerId) {
+        Rating rating = ratingService.submitComment(postRatingDTO.getValue(),postRatingDTO.getComment(), userId, offerId);
+        return ResponseEntity.ok(rating);
     }
 
-    @GetMapping
-    public ResponseEntity<List<GetRatingDTO>> GetRatings(@PathVariable Integer offerID) {
-        List<Rating> ratings = new ArrayList<>();
-        ratings.add(new Rating());
-        ratings.add(new Rating());
+    @PutMapping("/approve/{commentId}")
+    public ResponseEntity<Void> approveRating(@PathVariable int commentId) {
+        ratingService.approveComment(commentId);
+        return ResponseEntity.noContent().build();
+    }
 
-        List<GetRatingDTO> ratingDTOs = new ArrayList<>();
-        for (Rating rating : ratings) {
-            ratingDTOs.add(new GetRatingDTO(rating));
-        }
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteRating(@PathVariable int commentId) {
+        ratingService.deleteComment(commentId);
+        return ResponseEntity.noContent().build();
+    }
 
+    @GetMapping("/offer/{offerId}")
+    public ResponseEntity<List<GetRatingDTO>> getRatingsByOffer(@PathVariable int offerId) {
+        List<Rating> ratings = ratingService.getRatingsByOfferId(offerId);
+        List<GetRatingDTO> ratingDTOs = ratings.stream()
+                .map(GetRatingDTO::new)
+                .toList();
         return ResponseEntity.ok(ratingDTOs);
     }
 
     @GetMapping("/{ratingId}")
-    public ResponseEntity<GetRatingDTO> GetRating(@PathVariable int ratingId) {
-        Rating rating = null;
-        rating.setId(1);
-        if (ratingId == 1) {
-            rating = new Rating();
-        }
-
-        if (rating == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(new GetRatingDTO(rating));
+    public ResponseEntity<Rating> getRatingById(@PathVariable int ratingId) {
+        Rating rating = ratingService.getRatingById(ratingId);
+        return ResponseEntity.ok(rating);
     }
 }

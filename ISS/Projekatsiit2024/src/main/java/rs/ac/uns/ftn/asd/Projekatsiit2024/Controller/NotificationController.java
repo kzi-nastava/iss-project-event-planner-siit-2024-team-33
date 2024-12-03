@@ -1,20 +1,33 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Notification;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.NotificationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.GetNotificationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PostNotificationDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
 
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
 
+    @Autowired
+    NotificationService notificationService;
+
     @PostMapping
     public ResponseEntity<String> sendNotification(@RequestBody PostNotificationDTO postNotificationDTO) {
-        return ResponseEntity.ok("Aura.");
+        try {
+            notificationService.createNotification(postNotificationDTO.getReceiverId(), postNotificationDTO.getContent());
+            return ResponseEntity.ok("");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("");
+        }
     }
 
     @GetMapping
@@ -23,19 +36,27 @@ public class NotificationController {
             return ResponseEntity.status(403).build();
         }
 
-        List<GetNotificationDTO> notifications = new ArrayList<>();
-        notifications.add(new GetNotificationDTO());
-        notifications.add(new GetNotificationDTO());
+        List<GetNotificationDTO> notificationsDTO = new ArrayList<>();
+        List<Notification> notifications = notificationService.getAllNotificationsForUser(receiverId);
+        
+        for (Notification notification : notifications) {
+            GetNotificationDTO dto = new GetNotificationDTO();
+            dto.setContent(notification.getContent());
+            dto.setDateOfSending(notification.getTimeOfSending());
+            dto.setIsRead(notification.getIsRead());
+            notificationsDTO.add(dto);
+        }
 
-        return ResponseEntity.ok(notifications);
+        return ResponseEntity.ok(notificationsDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteNotification(@PathVariable Integer id) {
         if (id <= 0) {
-            return ResponseEntity.notFound().build(); 
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok("Aura.");
+        notificationService.deleteNotification(id);
+        return ResponseEntity.ok("Notification deleted successfully.");
     }
 }

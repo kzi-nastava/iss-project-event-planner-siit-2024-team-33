@@ -4,14 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -28,7 +34,58 @@ public class offerService {
 
     @Autowired
     private ProviderRepository providerRepo;
+    
+    @Autowired
+    private AuthentifiedUserRepository userRepo;
 
+    public List<Offer> getTop5Offers(Integer id){
+        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("");
+        }
+        
+        AuthentifiedUser user = optionalUser.get();
+        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
+        
+        List<Offer> offers = offerRepo.findAll();
+        
+        List<Offer> filteredEvents = offers.stream()
+                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
+                .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
+                .limit(5)
+                .toList();
+        
+    	return filteredEvents;
+    }
+    
+    public List<Offer> getRestOffers(Integer id){
+        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("");
+        }
+        
+        AuthentifiedUser user = optionalUser.get();
+        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
+        
+        List<Offer> offers = offerRepo.findAll();
+        
+        List<Offer> filteredOffers = offers.stream()
+                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
+                .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
+                .limit(5)
+                .toList();
+        
+        List<Offer> restOffers = filteredOffers.stream()
+                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
+                .filter(offer -> !filteredOffers.contains(offer))
+                .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
+                .toList();
+        
+    	return restOffers;
+    }
+    
+    
+    
     private void validateArguments(
             Integer offerID,
             String name,
@@ -137,5 +194,58 @@ public class offerService {
         offerRepo.save(offer);
         // TODO: Add logic to send notifications for suggestions
         return offer;
+    }
+    
+    
+    public List<Offer> getFileteredOffers(Boolean isProduct, Boolean isService, String name, String category, int lowestPrice, Availability isAvailable, List<EventType> eventTypes){
+    	if(isProduct==false && isService==false) {
+    		isProduct=true;
+    		isService=true;
+    	}
+    	List<Offer> offers = offerRepo.findAll();
+    	
+    	if(isProduct && isService) {
+    		
+    	}else if(isProduct) {
+    		offers = offers.stream()
+    				.filter(offer -> offer.getType()==OfferType.PRODUCT)
+    				.toList();
+    	}else {
+    		offers = offers.stream()
+    				.filter(offer -> offer.getType()==OfferType.SERVICE)
+    				.toList();
+    	}
+    	
+    	if(name !="") {
+    		offers = offers.stream()
+    				.filter(offer -> name!=null && offer.getName().toLowerCase().contains(name.toLowerCase()))
+    				.toList();
+    	}
+    	
+    	if(category !="") {
+    		offers = offers.stream()
+    				.filter(offer -> category!=null && offer.getCategory().getName().toLowerCase().contains(category.toLowerCase()))
+    				.toList();
+    	}
+    	
+    	if(isAvailable !=null) {
+    		offers = offers.stream()
+    				.filter(offer -> offer.getAvailability() == isAvailable)
+    				.toList();
+    	}
+    	
+    	if(lowestPrice!=0) {
+    		offers = offers.stream()
+    				.filter(offer-> offer.getPrice()>lowestPrice)
+    				.toList();
+    	}
+    	
+    	if(!eventTypes.isEmpty()) {
+    		offers = offers.stream()
+                    .filter(offer -> offer.getValidEvents() != null && offer.getValidEvents().stream().anyMatch(eventTypes::contains))
+    				.toList();
+    	}
+    	offers = offers.stream().limit(10).toList();
+    	return offers;
     }
 }
