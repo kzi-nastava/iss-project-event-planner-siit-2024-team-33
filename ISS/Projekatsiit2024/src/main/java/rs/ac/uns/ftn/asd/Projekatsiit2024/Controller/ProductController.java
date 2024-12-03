@@ -45,31 +45,7 @@ public class ProductController {
 	private ProductService productService;
 	@Autowired
 	private offerService offerService;
-	
-	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<GetProductDTO>> GetTop5Products() {
-	    List<GetProductDTO> products = new ArrayList<>();
-	    return new ResponseEntity<>(products, HttpStatus.OK);
-	}
 
-    
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<GetProductDTO>> getProducts(
-			@RequestParam(required = false) String name,
-            @RequestParam(required = false) OfferCategory offerCategory,
-            @RequestParam(required = false) Double price,
-            @RequestParam(required = false) String description,
-            @RequestParam(required = false) Availability Availability) {
-		Collection<GetProductDTO> products = new ArrayList<>() ;
-
-		GetProductDTO product = new GetProductDTO();
-		GetProductDTO product2 = new GetProductDTO();
-
-		products.add(product);
-		products.add(product2);
-
-		return new ResponseEntity<Collection<GetProductDTO>>(products, HttpStatus.OK);
-	}
 	
 	
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
