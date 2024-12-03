@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerService;
@@ -37,13 +40,13 @@ public class ServiceController {
 	
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<GetServiceDTO> getDetails(@PathVariable Integer id) {
-		Service s1 = new Service();
-		
-		if (s1 == null)
-			return ResponseEntity.notFound().build();
-		
-		return ResponseEntity.ok(new GetServiceDTO(s1));
+	public ResponseEntity getDetails(@PathVariable Integer id) {
+		try {
+			Service s = serviceService.get(id);
+			return ResponseEntity.ok(new GetServiceDTO(s));
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(404).body(e.toString());
+		}
 	}
 	
 	@PostMapping
