@@ -226,6 +226,16 @@ public class ServiceService {
 		return newService;
 	}
 	
+	public Boolean checkIfServiceExists(Integer id) {
+		if(serviceRepo.findById(id) !=null) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
+	
 	public void deleteService() {
 		
 	}

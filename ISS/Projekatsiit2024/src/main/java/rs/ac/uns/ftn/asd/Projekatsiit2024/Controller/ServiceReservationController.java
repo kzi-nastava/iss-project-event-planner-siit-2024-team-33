@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.GetServiceReservationDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerReservationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerService;
@@ -23,63 +26,75 @@ public class ServiceReservationController {
 	private ServiceService serviceService;
 	@Autowired
 	private offerReservationService oRS;
-	
+	@Autowired
+	private OfferReservationRepository oRR;
 	
 	
 	@PostMapping
-    public ResponseEntity<CreatedServiceReservationDTO> ReserveService(@PathVariable Integer serviceID, @RequestBody PostServiceReservationDTO postServiceReservationDTO) {
+	public ResponseEntity<CreatedServiceReservationDTO> ReserveService(
+	        @PathVariable Integer serviceID,
+	        @RequestBody PostServiceReservationDTO postServiceReservationDTO) {
 
-        // TODO: Add logic to check if the service exists
-        boolean serviceExists = true;
+	    boolean serviceExists = serviceService.checkIfServiceExists(serviceID);
+	    if (!serviceExists) {
+	        return ResponseEntity.notFound().build();
+	    }
+
+	    try {
+	        OfferReservation reservation = oRS.createOfferReservation(
+	                postServiceReservationDTO.getReservationDate(),
+	                serviceID,
+	                postServiceReservationDTO.getEventId(),
+	                postServiceReservationDTO.getStartTime(),
+	                postServiceReservationDTO.getEndTime()
+	        );
+
+	        CreatedServiceReservationDTO createdReservation = new CreatedServiceReservationDTO(reservation);
+	        return ResponseEntity.ok(createdReservation);
+	    } catch (IllegalArgumentException ex) {
+	        return ResponseEntity.status(409).body(null);
+	    }
+	}
+
+
+	@GetMapping("/{reservationId}")
+	public ResponseEntity<GetServiceReservationDTO> getServiceReservationById(
+	        @PathVariable Integer serviceID, 
+	        @PathVariable Integer reservationId) {
+
+	    
+	    OfferReservation reservation = oRR.findById(reservationId)
+	            .orElse(null);
+
+	    
+	    GetServiceReservationDTO reservationDTO = new GetServiceReservationDTO(reservation);
+	    return ResponseEntity.ok(reservationDTO);
+	}
+
+    @PutMapping("/{reservationId}")
+    public ResponseEntity<CreatedServiceReservationDTO> updateServiceReservation(
+            @PathVariable Integer serviceID,
+            @PathVariable Integer reservationId,
+            @RequestBody PostServiceReservationDTO postServiceReservationDTO) {
+
+        boolean serviceExists = serviceService.checkIfServiceExists(serviceID);
         if (!serviceExists) {
             return ResponseEntity.notFound().build();
         }
 
-        // 409: Conflict if the service is already reserved for the requested date
-        boolean alreadyReserved = false;
-        if (alreadyReserved) {
-            return ResponseEntity.status(409).build();
+        try {
+            OfferReservation updatedReservation = oRS.updateReservation(
+                    reservationId,
+                    serviceID,
+                    postServiceReservationDTO.getReservationDate(),
+                    postServiceReservationDTO.getStartTime(),
+                    postServiceReservationDTO.getEndTime()
+            );
+
+            CreatedServiceReservationDTO updatedDTO = new CreatedServiceReservationDTO(updatedReservation);
+            return ResponseEntity.ok(updatedDTO);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(409).body(null);
         }
-
-        OfferReservation reservation = new OfferReservation();
-        // TODO: Populate reservation fields and save to database
-
-        CreatedServiceReservationDTO createdReservation = new CreatedServiceReservationDTO(reservation);
-        return ResponseEntity.ok(createdReservation);
-    }
-
-    @GetMapping("/{reservationId}")
-    public ResponseEntity<GetServiceReservationDTO> getServiceReservationById(@PathVariable Integer serviceID, @PathVariable int reservationId) {
-        OfferReservation SR = new OfferReservation();
-        if (SR == null)
-			return ResponseEntity.notFound().build();
-        
-    	return ResponseEntity.ok(new GetServiceReservationDTO(SR));
-    }
-
-    @PutMapping("/{reservationId}")
-    public ResponseEntity<CreatedServiceReservationDTO> updateServiceReservation(
-    		@PathVariable Integer serviceID,
-    		@PathVariable Integer reservationId, 
-            @RequestBody PostServiceReservationDTO postServiceReservationDTO) {
-        // TODO: Add logic to check if the service and reservation exist
-        boolean serviceExists = true;
-        boolean reservationExists = true;
-
-        if (!serviceExists || !reservationExists) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // TODO: Add logic to verify user authorization, if needed
-        boolean unauthorized = false;
-        if (unauthorized) {
-            return ResponseEntity.status(403).build();
-        }
-
-        OfferReservation reservation = new OfferReservation();
-        // TODO: Update reservation fields and save to database
-
-        CreatedServiceReservationDTO updatedReservation = new CreatedServiceReservationDTO(reservation);
-        return ResponseEntity.ok(updatedReservation);
     }
 }

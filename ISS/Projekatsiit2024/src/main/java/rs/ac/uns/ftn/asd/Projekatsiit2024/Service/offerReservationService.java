@@ -151,5 +151,35 @@ public class offerReservationService {
         offerReservationRepo.delete(reservation);
     }
     
+	public OfferReservation findReservationByIdAndService(Integer serviceId, int reservationId) {
+	    return offerReservationRepo.findById(reservationId)
+	            .filter(r -> r.getOffer().getId().equals(serviceId))
+	            .orElse(null);
+	}
+	
+	public OfferReservation updateReservation(
+	        Integer reservationId,
+	        Integer serviceId,
+	        Date reservationDate,
+	        Time startTime,
+	        Time endTime) {
+
+	    OfferReservation reservation = offerReservationRepo.findById(reservationId)
+	            .orElseThrow(() -> new IllegalArgumentException("Reservation not found."));
+
+	    if (!reservation.getOffer().getId().equals(serviceId)) {
+	        throw new IllegalArgumentException("Service mismatch.");
+	    }
+
+	    validateArguments(reservationDate, serviceId, reservation.getEvent().getId(), startTime, endTime);
+
+	    reservation.setDateOfReservation(reservationDate);
+	    reservation.setStartTime(startTime);
+	    reservation.setEndTime(endTime);
+
+	    return offerReservationRepo.save(reservation);
+	}
+
+    
     
 }
