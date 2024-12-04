@@ -14,9 +14,9 @@ import lombok.Setter;
 @Getter
 @Entity
 public class Organizer extends AuthentifiedUser {
-	public String Picture;
-	public String Residency;
-	public String PhoneNumber;
+	private String picture;
+	private String residency;
+	private String phoneNumber;
 	
     
     @OneToMany(mappedBy = "organizer")

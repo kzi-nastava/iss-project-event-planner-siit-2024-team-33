@@ -2,11 +2,16 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class GetUserDTO {
-	public Integer Id;
-    public String Email;
-    public String Password;
-    public String Name;
-    public String Surname;
-    public List<String> Pictures;
+	private Integer Id;
+	private String Email;
+	private String Password;
+	private String Name;
+	private String Surname;
+	private List<String> Pictures;
 }
