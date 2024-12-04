@@ -21,6 +21,7 @@ public class EventType
 	private String name;
 	private String description;
 	private Boolean isActive;
+	private Boolean isDeleted;
     
     @ManyToMany
     private List<OfferCategory> recommendedCategories;
