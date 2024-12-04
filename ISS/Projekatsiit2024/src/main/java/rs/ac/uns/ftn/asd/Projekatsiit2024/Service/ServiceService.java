@@ -76,7 +76,7 @@ public class ServiceService {
 	    if (validEventIDs == null)
 	    	throw new IllegalArgumentException("Inavlid argument, valid event types list can't be null");
 
-		String nameRegex = "^[\\w.']{2,}(\\s[\\w.']{2,})+$";
+		String nameRegex = "^[a-zA-Z0-9][a-zA-Z0-9 _'\"-]*$";
 		if(!name.matches(nameRegex))
 			throw new IllegalArgumentException("Invalid name");
 		

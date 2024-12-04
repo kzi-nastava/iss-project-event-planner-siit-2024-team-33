@@ -51,12 +51,13 @@ public class ServiceController {
 	
 	@PostMapping
 	public ResponseEntity createService(@RequestBody PostServiceDTO data){
+		//TODO: REMOVE TEST PROVIDER ID
 		try {
 			Service s;
 			if(data.categoryID != null)
-				s = serviceService.create(data.categoryID, data.name, data.description, data.price, data.discount, data.pictures, data.providerID, data.reservationInHours, data.cancellationInHours, data.isAutomatic, data.minDurationInMins, data.maxDurationInMins, data.validEventTypeIDs);
+				s = serviceService.create(data.categoryID, data.name, data.description, data.price, data.discount, data.picturesDataURI, 1, data.reservationInHours, data.cancellationInHours, data.isAutomatic, data.minDurationInMins, data.maxDurationInMins, data.validEventTypeIDs);
 			else
-				s = serviceService.createWithCategory(data.categoryName, data.categoryDescription, data.name, data.description, data.price, data.discount, data.pictures, data.providerID, data.reservationInHours, data.cancellationInHours, data.isAutomatic, data.minDurationInMins, data.maxDurationInMins, data.validEventTypeIDs);
+				s = serviceService.createWithCategory(data.categoryName, data.categoryDescription, data.name, data.description, data.price, data.discount, data.picturesDataURI, 1, data.reservationInHours, data.cancellationInHours, data.isAutomatic, data.minDurationInMins, data.maxDurationInMins, data.validEventTypeIDs);
 			
 			return ResponseEntity.ok(new GetServiceDTO(s));
 		} catch (IllegalArgumentException e) {

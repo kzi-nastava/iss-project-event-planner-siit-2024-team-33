@@ -19,7 +19,7 @@ VALUES
 
 INSERT INTO OFFER (CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, MAX_LENGTH_IN_MINS, MIN_LENGTH_IN_MINS, OFFERID, PRICE, PROVIDER_ID, RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME, AVAILABILITY, PICTURES, TYPE)
 VALUES
-(24, 1, 10.0, TRUE, FALSE, FALSE, 120, 5, 4, 99.99, 2, 48, '2024-12-01', 'Service', 'overrated norwegian black metal lol Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal`s history.', 'BURZUM', 'AVAILABLE', ARRAY['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxbbLfIJV98Q_YhWgJtiC78PQeOX4KBncMQg&s', 'https://upload.wikimedia.org/wikipedia/en/8/83/Burzum-1992-Burzum.jpg', 'https://static.wikia.nocookie.net/black-metal-database/images/a/a1/Filosofem.jpg/revision/latest/thumbnail/width/360/height/450?cb=20150313111353'], 'SERVICE');
+(24, 1, 10.0, TRUE, FALSE, FALSE, 120, 5, 4, 99.99, 2, 48, '2024-12-01', 'Service', 'overrated norwegian black metal lol Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal`s history.', 'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE');
 
 INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (TRUE, 'A formal event typically attended by professionals.', 'Conference'),
