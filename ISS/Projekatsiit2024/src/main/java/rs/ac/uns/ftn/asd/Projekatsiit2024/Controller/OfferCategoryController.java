@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
@@ -28,9 +29,8 @@ public class OfferCategoryController {
 	private OfferCategoryService offerCategoryService;
 	
 	@GetMapping
-	public ResponseEntity getAcceptedCategories() {
-		System.out.println("-------------------GET CATEGORIES-------------------");
-		List<OfferCategory> ocs = offerCategoryService.getOffers(true);
+	public ResponseEntity getCategories(@RequestParam("isAccepted") Boolean isAccepted) {
+		List<OfferCategory> ocs = offerCategoryService.getOffers(isAccepted);
 		List<MinimalOfferCategoryDTO> miniOcs = ocs.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
 		return ResponseEntity.ok(miniOcs);
 	}
