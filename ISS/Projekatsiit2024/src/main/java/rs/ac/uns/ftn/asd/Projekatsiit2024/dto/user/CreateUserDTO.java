@@ -2,15 +2,15 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CreateUserDTO {
-    public String Email;
-    public String Password;
-    public String Name;
-    public String Surname;
-    public List<String> Pictures;
+	private String email;
+	private String password;
+	private String name;
+	private String surname;
+	private List<String> pictures;
 }

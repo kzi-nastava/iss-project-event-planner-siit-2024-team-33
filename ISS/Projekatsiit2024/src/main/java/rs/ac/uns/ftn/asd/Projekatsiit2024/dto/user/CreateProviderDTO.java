@@ -1,12 +1,13 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user;
 
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
-
+@Getter
+@Setter
 public class CreateProviderDTO extends CreateUserDTO {
-	public String Description;
-    public String PhoneNumber;
-    public String ProviderName;
-    public String Residency;
+	private String Description;
+	private String PhoneNumber;
+	private String ProviderName;
+	private String Residency;
 }

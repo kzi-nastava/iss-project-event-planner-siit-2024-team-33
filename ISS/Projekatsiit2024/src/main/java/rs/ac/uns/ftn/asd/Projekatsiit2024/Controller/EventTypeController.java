@@ -13,7 +13,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 
 @RestController
-@RequestMapping("api/events/types")
+@RequestMapping("/api/events/types")
 public class EventTypeController {
 	@Autowired
 	private EventTypeRepository eventTypeRepo;

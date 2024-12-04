@@ -1,7 +1,12 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UpdateOrganizerDTO extends UpdateUserDTO {
-	public String Picture;
-	public String Residency;
-	public String PhoneNumber;
+	private String Picture;
+	private String Residency;
+	private String PhoneNumber;
 }
