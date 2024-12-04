@@ -6,8 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateProviderDTO extends CreateUserDTO {
-	private String Description;
-	private String PhoneNumber;
-	private String ProviderName;
-	private String Residency;
+	private String description;
+	private String phoneNumber;
+	private String providerName;
+	private String residency;
 }

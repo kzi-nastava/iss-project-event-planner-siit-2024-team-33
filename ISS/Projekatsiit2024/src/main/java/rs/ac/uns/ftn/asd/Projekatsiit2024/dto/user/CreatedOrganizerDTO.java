@@ -14,7 +14,6 @@ public class CreatedOrganizerDTO extends CreatedUserDTO {
 	public CreatedOrganizerDTO(Organizer organizer) {
 		super.setId(organizer.getId());
 		super.setEmail(organizer.getEmail());
-		super.setEmail(organizer.getEmail());
 		super.setPassword(organizer.getPassword());
 		super.setName(organizer.getName());
 		super.setSurname(organizer.getSurname());
