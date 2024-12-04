@@ -21,6 +21,7 @@ public class EventTypeController {
 	@GetMapping
 	public ResponseEntity getEventTypes() {
 		List<EventType> types = eventTypeRepo.findAll();
-		return ResponseEntity.ok(types.stream().map(type -> new MinimalEventTypeDTO(type)).toList());
+		List<MinimalEventTypeDTO> minTypes = types.stream().map(type -> new MinimalEventTypeDTO(type)).toList();
+		return ResponseEntity.ok(minTypes);
 	}
 }

@@ -7,9 +7,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class MinimalEventTypeDTO {
-	private Integer id;
-	private String name;
-	private String description;
+	public Integer id;
+	public String name;
+	public String description;
 
 	public MinimalEventTypeDTO(EventType eventType) {
 		this.id = eventType.getId();

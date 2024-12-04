@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Common.ImageManager;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
@@ -209,7 +211,7 @@ public class ServiceService {
 		String description,
 		Double price,
 		Double discount,
-		List<String> pictures,
+		List<String> picturesDataURI,
 		Integer reservationInHours,
 		Integer cancellationInHours,
 		Boolean isAutomatic,
@@ -217,7 +219,7 @@ public class ServiceService {
 		Integer maxLengthInMins,
 		List<Integer> validEventIDs
 		) {
-		validateArguments(name, description, price, discount, pictures, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins, validEventIDs);
+		//validateArguments(name, description, price, discount, picturesDataURI, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins, validEventIDs);
 
 		List<EventType> validEvents = eventTypeRepo.findAllById(validEventIDs);
 	    //In case some of the event types don't exist
@@ -229,7 +231,11 @@ public class ServiceService {
 	    
 	    Service s = serviceRepo.getLatestServiceVersion(offerId);
 	    
-	    Service newService = new Service(s.getOfferID(),name, description, price, discount, pictures, s.getCategory(), s.getProvider(), validEvents, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+	    List<String> imagePaths = picturesDataURI.stream().map(imageData -> {
+			return ImageManager.saveAsFile(imageData);
+		}).toList();
+	    
+	    Service newService = new Service(s.getOfferID(),name, description, price, discount, imagePaths, s.getCategory(), s.getProvider(), validEvents, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 	    newService = serviceRepo.save(newService);
 		
 		return newService;

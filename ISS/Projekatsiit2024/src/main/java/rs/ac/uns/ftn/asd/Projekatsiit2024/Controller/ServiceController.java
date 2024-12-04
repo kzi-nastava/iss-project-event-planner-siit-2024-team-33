@@ -107,10 +107,13 @@ public class ServiceController {
 	@PutMapping("/{offerID}")
 	public ResponseEntity editService(@PathVariable Integer offerID, @RequestBody PutServiceDTO data){
 		try {
+			System.out.println("------------------------------------------------------------SERVICE PUT REQUEST GOTTEN");
 			Service s;
-			s = serviceService.editService(offerID, data.name, data.description, data.price, data.discount, data.pictures, data.reservationInHours, data.cancellationInHours, data.isAutomatic, data.minDurationInMins, data.maxDurationInMins, data.validEventTypeIDs);			
+			s = serviceService.editService(offerID, data.name, data.description, data.price, data.discount, data.picturesDataURI, data.reservationInHours, data.cancellationInHours, data.isAutomatic, data.minDurationInMins, data.maxDurationInMins, data.validEventTypeIDs);
+			System.out.println("SERVICE PUT REQUEST HANDLED");
 			return ResponseEntity.ok(new GetServiceDTO(s));
 		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}

@@ -14,7 +14,7 @@ public class PutServiceDTO {
 	public Integer minDurationInMins;
 	public Integer maxDurationInMins;
 	public Availability availability;
-	public List<String> pictures;
+	public List<String> picturesDataURI;
 	public Boolean isAutomatic;
 	
 	public List<Integer> validEventTypeIDs;

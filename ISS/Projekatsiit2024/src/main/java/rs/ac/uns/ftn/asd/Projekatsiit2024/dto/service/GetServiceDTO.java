@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service;
 
 import java.util.List;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Common.ImageManager;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
@@ -14,7 +15,7 @@ public class GetServiceDTO {
 	public String description;
 	public Double price;
 	public Double discount;
-	public List<String> pictures;
+	public List<String> picturesDataURI;
 	public List<MinimalEventTypeDTO> validEventCategories;
 	public Double avgRating;
 	public Boolean isVisible;
@@ -32,7 +33,8 @@ public class GetServiceDTO {
 		this.description = s.getDescription();
 		this.price = s.getPrice();
 		this.discount = s.getDiscount();
-		this.pictures = s.getPictures();
+		
+		this.picturesDataURI = s.getPictures().stream().map(filepath -> ImageManager.loadAsDataURI(filepath)).toList();
 		this.validEventCategories = s.getValidEvents().stream().map(eventType -> new MinimalEventTypeDTO(eventType)).toList();
 		this.avgRating = null;
 		//If it is available, it's visible
