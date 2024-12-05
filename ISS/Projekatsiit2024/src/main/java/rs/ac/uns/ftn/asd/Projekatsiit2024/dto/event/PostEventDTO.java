@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.ManyToMany;
@@ -20,8 +21,8 @@ public class PostEventDTO {
     private String place;
     private Double latitude;
     private Double longitude;
-    private Date dateOfEvent;
-    private Date endOfEvent;
+    private LocalDateTime dateOfEvent;
+    private LocalDateTime endOfEvent;
     private Boolean itsJoever;
     private String picture;
     private Integer price;

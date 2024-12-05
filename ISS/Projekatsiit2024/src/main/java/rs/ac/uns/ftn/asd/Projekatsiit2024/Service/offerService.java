@@ -47,7 +47,7 @@ public class offerService {
         AuthentifiedUser user = optionalUser.get();
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
         
-        List<Offer> offers = offerRepo.findAll();
+        List<Offer> offers = offerRepo.findCurrentOffers();
         String city = user.getCity();
         List<Offer> filteredEvents = offers.stream()
         		.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
@@ -68,7 +68,7 @@ public class offerService {
         AuthentifiedUser user = optionalUser.get();
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
         
-        List<Offer> offers = offerRepo.findAll();
+        List<Offer> offers = offerRepo.findCurrentOffers();
         String city = user.getCity();
 
         List<Offer> filteredOffers = offers.stream()
@@ -206,7 +206,7 @@ public class offerService {
     		isProduct=true;
     		isService=true;
     	}
-    	List<Offer> offers = offerRepo.findAll();
+    	List<Offer> offers = offerRepo.findCurrentOffers();
     	
     	if(isProduct && isService) {
     		
