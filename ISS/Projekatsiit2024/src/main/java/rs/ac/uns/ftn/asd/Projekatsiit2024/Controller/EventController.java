@@ -82,7 +82,7 @@ public class EventController {
 												    		@RequestParam(name="firstPossibleDate" ,required=false)  String firstPossibleDate,
 												    		@RequestParam(name="lastPossibleDate" ,required=false)  String lastPossibleDate,
 												    		@RequestParam(name="eventTypes" ,required=false)  List<Integer> eventTypes,
-												    		@RequestBody Integer id) throws ParseException {
+												    		@RequestParam Integer id) throws ParseException {
         List<Event> events = eventService.getFilteredEvents(name, location, numOfAttendees, firstPossibleDate,
         													lastPossibleDate,eventTypes,id);
 
