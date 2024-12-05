@@ -59,32 +59,9 @@ public class offerService {
     	return filteredEvents;
     }
     
-    public List<Offer> getRestOffers(Integer id){
-        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("");
-        }
-        
-        AuthentifiedUser user = optionalUser.get();
-        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
-        
+    public List<Offer> getRestOffers(Integer id){        
         List<Offer> offers = offerRepo.findAll();
-        String city = user.getCity();
-
-        List<Offer> filteredOffers = offers.stream()
-        		.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
-                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
-                .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
-                .limit(5)
-                .toList();
-
-        List<Offer> restOffers = offers.stream()
-        		//.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
-                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
-                .filter(offer -> !filteredOffers.contains(offer))
-                .sorted((o1, o2) -> Double.compare(o1.getDiscount(), o2.getDiscount()))
-                .toList();
-        
+        List<Offer> restOffers = getRestOffers(offers, id);
     	return restOffers;
     }
     
@@ -201,12 +178,14 @@ public class offerService {
     }
     
     
-    public List<Offer> getFileteredOffers(Boolean isProduct, Boolean isService, String name, String category, int lowestPrice, Availability isAvailable, List<EventType> eventTypes){
+    public List<Offer> getFileteredOffers(Boolean isProduct, Boolean isService, String name, String category, Integer lowestPrice, Availability isAvailable, List<Integer> eventTypes, Integer id){
     	if(isProduct==false && isService==false) {
     		isProduct=true;
     		isService=true;
     	}
-    	List<Offer> offers = offerRepo.findAll();
+    	
+    	List<Offer> offerz = offerRepo.findAll();
+    	List<Offer> offers = getRestOffers(offerz, id);
     	
     	if(isProduct && isService) {
     		
@@ -250,6 +229,36 @@ public class offerService {
     				.toList();
     	}
     	offers = offers.stream().limit(10).toList();
+    	return offers;
+    }
+    
+    private List<Offer> getRestOffers(List<Offer> allOffers, Integer id) {
+        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("");
+        }
+        
+        AuthentifiedUser user = optionalUser.get();
+        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
+
+        String city = user.getCity();
+        
+    	
+    	List<Offer> top5Offers = allOffers.stream()
+        		.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
+                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
+                .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
+                .limit(5)
+                .toList();
+        
+        List<Offer> offers = allOffers.stream()
+        		//.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
+                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
+                .filter(offer -> !top5Offers.contains(offer))
+                .sorted((o1, o2) -> Double.compare(o1.getDiscount(), o2.getDiscount()))
+                .toList();
+    	
+    	
     	return offers;
     }
 }

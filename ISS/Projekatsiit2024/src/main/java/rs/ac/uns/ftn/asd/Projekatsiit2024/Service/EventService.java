@@ -14,8 +14,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OrganizerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 
-import java.sql.Date;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,51 +97,19 @@ public class EventService {
     
     //TODO: Check if to get events for the city or ALL events.
     public List<Event> getRestEvents(Integer id) {
-        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("");
-        }
-        
-        AuthentifiedUser user = optionalUser.get();
-        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
-
         List<Event> allEvents = eventRepository.findAll();
-        String city = user.getCity();
-        List<Event> top5Events = allEvents.stream()
-                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
-                .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
-                .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
-                .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
-                .limit(5)
-                .toList();
+        List<Event> events = getRestEvents(allEvents, id);
 
-        List<Event> restEvents = allEvents.stream()
-//                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
-                .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
-                .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
-                .filter(event -> !top5Events.contains(event))
-                .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
-                .toList();
-
-        return restEvents;
+        return events;
     }
     
-    public List<Event> getFilteredEvents(String name, String location, int numberOfAttendees, String before, String after, List<EventType> eventTypes, Integer id) throws java.text.ParseException {
+    public List<Event> getFilteredEvents(String name, String location, Integer numberOfAttendees, String before, String after, List<Integer> eventTypes, Integer id) throws java.text.ParseException {
         List<Event> allevents = eventRepository.findAll();
+
+        List<Event> events = getRestEvents(allevents, id);
         
-        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("");
-        }
-        
-        AuthentifiedUser user = optionalUser.get();
-        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
-        
-        List<Event> events = allevents.stream()
-              .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
-              .toList();
-        
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        													//Might want to change to MM-dd-yyyy
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         final Date beforeDate = (before != null && !before.isEmpty()) ? (Date) dateFormat.parse(before) : null;
         final Date afterDate = (after != null && !after.isEmpty()) ? (Date) dateFormat.parse(after) : null;
 
@@ -354,6 +323,38 @@ public class EventService {
     	
     	return events;
     }
+    
+    
+    private List<Event> getRestEvents(List<Event> allEvents, Integer id) {
+        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("");
+        }
+        
+        AuthentifiedUser user = optionalUser.get();
+        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
+        String city = user.getCity();
+        
+    	
+    	List<Event> top5Events = allEvents.stream()
+                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
+                .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
+                .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
+                .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
+                .limit(5)
+                .toList();
+        
+        List<Event> events = allEvents.stream()
+//              .filter(event -> city.equalsIgnoreCase(event.getPlace()))
+              .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
+              .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
+              .filter(event -> !top5Events.contains(event))
+              .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
+              .toList(); 
+    	
+    	
+    	return events;
+    }
 
 }

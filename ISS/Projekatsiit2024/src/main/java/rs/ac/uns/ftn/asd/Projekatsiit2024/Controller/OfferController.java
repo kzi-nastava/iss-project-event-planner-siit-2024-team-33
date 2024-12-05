@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
@@ -66,10 +67,16 @@ public class OfferController {
         return new ResponseEntity<>(offersDTO, HttpStatus.OK);
     }
 	
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalOfferDTO>> GetOfferList(@RequestBody OfferFilterDTO OFDTO, @RequestBody int id) {
-        List<Offer> offers = offerService.getFileteredOffers(OFDTO.getIsProduct(),OFDTO.getIsService(),OFDTO.getName(),
-        													OFDTO.getCategory(),OFDTO.getLowestPrice(),OFDTO.getIsAvailable(),OFDTO.getEventTypes());
+    @GetMapping(value="/filter",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalOfferDTO>> GetOfferList(@RequestParam(name="isProduct", required=false) Boolean isProduct,
+    														  @RequestParam(name="isService",required=false) Boolean isService,
+    														  @RequestParam(name="name",required=false) String name,
+    														  @RequestParam(name="category",required=false) String categoryName,
+    														  @RequestParam(name="lowestPrice",required=false) Integer lowestPrice,
+    														  @RequestParam(name="isAvailable",required=false) Availability isAvailable,
+    														  @RequestParam(name="eventTypes",required=false) List<Integer> eventTypes,
+    														  @RequestParam Integer id) {
+        List<Offer> offers = offerService.getFileteredOffers(isProduct,isService,name,categoryName,lowestPrice,isAvailable,eventTypes,id);
 
         List<MinimalOfferDTO> offersDTO = offers.stream()
                 .map(MinimalOfferDTO::new)

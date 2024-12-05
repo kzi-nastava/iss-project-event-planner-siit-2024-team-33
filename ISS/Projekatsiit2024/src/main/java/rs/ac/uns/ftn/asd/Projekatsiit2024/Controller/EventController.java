@@ -21,6 +21,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.GetEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.PostEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.UpdateEventDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.GetServiceReservationDTO;
 
@@ -56,10 +57,15 @@ public class EventController {
     }
 
     @GetMapping(value="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetEventList(@ModelAttribute  FilterEventDTO fP, @RequestParam Integer id) throws ParseException {
-        List<Event> events = eventService.getFilteredEvents(fP.getName(), fP.getLocation(),
-        													fP.getNumOfAttendees(), fP.getFirstPossibleDate(),
-        													fP.getLastPossibleDate(), fP.getEventTypes(), id);
+    public ResponseEntity<List<MinimalEventDTO>> GetEventList(@RequestParam(name="name" ,required=false)  String name,
+												    		@RequestParam(name="location" ,required=false)  String location,
+												    		@RequestParam(name="numOfAttendees" ,required=false)  Integer numOfAttendees,
+												    		@RequestParam(name="firstPossibleDate" ,required=false)  String firstPossibleDate,
+												    		@RequestParam(name="lastPossibleDate" ,required=false)  String lastPossibleDate,
+												    		@RequestParam(name="eventTypes" ,required=false)  List<Integer> eventTypes,
+												    		@RequestBody Integer id) throws ParseException {
+        List<Event> events = eventService.getFilteredEvents(name, location, numOfAttendees, firstPossibleDate,
+        													lastPossibleDate,eventTypes,id);
 
         List<MinimalEventDTO> eventsDTO = events.stream()
                 .map(MinimalEventDTO::new)

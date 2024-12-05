@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
