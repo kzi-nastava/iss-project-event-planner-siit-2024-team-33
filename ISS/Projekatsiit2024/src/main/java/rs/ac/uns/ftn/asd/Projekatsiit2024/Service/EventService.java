@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import jakarta.mail.internet.ParseException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
@@ -19,15 +20,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OrganizerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
-
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EventService {
