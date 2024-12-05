@@ -37,7 +37,7 @@ public class ProviderController {
 	}
 	
 	@ExceptionHandler(UserCreationException.class)
-	public ResponseEntity<String> handleOrganizerCreationException(UserCreationException ex) {
+	public ResponseEntity<String> handleProviderCreationException(UserCreationException ex) {
         //bad request
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
