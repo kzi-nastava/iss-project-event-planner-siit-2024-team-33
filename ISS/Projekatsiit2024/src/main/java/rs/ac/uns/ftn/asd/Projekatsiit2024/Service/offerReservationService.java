@@ -2,6 +2,10 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
 import java.util.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,11 +33,11 @@ public class offerReservationService {
     private OfferReservationRepository offerReservationRepo;
 
     private void validateArguments(
-            Date dateOfReservation,
+    		LocalDate dateOfReservation,
             Integer offerId,
             Integer eventId,
-            Time startTime,
-            Time endTime) {
+            LocalTime startTime,
+            LocalTime endTime) {
 
         if (dateOfReservation == null) 
             throw new IllegalArgumentException("Invalid argument: Date of reservation cannot be null.");
@@ -50,14 +54,14 @@ public class offerReservationService {
         if (endTime == null) 
             throw new IllegalArgumentException("Invalid argument: End time cannot be null.");
 
-        if (endTime.before(startTime)) 
+        if (endTime.isBefore(startTime)) 
             throw new IllegalArgumentException("Invalid argument: End time cannot be earlier than start time.");
     }
 
     public OfferReservation createProductReservation(Product product, Event event) {
     	OfferReservation reservation = new OfferReservation();
     	//TODO
-    	reservation.setDateOfReservation(event.getDateOfEvent());
+    	reservation.setDateOfReservation(event.getDateOfEvent().toLocalDate());
     	reservation.setEvent(event);
     	reservation.setOffer(product);
     	
@@ -66,11 +70,11 @@ public class offerReservationService {
     }
     
     public OfferReservation createOfferReservation(
-            Date dateOfReservation,
+            LocalDate dateOfReservation,
             Integer offerId,
             Integer eventId,
-            Time startTime,
-            Time endTime) {
+            LocalTime startTime,
+            LocalTime endTime) {
 
         validateArguments(dateOfReservation, offerId, eventId, startTime, endTime);
 
@@ -84,8 +88,8 @@ public class offerReservationService {
         offerReservation.setDateOfReservation(dateOfReservation);
         offerReservation.setOffer(offer);
         offerReservation.setEvent(event);
-        offerReservation.setStartTime(startTime);
-        offerReservation.setEndTime(endTime);
+        offerReservation.setStartTime(LocalDateTime.of(dateOfReservation, startTime));
+        offerReservation.setEndTime(LocalDateTime.of(dateOfReservation, endTime));
 
         offerReservationRepo.save(offerReservation);
 
@@ -93,11 +97,11 @@ public class offerReservationService {
     }
 
     public OfferReservation createAndFlushOfferReservation(
-            Date dateOfReservation,
+            LocalDate dateOfReservation,
             Integer offerId,
             Integer eventId,
-            Time startTime,
-            Time endTime) {
+            LocalTime startTime,
+            LocalTime endTime) {
 
         OfferReservation offerReservation = createOfferReservation(dateOfReservation, offerId, eventId, startTime, endTime);
         offerReservationRepo.flush();
@@ -106,23 +110,23 @@ public class offerReservationService {
     }
     
     
-    public OfferReservation bookAService(Integer eventId, Integer offerId, Time offerStartTime, Time offerEndTime) { 
+    public OfferReservation bookAService(Integer eventId, Integer offerId, LocalDateTime offerStartTime, LocalDateTime offerEndTime) { 
     	Event event = getEventByID(eventId);
     	Offer offer = getOfferByID(offerId);
     	
         List<OfferReservation> reservations = offerReservationRepo.findByOfferId(offer.getId());
 
-        Time eventStartTime = new Time(event.getDateOfEvent().getTime());
-        Time eventEndTime = new Time(event.getEndOfEvent().getTime());
+        LocalDateTime eventStartTime = event.getDateOfEvent();
+        LocalDateTime eventEndTime = event.getEndOfEvent();
 
       
-        if (offerStartTime.before(eventStartTime) || offerEndTime.after(eventEndTime) || offerEndTime.before(offerStartTime)) {
+        if (offerStartTime.isBefore(eventStartTime) || offerEndTime.isAfter(eventEndTime) || offerEndTime.isBefore(offerStartTime)) {
             throw new IllegalArgumentException("This offer's end or starting time exceeds the end or start time of this event.");
         }
 
       
         for (OfferReservation reserv : reservations) {
-            if (reserv.getDateOfReservation().equals(event.getDateOfEvent())) {
+            if (reserv.getDateOfReservation().equals(event.getDateOfEvent().toLocalDate())) {
                 if (isTimeColliding(offerStartTime, offerEndTime, reserv.getStartTime(), reserv.getEndTime())) {
                     throw new IllegalArgumentException("This offer is already booked at that time.");
                 }
@@ -136,16 +140,17 @@ public class offerReservationService {
             }
         }
 
-        return createOfferReservation(event.getDateOfEvent(),offer.getOfferID(),event.getId(),offerStartTime,offerEndTime);
+        return createOfferReservation(event.getDateOfEvent().toLocalDate(),offer.getOfferID(),event.getId(),offerStartTime.toLocalTime(),offerEndTime.toLocalTime());
     }
 
-    private boolean isTimeColliding(Time start1, Time end1, Time start2, Time end2) {
-        return start1.before(end2) && end1.after(start2); 
+    private boolean isTimeColliding(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2) {
+        return start1.isBefore(end2) && end1.isAfter(start2); 
     }
 
     public void cancelService(OfferReservation reservation) {
         rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service service = (rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service) reservation.getOffer();
-        long timeUntilCancellation = reservation.getDateOfReservation().getTime() - System.currentTimeMillis();
+//        long timeUntilCancellation = reservation.getDateOfReservation().minus(LocalDate.now());
+        long timeUntilCancellation = ChronoUnit.MILLIS.between(reservation.getDateOfReservation(), LocalDate.now());
         long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000;
 
         if (timeUntilCancellation < cancellationDeadline) {
@@ -164,9 +169,9 @@ public class offerReservationService {
 	public OfferReservation updateReservation(
 	        Integer reservationId,
 	        Integer serviceId,
-	        Date reservationDate,
-	        Time startTime,
-	        Time endTime) {
+	        LocalDate reservationDate,
+	        LocalTime startTime,
+	        LocalTime endTime) {
 
 	    OfferReservation reservation = offerReservationRepo.findById(reservationId)
 	            .orElseThrow(() -> new IllegalArgumentException("Reservation not found."));
@@ -178,8 +183,8 @@ public class offerReservationService {
 	    validateArguments(reservationDate, serviceId, reservation.getEvent().getId(), startTime, endTime);
 
 	    reservation.setDateOfReservation(reservationDate);
-	    reservation.setStartTime(startTime);
-	    reservation.setEndTime(endTime);
+	    reservation.setStartTime(LocalDateTime.of(reservationDate, startTime));
+	    reservation.setEndTime(LocalDateTime.of(reservationDate, endTime));
 
 	    return offerReservationRepo.save(reservation);
 	}

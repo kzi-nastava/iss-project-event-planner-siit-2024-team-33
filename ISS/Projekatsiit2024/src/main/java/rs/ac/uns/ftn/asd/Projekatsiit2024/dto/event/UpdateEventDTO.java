@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Getter;
@@ -16,8 +17,8 @@ public class UpdateEventDTO {
     private String place;
     private Double latitude;
     private Double longitude;
-    private Date dateOfEvent;
-    private Date endOfEvent;
+    private LocalDateTime dateOfEvent;
+    private LocalDateTime endOfEvent;
     private int numOfAttendees;
     private Boolean isPrivate;
     private Integer price;

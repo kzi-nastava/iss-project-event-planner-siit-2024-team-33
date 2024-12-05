@@ -29,7 +29,7 @@ public class OfferCategoryController {
 	private OfferCategoryService offerCategoryService;
 	
 	@GetMapping
-	public ResponseEntity getCategories(@RequestParam("isAccepted") Boolean isAccepted) {
+	public ResponseEntity getCategories(@RequestParam(name = "isAccepted", required = false) Boolean isAccepted) {
 		List<OfferCategory> ocs = offerCategoryService.getOffers(isAccepted);
 		List<MinimalOfferCategoryDTO> miniOcs = ocs.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
 		return ResponseEntity.ok(miniOcs);

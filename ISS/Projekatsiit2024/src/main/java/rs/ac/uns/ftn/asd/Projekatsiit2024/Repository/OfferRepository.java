@@ -22,4 +22,7 @@ public interface OfferRepository extends JpaRepository<Offer,Integer>{
     Boolean existsByCategoryID(@Param("categoryId") Integer categoryId);
     
     List<Offer> findByName(String name);
+    
+    @Query("SELECT o FROM Offer o WHERE o.id IN (SELECT MAX(o2.id) FROM Offer o2 GROUP BY o2.offerID)")
+    List<Offer> findCurrentOffers();
 }

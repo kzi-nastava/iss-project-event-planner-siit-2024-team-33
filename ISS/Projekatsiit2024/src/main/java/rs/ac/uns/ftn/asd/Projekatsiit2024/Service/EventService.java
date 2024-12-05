@@ -1,17 +1,23 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.internet.ParseException;
+import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.BudgetItem;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OrganizerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
@@ -21,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
 
 @Service
 public class EventService {
@@ -30,13 +37,15 @@ public class EventService {
 	private AuthentifiedUserRepository userRepo;
     @Autowired
     private OrganizerRepository organRepo;
+    @Autowired
+    private EventTypeRepository eventTypeRepository;
     
     
     private void validateEventArguments(
             String name,
             String place,
-            Date dateOfEvent,
-            Date endOfEvent,
+            LocalDateTime startOfEvent,
+            LocalDateTime endOfEvent,
             Integer organizerId,
             Integer price,
             List<EventType> eventTypes) {
@@ -53,11 +62,11 @@ public class EventService {
             throw new IllegalArgumentException("");
         }
 
-        if (dateOfEvent == null || dateOfEvent.before(new Date(System.currentTimeMillis()))) {
+        if (startOfEvent == null || startOfEvent.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("");
         }
 
-        if (endOfEvent != null && endOfEvent.before(dateOfEvent)) {
+        if (endOfEvent != null && endOfEvent.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("");
         }
 
@@ -108,10 +117,10 @@ public class EventService {
 
         List<Event> events = getRestEvents(allevents, id);
         
-        													//Might want to change to MM-dd-yyyy
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        final Date beforeDate = (before != null && !before.isEmpty()) ? (Date) dateFormat.parse(before) : null;
-        final Date afterDate = (after != null && !after.isEmpty()) ? (Date) dateFormat.parse(after) : null;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        LocalDate beforeDate = (before == null || before.isEmpty())? null : LocalDate.parse(before);
+        LocalDate afterDate = (after == null || after.isEmpty())? null : LocalDate.parse(after);
 
         if (name != null && !name.isEmpty()) {
             events = events.stream()
@@ -133,13 +142,13 @@ public class EventService {
 
         if (beforeDate != null) {
             events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().before(beforeDate))
+                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isBefore(beforeDate))
                 .toList();
         }
 
         if (afterDate != null) {
             events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().after(afterDate))
+                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isAfter(afterDate))
                 .toList();
         }
         
@@ -156,10 +165,10 @@ public class EventService {
 
     public void hidePassedEvents() {
         List<Event> allEvents = eventRepository.findAll();
-        Date currentDate = new Date(System.currentTimeMillis());
+        LocalDate currentDate = LocalDate.now();
 
         allEvents.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().before(currentDate))
+                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isBefore(currentDate))
                 .forEach(event -> {
                     event.setItsJoever(true);
                     eventRepository.save(event);
@@ -172,65 +181,49 @@ public class EventService {
     	return null;
     }
     
-
-    public Event createEvent(
-            String name,
-            String description,
-            String place,
-            Double latitude,
-            Double longitude,
-            Date dateOfEvent,
-            Date endOfEvent,
-            int numOfAttendees,
-            Boolean isPrivate,
-            Integer price,
-            String picutre,
-            Integer organizerId,
-            List<EventType> eventTypes) {
-
-        validateEventArguments(name, place, dateOfEvent, endOfEvent,price , organizerId, eventTypes);
-
-        Organizer organizer = organRepo.findById(organizerId)
+    
+    @Transactional
+    public Event createEvent(CreateEventDTO eventDTO) {
+        Organizer organizer = organRepo.findById(eventDTO.getOrganizerId())
                 .orElseThrow(() -> new RuntimeException(""));
+        
+        
+        //TODO: data validation
 
         Event event = new Event();
-        event.setName(name);
-        event.setDescription(description);
-        event.setPlace(place);
-        event.setLatitude(latitude);
-        event.setLongitude(longitude);
-        event.setDateOfEvent(dateOfEvent);
-        event.setEndOfEvent(endOfEvent);
-        event.setNumOfAttendees(numOfAttendees);
-        event.setIsPrivate(isPrivate);
+        event.setName(eventDTO.getName());
+        event.setDescription(eventDTO.getDescription());
+        event.setNumOfAttendees(eventDTO.getNumOfAttendees());
+        event.setIsPrivate(eventDTO.getIsPrivate());
+        event.setPlace(eventDTO.getPlace());
+        event.setLatitude(eventDTO.getLatitude());
+        event.setLongitude(eventDTO.getLongitude());
+        event.setDateOfEvent(eventDTO.getDateOfEvent());
+        event.setEndOfEvent(eventDTO.getEndOfEvent());
         event.setItsJoever(false);
         event.setOrganizer(organizer);
-        event.setPicture(picutre);
-        event.setPrice(price);
+        event.setPicture(eventDTO.getPicture());
+        event.setPrice(eventDTO.getPrice());
+        
+        ArrayList<EventType> eventTypes = new ArrayList<>(); 
+        for (Integer id : eventDTO.getEventTypesId()) {
+        	Optional<EventType> eventTypeOptional = eventTypeRepository.findById(id);
+        	
+        	if (eventTypeOptional.isPresent()) {
+        		EventType eventType = eventTypeOptional.get();
+        		event.getEventTypes().add(eventType);
+        	}
+        }
+        
         event.setEventTypes(eventTypes);
-        event.setReservations(new ArrayList<>());
-        event.setBudgetItems(new ArrayList<>());
+        
         eventRepository.save(event);
         return event;
     }
 
-    public Event createAndFlushEvent(
-            String name,
-            String description,
-            String place,
-            Double latitude,
-            Double longitude,
-            Date dateOfEvent,
-            Date endOfEvent,
-            int numOfAttendees,
-            Boolean isPrivate,
-            Integer price,
-            String picture,
-            Integer organizerId,
-            List<EventType> eventTypes) {
+    public Event createAndFlushEvent(CreateEventDTO eventDTO) {
 
-        Event event = createEvent(name, description, place, latitude, longitude, dateOfEvent, endOfEvent,
-                numOfAttendees, isPrivate, price ,picture, organizerId, eventTypes);
+        Event event = createEvent(eventDTO);
         eventRepository.flush();
         return event;
     }
@@ -241,8 +234,8 @@ public class EventService {
             String place,
             Double latitude,
             Double longitude,
-            Date dateOfEvent,
-            Date endOfEvent,
+            LocalDateTime startOfEvent,
+            LocalDateTime endOfEvent,
             int numOfAttendees,
             Boolean isPrivate,
             Integer price,
@@ -250,7 +243,7 @@ public class EventService {
             Integer organizerId,
             List<EventType> eventTypes) {
 
-        validateEventArguments(name, place, dateOfEvent, endOfEvent,price, organizerId, eventTypes);
+        validateEventArguments(name, place, startOfEvent, endOfEvent,price, organizerId, eventTypes);
 
         Organizer organizer = organRepo.findById(organizerId)
                 .orElseThrow(() -> new RuntimeException(""));
@@ -261,7 +254,7 @@ public class EventService {
         event.setPlace(place);
         event.setLatitude(latitude);
         event.setLongitude(longitude);
-        event.setDateOfEvent(dateOfEvent);
+        event.setDateOfEvent(startOfEvent);
         event.setEndOfEvent(endOfEvent);
         event.setNumOfAttendees(numOfAttendees);
         event.setIsPrivate(isPrivate);
@@ -281,8 +274,8 @@ public class EventService {
             String place,
             Double latitude,
             Double longitude,
-            Date dateOfEvent,
-            Date endOfEvent,
+            LocalDateTime startOfEvent,
+            LocalDateTime endOfEvent,
             int numOfAttendees,
             Boolean isPrivate,
             Integer price,
@@ -297,7 +290,7 @@ public class EventService {
         if (place != null) event.setPlace(place);
         if (latitude != null) event.setLatitude(latitude);
         if (longitude != null) event.setLongitude(longitude);
-        if (dateOfEvent != null) event.setDateOfEvent(dateOfEvent);
+        if (startOfEvent != null) event.setDateOfEvent(startOfEvent);
         if (endOfEvent != null) event.setEndOfEvent(endOfEvent);
         event.setNumOfAttendees(numOfAttendees);
         if (isPrivate != null) event.setIsPrivate(isPrivate);

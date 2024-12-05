@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation;
 
 import java.util.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,9 +17,9 @@ public class GetServiceReservationDTO {
     private String ServiceName;
     private String EventName;
     private String ProviderName;
-    private Date ReservationDate;
-    private Time StartTime;
-    private Time EndTime;
+    private LocalDate ReservationDate;
+    private LocalTime StartTime;
+    private LocalTime EndTime;
     //status either String or Availibility enum
     private Availability Status;
     
@@ -28,8 +30,8 @@ public class GetServiceReservationDTO {
         this.EventName = OR.getEvent().getName();
         this.ProviderName = ((Service) OR.getOffer()).getProvider().getName();
         this.ReservationDate = OR.getDateOfReservation();
-        this.StartTime = OR.getStartTime();
-        this.EndTime = OR.getEndTime();
+        this.StartTime = OR.getStartTime().toLocalTime();
+        this.EndTime = OR.getEndTime().toLocalTime();
         this.Status =Availability.AVAILABLE; 
     }
     

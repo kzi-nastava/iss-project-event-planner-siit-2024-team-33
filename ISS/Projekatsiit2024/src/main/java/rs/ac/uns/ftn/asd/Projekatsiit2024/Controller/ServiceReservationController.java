@@ -21,6 +21,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.PostServiceRese
 import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -51,15 +54,15 @@ public class ServiceReservationController {
 	    }
 
 	    try {
-	    	
-	        Time startTime = parseTime(postServiceReservationDTO.getStartTime(), postServiceReservationDTO.getReservationDate());
-	        Time endTime = parseTime(postServiceReservationDTO.getEndTime(), postServiceReservationDTO.getReservationDate());
+
+        	LocalDateTime startDateTime = LocalDateTime.parse(postServiceReservationDTO.getReservationDate()+"T"+postServiceReservationDTO.getStartTime());
+        	LocalDateTime endDateTime = LocalDateTime.parse(postServiceReservationDTO.getReservationDate()+"T"+postServiceReservationDTO.getEndTime());
 	        
 	        OfferReservation reservation = oRS.bookAService(
 	                postServiceReservationDTO.getEventId(),
 	                serviceID,
-	                startTime,
-	                endTime
+	                startDateTime,
+	                endDateTime
 	        );
 
 	        CreatedServiceReservationDTO createdReservation = new CreatedServiceReservationDTO(reservation);
@@ -96,37 +99,26 @@ public class ServiceReservationController {
         }
 
         try {
-	        Time startTime = parseTime(postServiceReservationDTO.getStartTime(), postServiceReservationDTO.getReservationDate());
-	        Time endTime = parseTime(postServiceReservationDTO.getEndTime(), postServiceReservationDTO.getReservationDate());
-	        Date reservationDate = parseDate(postServiceReservationDTO.getReservationDate());
+//        	LocalDateTime startTime = parseTime(postServiceReservationDTO.getStartTime(), postServiceReservationDTO.getReservationDate());
+//        	LocalDateTime endTime = parseTime(postServiceReservationDTO.getEndTime(), postServiceReservationDTO.getReservationDate());
+//        	LocalDate startDate = LocalDate.parse(postServiceReservationDTO.getReservationDate());
+//        	LocalTime startTime = LocalTime.parse(postServiceReservationDTO.getStartTime());
+        	LocalDateTime startDateTime = LocalDateTime.parse(postServiceReservationDTO.getReservationDate()+"T"+postServiceReservationDTO.getStartTime());
+        	LocalDateTime endDateTime = LocalDateTime.parse(postServiceReservationDTO.getReservationDate()+"T"+postServiceReservationDTO.getEndTime());
+	        LocalDate reservationDate = LocalDate.parse(postServiceReservationDTO.getReservationDate());
 
             OfferReservation updatedReservation = oRS.updateReservation(
                     reservationId,
                     serviceID,
                     reservationDate,
-                    startTime,
-                    endTime
+                    startDateTime.toLocalTime(),
+                    endDateTime.toLocalTime()
             );
 
             CreatedServiceReservationDTO updatedDTO = new CreatedServiceReservationDTO(updatedReservation);
             return ResponseEntity.ok(updatedDTO);
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(409).body(null);
-        }
-    }
-
-    private Time parseTime(String timeString, String reservationDate) throws IllegalArgumentException {
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        dateTimeFormat.setLenient(false);
-
-        try {
-            String dateTimeString = reservationDate + " " + timeString;
-
-            java.util.Date dateTime = dateTimeFormat.parse(dateTimeString);
-
-            return new Time(dateTime.getTime());
-        } catch (java.text.ParseException e) {
-            throw new IllegalArgumentException("Invalid date or time format. Expected date format is yyyy-MM-dd, and time format is HH:mm.");
         }
     }
 

@@ -1,6 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,21 +8,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.BudgetItem;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.EventService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreatedEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.FilterEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.GetEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.PostEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.UpdateEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.GetServiceReservationDTO;
+
 
 @RestController
 @RequestMapping("/api/events")
@@ -31,6 +39,17 @@ public class EventController {
 	
 	@Autowired
 	EventService eventService;
+	
+	
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<CreatedEventDTO> createEvent(@RequestBody CreateEventDTO eventDTO) throws Exception {
+		
+		Event event = eventService.createEvent(eventDTO);
+		CreatedEventDTO savedEvent = new CreatedEventDTO(event);
+
+		return new ResponseEntity<CreatedEventDTO>(savedEvent, HttpStatus.CREATED);
+	}
+	
 	
     @GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MinimalEventDTO>> GetTop5Events(@RequestParam Integer id) {
@@ -74,7 +93,7 @@ public class EventController {
         return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    /*@PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity PostEvent(@RequestBody PostEventDTO data) {
 		try {
 			Event e = null;
@@ -88,7 +107,9 @@ public class EventController {
 		} catch (IllegalArgumentException err) {
 			return ResponseEntity.badRequest().body(err.getMessage());
 		}
-    }
+    }*/
+    
+    
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetEventDTO> PutEvent(@PathVariable Integer id, @RequestBody UpdateEventDTO data) {
@@ -131,4 +152,9 @@ public class EventController {
 //        return new ResponseEntity<>(reservations, HttpStatus.OK);
 //    }
     
+    
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGenericException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+    }
 }

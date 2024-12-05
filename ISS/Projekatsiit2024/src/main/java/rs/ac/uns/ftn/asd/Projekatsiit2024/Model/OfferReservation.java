@@ -2,6 +2,9 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
 import java.util.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +22,7 @@ public class OfferReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; 
 
-    private Date dateOfReservation;
+    private LocalDate dateOfReservation;
 
     @ManyToOne
     private Offer offer; 
@@ -27,8 +30,8 @@ public class OfferReservation {
     @ManyToOne
     private Event event; 
     
-    private Time startTime;
-    private Time endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     
     
 }

@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
 import java.util.Date;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Getter;
@@ -19,8 +21,8 @@ public class GetEventDTO {
     private String place;
     private Double latitude;
     private Double longitude;
-    private Date dateOfEvent;
-    private Date endOfEvent;
+    private LocalDateTime dateOfEvent;
+    private LocalDateTime endOfEvent;
     private Boolean itsJoever;
     private String picture;
     private Integer price;
@@ -29,7 +31,7 @@ public class GetEventDTO {
     
     
 	public GetEventDTO(String name, String description, int numOfAttendees, Boolean isPrivate, String place,
-			Double latitude, Double longitude, Date dateOfEvent, Date endOfEvent, Boolean itsJoever, String picture,
+			Double latitude, Double longitude, LocalDateTime dateOfEvent, LocalDateTime endOfEvent, Boolean itsJoever, String picture,
 			Integer price, Organizer organizer, List<EventType> eventTypes) {
 		super();
 		this.name = name;
