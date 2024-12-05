@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -105,7 +106,10 @@ public class offerReservationService {
     }
     
     
-    public void bookAService(Event event, Offer offer, Time offerStartTime, Time offerEndTime) { 
+    public OfferReservation bookAService(Integer eventId, Integer offerId, Time offerStartTime, Time offerEndTime) { 
+    	Event event = getEventByID(eventId);
+    	Offer offer = getOfferByID(offerId);
+    	
         List<OfferReservation> reservations = offerReservationRepo.findByOfferId(offer.getId());
 
         Time eventStartTime = new Time(event.getDateOfEvent().getTime());
@@ -132,7 +136,7 @@ public class offerReservationService {
             }
         }
 
-        createOfferReservation(event.getDateOfEvent(),offer.getOfferID(),event.getId(),offerStartTime,offerEndTime);
+        return createOfferReservation(event.getDateOfEvent(),offer.getOfferID(),event.getId(),offerStartTime,offerEndTime);
     }
 
     private boolean isTimeColliding(Time start1, Time end1, Time start2, Time end2) {
@@ -180,6 +184,22 @@ public class offerReservationService {
 	    return offerReservationRepo.save(reservation);
 	}
 
+	private Event getEventByID(Integer id) {
+		Optional<Event> optEvent = eventRepo.findById(id);
+		if(optEvent.isEmpty()) {
+			throw new IllegalArgumentException("");
+		}
+		Event event = optEvent.get();
+		return event;
+	}
+	private Offer getOfferByID(Integer id) {
+		Optional<Offer> optOffer=offerRepo.findById(id);
+		if(optOffer.isEmpty()) {
+			throw new IllegalArgumentException("");
+		}
+		Offer off = optOffer.get();
+		return off;
+	}
     
     
 }

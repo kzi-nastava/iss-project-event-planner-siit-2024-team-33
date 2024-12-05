@@ -3,10 +3,14 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.mail.internet.ParseException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.GetServiceReservationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerReservationService;
@@ -14,6 +18,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.CreatedServiceReservationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.PostServiceReservationDTO;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
@@ -28,12 +35,15 @@ public class ServiceReservationController {
 	private offerReservationService oRS;
 	@Autowired
 	private OfferReservationRepository oRR;
-	
+	@Autowired
+	private EventRepository eR;
+	@Autowired
+	private OfferRepository oR;
 	
 	@PostMapping
 	public ResponseEntity<CreatedServiceReservationDTO> ReserveService(
 	        @PathVariable Integer serviceID,
-	        @RequestBody PostServiceReservationDTO postServiceReservationDTO) {
+	        @RequestBody PostServiceReservationDTO postServiceReservationDTO) throws ParseException, java.text.ParseException {
 
 	    boolean serviceExists = serviceService.checkIfServiceExists(serviceID);
 	    if (!serviceExists) {
@@ -41,12 +51,15 @@ public class ServiceReservationController {
 	    }
 
 	    try {
-	        OfferReservation reservation = oRS.createOfferReservation(
-	                postServiceReservationDTO.getReservationDate(),
-	                serviceID,
+	    	
+	        Time startTime = parseTime(postServiceReservationDTO.getStartTime(), postServiceReservationDTO.getReservationDate());
+	        Time endTime = parseTime(postServiceReservationDTO.getEndTime(), postServiceReservationDTO.getReservationDate());
+	        
+	        OfferReservation reservation = oRS.bookAService(
 	                postServiceReservationDTO.getEventId(),
-	                postServiceReservationDTO.getStartTime(),
-	                postServiceReservationDTO.getEndTime()
+	                serviceID,
+	                startTime,
+	                endTime
 	        );
 
 	        CreatedServiceReservationDTO createdReservation = new CreatedServiceReservationDTO(reservation);
@@ -75,7 +88,7 @@ public class ServiceReservationController {
     public ResponseEntity<CreatedServiceReservationDTO> updateServiceReservation(
             @PathVariable Integer serviceID,
             @PathVariable Integer reservationId,
-            @RequestBody PostServiceReservationDTO postServiceReservationDTO) {
+            @RequestBody PostServiceReservationDTO postServiceReservationDTO) throws ParseException, java.text.ParseException {
 
         boolean serviceExists = serviceService.checkIfServiceExists(serviceID);
         if (!serviceExists) {
@@ -83,12 +96,16 @@ public class ServiceReservationController {
         }
 
         try {
+	        Time startTime = parseTime(postServiceReservationDTO.getStartTime(), postServiceReservationDTO.getReservationDate());
+	        Time endTime = parseTime(postServiceReservationDTO.getEndTime(), postServiceReservationDTO.getReservationDate());
+	        Date reservationDate = parseDate(postServiceReservationDTO.getReservationDate());
+
             OfferReservation updatedReservation = oRS.updateReservation(
                     reservationId,
                     serviceID,
-                    postServiceReservationDTO.getReservationDate(),
-                    postServiceReservationDTO.getStartTime(),
-                    postServiceReservationDTO.getEndTime()
+                    reservationDate,
+                    startTime,
+                    endTime
             );
 
             CreatedServiceReservationDTO updatedDTO = new CreatedServiceReservationDTO(updatedReservation);
@@ -97,4 +114,27 @@ public class ServiceReservationController {
             return ResponseEntity.status(409).body(null);
         }
     }
+
+    private Time parseTime(String timeString, String reservationDate) throws IllegalArgumentException {
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        dateTimeFormat.setLenient(false);
+
+        try {
+            String dateTimeString = reservationDate + " " + timeString;
+
+            java.util.Date dateTime = dateTimeFormat.parse(dateTimeString);
+
+            return new Time(dateTime.getTime());
+        } catch (java.text.ParseException e) {
+            throw new IllegalArgumentException("Invalid date or time format. Expected date format is yyyy-MM-dd, and time format is HH:mm.");
+        }
+    }
+
+
+
+	private Date parseDate(String dateString) throws ParseException, java.text.ParseException {
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    java.util.Date date = sdf.parse(dateString);
+	    return new Date(date.getTime());
+	}
 }

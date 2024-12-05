@@ -10,13 +10,13 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
 
 @Setter
 @Getter
-public class GetOfferDTO {
+public class MinimalOfferDTO {
 	public String name;
 	public Double basePrice;
 	public String description;
 	public String images;
 	
-	public GetOfferDTO(Offer o){
+	public MinimalOfferDTO(Offer o){
 		this.setName(o.getName());
 		this.setBasePrice(o.getPrice());
 		this.setDescription(o.getDescription());

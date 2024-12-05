@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.internet.ParseException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.BudgetItem;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
@@ -15,6 +16,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OrganizerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,7 +73,7 @@ public class EventService {
         }
     }
 
-    public List<Event> getTop5OpenEvents(String city, Integer id) {
+    public List<Event> getTop5OpenEvents(Integer id) {
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
             throw new IllegalArgumentException("");
@@ -81,7 +83,7 @@ public class EventService {
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
         List<Event> allEvents = eventRepository.findAll();
-
+        String city = user.getCity();
         List<Event> filteredEvents = allEvents.stream()
                 .filter(event -> city.equalsIgnoreCase(event.getPlace()))
                 .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
@@ -93,7 +95,7 @@ public class EventService {
     }
     
     //TODO: Check if to get events for the city or ALL events.
-    public List<Event> getRestEvents(String city, Integer id) {
+    public List<Event> getRestEvents(Integer id) {
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
             throw new IllegalArgumentException("");
@@ -103,9 +105,9 @@ public class EventService {
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
         List<Event> allEvents = eventRepository.findAll();
-
+        String city = user.getCity();
         List<Event> top5Events = allEvents.stream()
-                //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
+                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
                 .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
                 .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
                 .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
@@ -113,7 +115,7 @@ public class EventService {
                 .toList();
 
         List<Event> restEvents = allEvents.stream()
-                //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
+//                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
                 .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
                 .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
                 .filter(event -> !top5Events.contains(event))
@@ -123,9 +125,25 @@ public class EventService {
         return restEvents;
     }
     
-    public List<Event> getFilteredEvents(String name, String location, int numberOfAttendees, Date before, Date after, List<EventType> eventTypes) {
-        List<Event> events = eventRepository.findAll();
+    public List<Event> getFilteredEvents(String name, String location, int numberOfAttendees, String before, String after, List<EventType> eventTypes, Integer id) throws java.text.ParseException {
+        List<Event> allevents = eventRepository.findAll();
         
+        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("");
+        }
+        
+        AuthentifiedUser user = optionalUser.get();
+        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
+        
+        List<Event> events = allevents.stream()
+              .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
+              .toList();
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        final Date beforeDate = (before != null && !before.isEmpty()) ? (Date) dateFormat.parse(before) : null;
+        final Date afterDate = (after != null && !after.isEmpty()) ? (Date) dateFormat.parse(after) : null;
+
         if (name != null && !name.isEmpty()) {
             events = events.stream()
                 .filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
@@ -144,22 +162,22 @@ public class EventService {
                 .toList();
         }
 
-        if (before != null) {
+        if (beforeDate != null) {
             events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().before(before))
+                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().before(beforeDate))
                 .toList();
         }
 
-        if (after != null) {
+        if (afterDate != null) {
             events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().after(after))
+                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().after(afterDate))
                 .toList();
         }
         
-        if( !eventTypes.isEmpty()) {
-        	events = events.stream()
+        if (eventTypes != null && !eventTypes.isEmpty()) {
+            events = events.stream()
                 .filter(event -> event.getEventTypes() != null && event.getEventTypes().stream().anyMatch(eventTypes::contains))
-        		.toList();
+                .toList();
         }
         
         events = events.stream().limit(10).toList();
@@ -329,6 +347,12 @@ public class EventService {
         }
     	
         eventRepository.delete(event.get());
+    }
+    
+    public List<Event> geteventsByOrganizerID(Integer id){
+    	List<Event> events = eventRepository.findByOrganizerId(id);
+    	
+    	return events;
     }
 
 

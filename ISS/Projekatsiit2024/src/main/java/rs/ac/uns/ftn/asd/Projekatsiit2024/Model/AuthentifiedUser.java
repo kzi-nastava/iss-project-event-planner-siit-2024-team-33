@@ -17,9 +17,11 @@ public class AuthentifiedUser {
     private String password;
     private String name;
     private String surname;
-
+    private String city;
+    
     @ElementCollection
     private List<String> pictures;
+    
     //Added for reports
     public Date suspensionEndDate;
     
@@ -136,6 +138,15 @@ public class AuthentifiedUser {
     public boolean isSuspended() {
         return suspensionEndDate != null && suspensionEndDate.after(new Date(System.currentTimeMillis()));
     }
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+    
     
     
 }

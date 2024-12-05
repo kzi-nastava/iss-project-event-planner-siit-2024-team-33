@@ -44,6 +44,7 @@ public class Offer
     private LocalDateTime creationDate;
     private Boolean isPending;
     private Boolean isDeleted;
+    private String city;
     
     @ManyToOne
     private OfferCategory category = null;
