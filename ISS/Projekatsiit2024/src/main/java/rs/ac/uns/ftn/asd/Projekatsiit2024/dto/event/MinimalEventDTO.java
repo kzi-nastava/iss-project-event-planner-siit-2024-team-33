@@ -1,8 +1,16 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
+import java.sql.Date;
+import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
+@Setter
+@Getter
 public class MinimalEventDTO {
+	private Integer id;
     private String image;
     private String name;
     private String description;
@@ -10,6 +18,7 @@ public class MinimalEventDTO {
 
     
     public MinimalEventDTO(Event event) {
+    	this.setId(event.getId());;
         this.setImage(event.getPicture());
         this.setName(event.getName());
         this.setDescription(event.getDescription());

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import jakarta.mail.internet.ParseException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
@@ -18,6 +19,15 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OrganizerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -34,8 +44,8 @@ public class EventService {
     private void validateEventArguments(
             String name,
             String place,
-            Date dateOfEvent,
-            Date endOfEvent,
+            LocalDateTime startOfEvent,
+            LocalDateTime endOfEvent,
             Integer organizerId,
             Integer price,
             List<EventType> eventTypes) {
@@ -52,11 +62,11 @@ public class EventService {
             throw new IllegalArgumentException("");
         }
 
-        if (dateOfEvent == null || dateOfEvent.before(new Date(System.currentTimeMillis()))) {
+        if (startOfEvent == null || startOfEvent.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("");
         }
 
-        if (endOfEvent != null && endOfEvent.before(dateOfEvent)) {
+        if (endOfEvent != null && endOfEvent.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("");
         }
 
@@ -73,7 +83,7 @@ public class EventService {
         }
     }
 
-    public List<Event> getTop5OpenEvents(String city, Integer id) {
+    public List<Event> getTop5OpenEvents(Integer id) {
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
             throw new IllegalArgumentException("");
@@ -83,7 +93,7 @@ public class EventService {
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
         List<Event> allEvents = eventRepository.findAll();
-
+        String city = user.getCity();
         List<Event> filteredEvents = allEvents.stream()
                 .filter(event -> city.equalsIgnoreCase(event.getPlace()))
                 .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
@@ -95,7 +105,7 @@ public class EventService {
     }
     
     //TODO: Check if to get events for the city or ALL events.
-    public List<Event> getRestEvents(String city, Integer id) {
+    public List<Event> getRestEvents(Integer id) {
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
             throw new IllegalArgumentException("");
@@ -105,9 +115,9 @@ public class EventService {
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
         List<Event> allEvents = eventRepository.findAll();
-
+        String city = user.getCity();
         List<Event> top5Events = allEvents.stream()
-                //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
+                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
                 .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
                 .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
                 .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
@@ -115,7 +125,7 @@ public class EventService {
                 .toList();
 
         List<Event> restEvents = allEvents.stream()
-                //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
+//                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
                 .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
                 .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
                 .filter(event -> !top5Events.contains(event))
@@ -125,9 +135,25 @@ public class EventService {
         return restEvents;
     }
     
-    public List<Event> getFilteredEvents(String name, String location, int numberOfAttendees, Date before, Date after, List<EventType> eventTypes) {
-        List<Event> events = eventRepository.findAll();
+    public List<Event> getFilteredEvents(String name, String location, int numberOfAttendees, String before, String after, List<EventType> eventTypes, Integer id) throws java.text.ParseException {
+        List<Event> allevents = eventRepository.findAll();
         
+        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("");
+        }
+        
+        AuthentifiedUser user = optionalUser.get();
+        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
+        
+        List<Event> events = allevents.stream()
+              .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
+              .toList();
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        LocalDate beforeDate = (before == null || before.isEmpty())? null : LocalDate.parse(before);
+        LocalDate afterDate = (after == null || after.isEmpty())? null : LocalDate.parse(after);
+
         if (name != null && !name.isEmpty()) {
             events = events.stream()
                 .filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
@@ -146,22 +172,22 @@ public class EventService {
                 .toList();
         }
 
-        if (before != null) {
+        if (beforeDate != null) {
             events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().before(before))
+                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isBefore(beforeDate))
                 .toList();
         }
 
-        if (after != null) {
+        if (afterDate != null) {
             events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().after(after))
+                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isAfter(afterDate))
                 .toList();
         }
         
-        if( !eventTypes.isEmpty()) {
-        	events = events.stream()
+        if (eventTypes != null && !eventTypes.isEmpty()) {
+            events = events.stream()
                 .filter(event -> event.getEventTypes() != null && event.getEventTypes().stream().anyMatch(eventTypes::contains))
-        		.toList();
+                .toList();
         }
         
         events = events.stream().limit(10).toList();
@@ -171,10 +197,10 @@ public class EventService {
 
     public void hidePassedEvents() {
         List<Event> allEvents = eventRepository.findAll();
-        Date currentDate = new Date(System.currentTimeMillis());
+        LocalDate currentDate = LocalDate.now();
 
         allEvents.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().before(currentDate))
+                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isBefore(currentDate))
                 .forEach(event -> {
                     event.setItsJoever(true);
                     eventRepository.save(event);
@@ -190,7 +216,6 @@ public class EventService {
     
     @Transactional
     public Event createEvent(CreateEventDTO eventDTO) {
-
         Organizer organizer = organRepo.findById(eventDTO.getOrganizerId())
                 .orElseThrow(() -> new RuntimeException(""));
         
@@ -241,8 +266,8 @@ public class EventService {
             String place,
             Double latitude,
             Double longitude,
-            Date dateOfEvent,
-            Date endOfEvent,
+            LocalDateTime startOfEvent,
+            LocalDateTime endOfEvent,
             int numOfAttendees,
             Boolean isPrivate,
             Integer price,
@@ -250,7 +275,7 @@ public class EventService {
             Integer organizerId,
             List<EventType> eventTypes) {
 
-        validateEventArguments(name, place, dateOfEvent, endOfEvent,price, organizerId, eventTypes);
+        validateEventArguments(name, place, startOfEvent, endOfEvent,price, organizerId, eventTypes);
 
         Organizer organizer = organRepo.findById(organizerId)
                 .orElseThrow(() -> new RuntimeException(""));
@@ -261,7 +286,7 @@ public class EventService {
         event.setPlace(place);
         event.setLatitude(latitude);
         event.setLongitude(longitude);
-        event.setDateOfEvent(dateOfEvent);
+        event.setDateOfEvent(startOfEvent);
         event.setEndOfEvent(endOfEvent);
         event.setNumOfAttendees(numOfAttendees);
         event.setIsPrivate(isPrivate);
@@ -281,8 +306,8 @@ public class EventService {
             String place,
             Double latitude,
             Double longitude,
-            Date dateOfEvent,
-            Date endOfEvent,
+            LocalDateTime startOfEvent,
+            LocalDateTime endOfEvent,
             int numOfAttendees,
             Boolean isPrivate,
             Integer price,
@@ -297,7 +322,7 @@ public class EventService {
         if (place != null) event.setPlace(place);
         if (latitude != null) event.setLatitude(latitude);
         if (longitude != null) event.setLongitude(longitude);
-        if (dateOfEvent != null) event.setDateOfEvent(dateOfEvent);
+        if (startOfEvent != null) event.setDateOfEvent(startOfEvent);
         if (endOfEvent != null) event.setEndOfEvent(endOfEvent);
         event.setNumOfAttendees(numOfAttendees);
         if (isPrivate != null) event.setIsPrivate(isPrivate);
@@ -316,6 +341,12 @@ public class EventService {
         }
     	
         eventRepository.delete(event.get());
+    }
+    
+    public List<Event> geteventsByOrganizerID(Integer id){
+    	List<Event> events = eventRepository.findByOrganizerId(id);
+    	
+    	return events;
     }
 
 

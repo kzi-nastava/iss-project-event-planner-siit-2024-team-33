@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
+import java.sql.Date;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,9 +48,9 @@ public class EventController {
 	
 	
     @GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetTop5Events(@RequestBody String city, @RequestBody Integer id) {
+    public ResponseEntity<List<MinimalEventDTO>> GetTop5Events(@RequestParam Integer id) {
         List<MinimalEventDTO> eventsDTO = new ArrayList<>();
-        List<Event> events = eventService.getTop5OpenEvents(city, id);
+        List<Event> events = eventService.getTop5OpenEvents(id);
         
         for(Event ev:events) {
         	MinimalEventDTO minEve = new MinimalEventDTO(ev);
@@ -58,9 +60,9 @@ public class EventController {
         return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
     }
     
-    @GetMapping(value = "/top5/rest", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetAllEvents(@RequestBody Integer id) {
-        List<Event> events = eventService.getRestEvents("", id);
+    @GetMapping(value = "/rest", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalEventDTO>> GetAllEvents(@RequestParam Integer id) {
+        List<Event> events = eventService.getRestEvents(id);
         
         List<MinimalEventDTO> eventsDTO = events.stream()
                 .map(MinimalEventDTO::new)
@@ -69,11 +71,11 @@ public class EventController {
         return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetEventList(@RequestBody FilterEventDTO fP, @RequestBody int id) {
+    @GetMapping(value="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalEventDTO>> GetEventList(@ModelAttribute  FilterEventDTO fP, @RequestParam Integer id) throws ParseException {
         List<Event> events = eventService.getFilteredEvents(fP.getName(), fP.getLocation(),
         													fP.getNumOfAttendees(), fP.getFirstPossibleDate(),
-        													fP.getLastPossibleDate(), fP.getEventTypes());
+        													fP.getLastPossibleDate(), fP.getEventTypes(), id);
 
         List<MinimalEventDTO> eventsDTO = events.stream()
                 .map(MinimalEventDTO::new)
@@ -118,6 +120,21 @@ public class EventController {
         eventService.deleteEvent(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
      }
+    
+    @GetMapping(value = "/organizer/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalEventDTO>> GetEventsForOrganizer(@PathVariable Integer id) {
+        List<MinimalEventDTO> eventsDTO = new ArrayList<>();
+        List<Event> events = eventService.geteventsByOrganizerID(id);
+        
+        for (Event ev : events) {
+            MinimalEventDTO minEve = new MinimalEventDTO(ev);
+            eventsDTO.add(minEve);
+        }
+
+        return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
+    }
+
+    
     		//Will do if needed.
 //    @GetMapping(value = "/{eventId}/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<List<GetServiceReservationDTO>> getAllReservationsForEvent(@PathVariable int eventId) {

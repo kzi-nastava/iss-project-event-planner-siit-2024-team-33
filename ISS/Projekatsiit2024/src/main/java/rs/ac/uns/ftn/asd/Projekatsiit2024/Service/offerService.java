@@ -47,9 +47,10 @@ public class offerService {
         AuthentifiedUser user = optionalUser.get();
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
         
-        List<Offer> offers = offerRepo.findAll();
-        
+        List<Offer> offers = offerRepo.findCurrentOffers();
+        String city = user.getCity();
         List<Offer> filteredEvents = offers.stream()
+        		.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
                 .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
                 .limit(5)
@@ -67,18 +68,21 @@ public class offerService {
         AuthentifiedUser user = optionalUser.get();
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
         
-        List<Offer> offers = offerRepo.findAll();
-        
+        List<Offer> offers = offerRepo.findCurrentOffers();
+        String city = user.getCity();
+
         List<Offer> filteredOffers = offers.stream()
+        		.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
                 .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
                 .limit(5)
                 .toList();
-        
-        List<Offer> restOffers = filteredOffers.stream()
+
+        List<Offer> restOffers = offers.stream()
+        		//.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
                 .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
                 .filter(offer -> !filteredOffers.contains(offer))
-                .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
+                .sorted((o1, o2) -> Double.compare(o1.getDiscount(), o2.getDiscount()))
                 .toList();
         
     	return restOffers;
@@ -202,7 +206,7 @@ public class offerService {
     		isProduct=true;
     		isService=true;
     	}
-    	List<Offer> offers = offerRepo.findAll();
+    	List<Offer> offers = offerRepo.findCurrentOffers();
     	
     	if(isProduct && isService) {
     		

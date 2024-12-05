@@ -9,7 +9,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 
 public class GetServiceDTO {
-	public Integer id;
+	public Integer versionId;
+	public Integer offerId;
 	public MinimalOfferCategoryDTO category;
 	public String name;
 	public String description;
@@ -28,7 +29,8 @@ public class GetServiceDTO {
 	public int maxLengthInMins;
 	
 	public GetServiceDTO(Service s) {
-		this.id = s.getId();
+		this.versionId = s.getId();
+		this.offerId = s.getOfferID();
 		this.name = s.getName();
 		this.description = s.getDescription();
 		this.price = s.getPrice();

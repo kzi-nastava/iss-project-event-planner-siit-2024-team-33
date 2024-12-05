@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +26,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.offerService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.FilterEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.GetOfferDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.MinimalOfferDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.OfferFilterDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PostServiceDTO;
@@ -42,12 +43,12 @@ public class OfferController {
 	private offerService offerService;
 	
 	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<GetOfferDTO>> GetTop5Offers(@RequestBody Integer id) {
-	    List<GetOfferDTO> offers = new ArrayList<>();
+	public ResponseEntity<List<MinimalOfferDTO>> GetTop5Offers(@RequestParam Integer id) {
+	    List<MinimalOfferDTO> offers = new ArrayList<>();
 	    List<Offer> offerz = offerService.getTop5Offers(id);
 	    
 	    for(Offer off:offerz) {
-	    	GetOfferDTO offr = new GetOfferDTO(off);
+	    	MinimalOfferDTO offr = new MinimalOfferDTO(off);
 	    	offers.add(offr);
 	    }
 	    
@@ -55,23 +56,23 @@ public class OfferController {
 	}
 	
     @GetMapping(value = "/rest", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<GetOfferDTO>> GetAllOffers(@RequestBody Integer id) {
+    public ResponseEntity<List<MinimalOfferDTO>> GetAllOffers(@RequestParam Integer id) {
         List<Offer> offers = offerService.getRestOffers(id);
         
-        List<GetOfferDTO> offersDTO = offers.stream()
-                .map(GetOfferDTO::new)
+        List<MinimalOfferDTO> offersDTO = offers.stream()
+                .map(MinimalOfferDTO::new)
                 .toList();
   
         return new ResponseEntity<>(offersDTO, HttpStatus.OK);
     }
 	
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<GetOfferDTO>> GetOfferList(@RequestBody OfferFilterDTO OFDTO, @RequestBody int id) {
+    public ResponseEntity<List<MinimalOfferDTO>> GetOfferList(@RequestBody OfferFilterDTO OFDTO, @RequestBody int id) {
         List<Offer> offers = offerService.getFileteredOffers(OFDTO.getIsProduct(),OFDTO.getIsService(),OFDTO.getName(),
         													OFDTO.getCategory(),OFDTO.getLowestPrice(),OFDTO.getIsAvailable(),OFDTO.getEventTypes());
 
-        List<GetOfferDTO> offersDTO = offers.stream()
-                .map(GetOfferDTO::new)
+        List<MinimalOfferDTO> offersDTO = offers.stream()
+                .map(MinimalOfferDTO::new)
                 .toList();      
         
         return new ResponseEntity<>(offersDTO, HttpStatus.OK);

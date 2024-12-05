@@ -10,7 +10,7 @@ import lombok.Setter;
 public class PostServiceReservationDTO {
     private Integer eventId;
   
-    private Date ReservationDate;
-    private Time StartTime;
-    private Time EndTime;
+    private String reservationDate;
+    private String startTime;
+    private String endTime;
 }

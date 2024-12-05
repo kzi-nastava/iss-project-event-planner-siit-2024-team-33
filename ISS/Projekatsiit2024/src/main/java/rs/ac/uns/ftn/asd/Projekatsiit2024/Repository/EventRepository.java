@@ -20,5 +20,6 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
 	List<Event> findAllByPlaceAndIsPrivateFalse(@Param("place") String place,
             @Param("searchQuery") String searchQuery);
 	
-
+    @Query("SELECT e FROM Event e WHERE e.organizer.id = :organizerId")
+    List<Event> findByOrganizerId(@Param("organizerId") Integer organizerId);
 }
