@@ -3,9 +3,13 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 import java.sql.Date;
 import java.util.List;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Getter
+@Setter
+@Inheritance(strategy = InheritanceType.JOINED)
 public class AuthentifiedUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
