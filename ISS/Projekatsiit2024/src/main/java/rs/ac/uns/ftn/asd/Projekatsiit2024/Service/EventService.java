@@ -1,23 +1,23 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.BudgetItem;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Organizer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OrganizerRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
-
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventTypeRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OrganizerRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
 
 @Service
 public class EventService {
@@ -27,6 +27,8 @@ public class EventService {
 	private AuthentifiedUserRepository userRepo;
     @Autowired
     private OrganizerRepository organRepo;
+    @Autowired
+    private EventTypeRepository eventTypeRepository;
     
     
     private void validateEventArguments(
@@ -185,65 +187,50 @@ public class EventService {
     	return null;
     }
     
+    
+    @Transactional
+    public Event createEvent(CreateEventDTO eventDTO) {
 
-    public Event createEvent(
-            String name,
-            String description,
-            String place,
-            Double latitude,
-            Double longitude,
-            Date dateOfEvent,
-            Date endOfEvent,
-            int numOfAttendees,
-            Boolean isPrivate,
-            Integer price,
-            String picutre,
-            Integer organizerId,
-            List<EventType> eventTypes) {
-
-        validateEventArguments(name, place, dateOfEvent, endOfEvent,price , organizerId, eventTypes);
-
-        Organizer organizer = organRepo.findById(organizerId)
+        Organizer organizer = organRepo.findById(eventDTO.getOrganizerId())
                 .orElseThrow(() -> new RuntimeException(""));
+        
+        
+        //TODO: data validation
 
         Event event = new Event();
-        event.setName(name);
-        event.setDescription(description);
-        event.setPlace(place);
-        event.setLatitude(latitude);
-        event.setLongitude(longitude);
-        event.setDateOfEvent(dateOfEvent);
-        event.setEndOfEvent(endOfEvent);
-        event.setNumOfAttendees(numOfAttendees);
-        event.setIsPrivate(isPrivate);
+        event.setName(eventDTO.getName());
+        event.setDescription(eventDTO.getDescription());
+        event.setNumOfAttendees(eventDTO.getNumOfAttendees());
+        event.setIsPrivate(eventDTO.getIsPrivate());
+        event.setPlace(eventDTO.getPlace());
+        event.setLatitude(eventDTO.getLatitude());
+        event.setLongitude(eventDTO.getLongitude());
+        event.setDateOfEvent(eventDTO.getDateOfEvent());
+        event.setEndOfEvent(eventDTO.getEndOfEvent());
         event.setItsJoever(false);
         event.setOrganizer(organizer);
-        event.setPicture(picutre);
-        event.setPrice(price);
+        event.setPicture(eventDTO.getPicture());
+        event.setPrice(eventDTO.getPrice());
+        
+        ArrayList<EventType> eventTypes = new ArrayList<>(); 
+        for (Integer id : eventDTO.getEventTypesId()) {
+        	Optional<EventType> eventTypeOptional = eventTypeRepository.findById(id);
+        	
+        	if (eventTypeOptional.isPresent()) {
+        		EventType eventType = eventTypeOptional.get();
+        		event.getEventTypes().add(eventType);
+        	}
+        }
+        
         event.setEventTypes(eventTypes);
-        event.setReservations(new ArrayList<>());
-        event.setBudgetItems(new ArrayList<>());
+        
         eventRepository.save(event);
         return event;
     }
 
-    public Event createAndFlushEvent(
-            String name,
-            String description,
-            String place,
-            Double latitude,
-            Double longitude,
-            Date dateOfEvent,
-            Date endOfEvent,
-            int numOfAttendees,
-            Boolean isPrivate,
-            Integer price,
-            String picture,
-            Integer organizerId,
-            List<EventType> eventTypes) {
+    public Event createAndFlushEvent(CreateEventDTO eventDTO) {
 
-        Event event = createEvent(name, description, place, latitude, longitude, dateOfEvent, endOfEvent,
-                numOfAttendees, isPrivate, price ,picture, organizerId, eventTypes);
+        Event event = createEvent(eventDTO);
         eventRepository.flush();
         return event;
     }

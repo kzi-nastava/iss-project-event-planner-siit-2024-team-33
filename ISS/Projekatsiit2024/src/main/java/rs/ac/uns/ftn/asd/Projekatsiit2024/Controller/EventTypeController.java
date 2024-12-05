@@ -42,13 +42,9 @@ public class EventTypeController {
 	EventTypeService eventTypeService;
 	
 	
-	@GetMapping("/minimal")
-	public ResponseEntity getEventTypes(@RequestParam("isActive") Boolean isActive) {
-		List<EventType> types = new ArrayList<EventType>();
-		if(isActive == null)
-			types = eventTypeRepo.findAll();
-		if(isActive)
-			types = eventTypeRepo.getActiveEventTypes();
+	@GetMapping("/active")
+	public ResponseEntity getEventTypes() {
+		List<EventType> types = eventTypeRepo.getActiveEventTypes();
 		List<MinimalEventTypeDTO> minTypes = types.stream().map(type -> new MinimalEventTypeDTO(type)).toList();
 		return ResponseEntity.ok(minTypes);
 	}
