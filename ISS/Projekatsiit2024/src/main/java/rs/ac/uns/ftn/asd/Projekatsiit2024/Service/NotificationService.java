@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
-import java.sql.Date;
+import java.util.Date;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +13,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Notification;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.NotificationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PutNotificationDTO;
 
 
 @Service
@@ -36,7 +37,7 @@ public class NotificationService {
 
         Notification notification = new Notification();
         notification.setContent(content);
-        notification.setTimeOfSending(Date.valueOf(LocalDate.now()));
+        notification.setTimeOfSending(new Date());
         notification.setReceiver(receiver);
         notification.setIsRead(false);
 
@@ -117,6 +118,27 @@ public class NotificationService {
     	
     	userRepo.save(user);
     }
+    
+    public Notification updateNotification(Integer id, Integer receiverId, String content, String dateofSending, Boolean isRead, Boolean isSelected ) {
+        Optional<Notification> optionalNotification = notifRepo.findById(id);
+        if (optionalNotification.isPresent()) {
+            Notification notification = optionalNotification.get();
+            if (content != null) {
+                notification.setContent(content);
+            }
+            if (isRead != null) {
+                notification.setIsRead(isRead);
+            }
+            if (isSelected!=null) {
+            	notification.setIsSelected(isSelected);
+            }
+
+            notification.setTimeOfSending(new Date());
+            return notifRepo.save(notification);
+        }
+        return null;
+    }
+    
     
     //TODO: Make mute and unmute notifications
 }

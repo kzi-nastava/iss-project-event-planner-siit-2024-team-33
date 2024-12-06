@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
-import java.sql.Date;
+import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +25,8 @@ public class Notification
     public String content;
     public Date timeOfSending;
     public Boolean isRead;
-    
+    public Boolean isSelected;
+
     @ManyToOne
     public AuthentifiedUser receiver;
     

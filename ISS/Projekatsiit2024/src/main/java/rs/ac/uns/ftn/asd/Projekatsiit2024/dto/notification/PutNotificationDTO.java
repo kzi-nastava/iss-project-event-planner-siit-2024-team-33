@@ -8,14 +8,12 @@ import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 @Setter
 @Getter
-public class GetNotificationDTO {
-	private Integer index;
+public class PutNotificationDTO {
+	private Integer id;
+    private Integer receiverId;
     private String content;
     private String dateOfSending;
     private Boolean isRead;
     private Boolean isSelected;
-    public GetNotificationDTO() {
-        super();
-    }
-    
+
 }

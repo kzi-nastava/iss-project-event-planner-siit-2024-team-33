@@ -120,3 +120,12 @@ INSERT INTO EVENT (
 
 INSERT INTO authentified_user_blocked_users (AUTHENTIFIED_USER_ID, BLOCKED_USERS_ID)
 VALUES (2,1);
+
+INSERT INTO notification (content, time_of_sending, is_read,is_selected, receiver_id)
+VALUES 
+('You have been invited to the Annual Winter Gala event happening on 2024-12-15!', 
+ '2024-12-05', 
+ FALSE,
+ TRUE,
+ 2);
+ 
