@@ -1,6 +1,7 @@
 	package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +12,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PostNotificationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PutNotificationDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.sql.Date;
 
 @RestController
@@ -64,26 +67,34 @@ public class NotificationController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateNotification(@RequestParam Integer idd, 
-    		@RequestParam(value="id", required=false) Integer id,
-    		@RequestParam(value="receiverId", required=false) Integer receiverId,
-    		@RequestParam(value="content", required=false) String content,
-    		@RequestParam(value="dateOfSending", required=false) String dateOfSending,
-    		@RequestParam(value="isRead", required=false) Boolean isRead,
-    		@RequestParam(value="isSelected", required=false) Boolean isSelected) {
+    public ResponseEntity<Map<String, String>> updateNotification(
+            @PathVariable Integer id,
+            @RequestBody PutNotificationDTO putNotificationDTO) {
         if (id <= 0) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         try {
-            Notification notification = notificationService.updateNotification(id, receiverId, content, dateOfSending, isRead, isSelected);
+            Notification notification = notificationService.updateNotification(
+                    id,
+                    putNotificationDTO.getReceiverId(),
+                    putNotificationDTO.getContent(),
+                    putNotificationDTO.getDateOfSending(),
+                    putNotificationDTO.getIsRead(),
+                    putNotificationDTO.getIsSelected());
+            
             if (notification != null) {
-                return ResponseEntity.ok("Notification updated successfully.");
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Notification updated successfully.");
+                return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid data provided.");
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid data provided."));
         }
     }
+
+
+
 }

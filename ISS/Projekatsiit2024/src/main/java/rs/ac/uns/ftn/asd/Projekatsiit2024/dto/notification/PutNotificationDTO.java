@@ -9,7 +9,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 @Setter
 @Getter
 public class PutNotificationDTO {
-	private Integer id;
+	private Integer notifId;
     private Integer receiverId;
     private String content;
     private String dateOfSending;
