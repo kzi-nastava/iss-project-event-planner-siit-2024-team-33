@@ -7,16 +7,21 @@ import lombok.Getter;
 import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferType;
 
 @Setter
 @Getter
 public class MinimalOfferDTO {
+	public Integer id;
+	public OfferType type;
 	public String name;
 	public Double basePrice;
 	public String description;
 	public String images;
 	
 	public MinimalOfferDTO(Offer o){
+		this.setId(o.getId());
+		this.setType(o.getType());
 		this.setName(o.getName());
 		this.setBasePrice(o.getPrice());
 		this.setDescription(o.getDescription());

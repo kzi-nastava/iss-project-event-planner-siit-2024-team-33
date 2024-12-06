@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferCategoryRepository;
@@ -25,6 +26,10 @@ public class OfferCategoryService {
 			throw new IllegalArgumentException("Illegal argument, name can't be null");
 		if(description == null)
 			throw new IllegalArgumentException("Illegal argument, name can't be null");
+		if(name == "")
+			throw new IllegalArgumentException("Illegal argument, name can't be empty");
+		if(description == "")
+			throw new IllegalArgumentException("Illegal argument, name can't be empty");
 	}
 	
 	//Without database flush
@@ -88,13 +93,11 @@ public class OfferCategoryService {
 		return oc;
 	}
 	
-	public List<OfferCategory> getOffers(Boolean isOfferAccepted){
-		if(isOfferAccepted)
-			return offerCategoryRepo.getAcceptedCategories();
-		else
-			return offerCategoryRepo.getPendingCategories();
+	public List<OfferCategory> getOffers(Boolean isAccepted, Boolean isEnabled){
+		return offerCategoryRepo.getCategories(isAccepted, isEnabled);
 	}
 	
+	@Transactional
 	public OfferCategory acceptSuggestion(Integer id, String name, String description) {
 		//TODO: Admin validation
 		//TODO: Notify PUP
@@ -115,14 +118,12 @@ public class OfferCategoryService {
 			o.setIsPending(false);
 			offerRepo.save(o);
 		}
-
-		offerCategoryRepo.flush();
-		offerRepo.flush();
 		
 		return oc;
 	}
 	
 	//Reject the suggestion withe the id "id", and set the offer category of pending offers to "newCategoryId"
+	@Transactional
 	public OfferCategory rejectSuggestion(Integer id, Integer newCategoryId) {
 		//TODO: Admin validation
 		//TODO: Notify PUP
@@ -142,9 +143,6 @@ public class OfferCategoryService {
 		}
 		
 		offerCategoryRepo.deleteById(id);
-		
-		offerCategoryRepo.flush();
-		offerRepo.flush();
 		
 		return newOC.get();
 	}

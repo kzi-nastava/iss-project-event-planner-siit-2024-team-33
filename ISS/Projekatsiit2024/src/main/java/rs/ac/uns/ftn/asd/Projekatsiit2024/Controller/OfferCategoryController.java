@@ -29,15 +29,18 @@ public class OfferCategoryController {
 	private OfferCategoryService offerCategoryService;
 	
 	@GetMapping
-	public ResponseEntity getCategories(@RequestParam(name = "isAccepted", required = false) Boolean isAccepted) {
-		List<OfferCategory> ocs = offerCategoryService.getOffers(isAccepted);
+	public ResponseEntity getCategories(
+			@RequestParam(name = "isAccepted", required = false) Boolean isAccepted,
+			@RequestParam(name = "isEnabled", required = false) Boolean isEnabled
+			) {
+		List<OfferCategory> ocs = offerCategoryService.getOffers(isAccepted, isEnabled);
 		List<MinimalOfferCategoryDTO> miniOcs = ocs.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
 		return ResponseEntity.ok(miniOcs);
 	}
 	
 	@GetMapping("/pending")
 	public ResponseEntity getPendingCategories() {
-		List<OfferCategory> ocs = offerCategoryService.getOffers(false);
+		List<OfferCategory> ocs = offerCategoryService.getOffers(false, null);
 		List<MinimalOfferCategoryDTO> miniOcs = ocs.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
 		return ResponseEntity.ok(miniOcs);
 	}
