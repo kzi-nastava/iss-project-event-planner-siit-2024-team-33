@@ -32,29 +32,34 @@ public class InvitationController {
 	@Autowired
 	EventRepository eventRepo;
     
-	@PostMapping
-    public ResponseEntity<HttpStatus> createInvitations(@PathVariable Integer eventID, @RequestBody PostInvitationDTO postInvitationDTO) {
-    	Optional<AuthentifiedUser> user = AUR.findById(postInvitationDTO.getInviterId());
-        
-    	if(user.isEmpty()) {
-    		throw new IllegalArgumentException("");
-    	}
-    	AuthentifiedUser userReal = user.get();
-    	
-    	try {
+	@PostMapping("/{inviterId}")
+	public ResponseEntity<HttpStatus> createInvitations(@PathVariable Integer inviterId, @RequestBody PostInvitationDTO postInvitationDTO) {
+        Optional<AuthentifiedUser> user = AUR.findById(inviterId);
+
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found with ID: " + inviterId);
+        }
+
+        AuthentifiedUser userReal = user.get();
+
+        try {
             invitationService.createInvitations(
-                    eventID,
+                    postInvitationDTO.getEventId(),
                     postInvitationDTO.getEmailAddresses(),
                     postInvitationDTO.getMessage(),
                     new Date(System.currentTimeMillis()),
-                    postInvitationDTO.getInviterId(),
+                    inviterId,
                     userReal.getEmail(),
                     userReal.getPassword()
-                );
-    	}catch(IllegalArgumentException e) {
-    		// Myb add sumthn idk
-    	}
-    	return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+            );
+        } catch (IllegalArgumentException e) {
+            // Return appropriate response for IllegalArgumentException
+            return (ResponseEntity<HttpStatus>) ResponseEntity.badRequest();
+        } catch (Exception e) {
+            // Handle other exceptions
+            return (ResponseEntity<HttpStatus>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping

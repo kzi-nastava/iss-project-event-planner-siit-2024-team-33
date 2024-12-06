@@ -1,7 +1,7 @@
 INSERT INTO AUTHENTIFIED_USER(IS_DELETED, SUSPENSION_END_DATE, DTYPE, DESCRIPTION, EMAIL, NAME, PASSWORD, PHONE_NUMBER, PICTURE, PROVIDER_NAME, RESIDENCY, SURNAME, CITY)
 VALUES
 (0, '2024-12-31', 'Provider', 'Provider 1', 'milion@example.com', 'Milion', 'hashedpassword123', '1234567890', 'image1.jpg', 'Provider1', 'USA', 'Doe', 'Houston'),
-(0, '2024-11-30', 'Provider', 'Provider 2', 'lobanja@domain.com', 'Lobanja', 'encryptedpassword456', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', 'New York City'),
+(0, '2024-11-30', 'Provider', 'Provider 2', 'mirkodjukic23@gmail.com', 'Lobanja', 'MikroMirza123!MikroMirza123!', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', 'New York City'),
 (0, '2024-12-31', 'Provider', 'Provider 3', 'mikro@example.com', 'Mikro', 'hashedpassword123', '1234567890', 'image1.jpg', 'Provider1', 'USA', 'Doe', 'Jew York City'),
 (0, '2024-11-30', 'Provider', 'Provider 4', 'magistrala@domain.com', 'Magistrala', 'encryptedpassword456', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', '3ew York City');
 

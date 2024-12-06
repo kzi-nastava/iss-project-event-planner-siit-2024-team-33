@@ -9,8 +9,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 @Setter
 @Getter
 public class PostInvitationDTO {
-    private int inviterId;
     private List<String> emailAddresses;
     private String message;
+    private Integer eventId;
     
 }
