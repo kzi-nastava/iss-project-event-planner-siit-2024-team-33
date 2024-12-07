@@ -46,6 +46,15 @@ public class RatingController {
                 .toList();
         return ResponseEntity.ok(ratingDTOs);
     }
+    
+    @GetMapping
+    public ResponseEntity<List<GetRatingDTO>> getRatings(){
+    	List<Rating> ratings = ratingService.getAllRatings();
+        List<GetRatingDTO> ratingDTOs = ratings.stream()
+                .map(GetRatingDTO::new)
+                .toList();
+    	return ResponseEntity.ok(ratingDTOs);
+    }
 
     @GetMapping("/{ratingId}")
     public ResponseEntity<Rating> getRatingById(@PathVariable int ratingId) {

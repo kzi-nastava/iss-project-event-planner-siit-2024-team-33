@@ -10,17 +10,23 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Rating;
 @Setter
 @Getter
 public class GetRatingDTO {
+	private Integer id;
     private String offerName;
-    private int authorId;
+    private Integer authorId;
     private String authorName;
-    private int value;
+    private Integer value;
     private String comment;
+    private Boolean isAccepted;
+    private Boolean isDeleted;
     
     public GetRatingDTO(Rating rating) {
+    	this.id = rating.getId();
         this.offerName = rating.getOffer().getName();
         this.authorId = rating.getAuthor().getId();
         this.authorName = rating.getAuthor().getName();
         this.value = rating.getRatingValue();
         this.comment = rating.getComment();
-    }
+        this.isAccepted = rating.getAccepted();
+        this.isDeleted = rating.getIsDeleted();
+     }
 }

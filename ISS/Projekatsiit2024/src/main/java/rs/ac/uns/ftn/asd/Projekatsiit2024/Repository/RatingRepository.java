@@ -8,5 +8,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Rating;
 
 public interface RatingRepository extends JpaRepository<Rating, Integer>{
     List<Rating> findByOfferId(int offerId);
+    List<Rating> findByOfferIdAndAcceptedTrue(int offerId);
 
 }

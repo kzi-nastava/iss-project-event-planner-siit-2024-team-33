@@ -29,7 +29,8 @@ public class RatingService {
         rating.setRatingValue(ratingValue);
         rating.setComment(comment);
         rating.setAccepted(false);
-
+        rating.setIsDeleted(false);
+        
         AuthentifiedUser author = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
         Offer offer = offerRepo.findById(offerId)
@@ -51,12 +52,14 @@ public class RatingService {
             throw new IllegalArgumentException("");
         }
     }
+    
     //Made it so that the rating is deleted
     public void deleteComment(int commentId) {
         Optional<Rating> ratingOpt = ratingRepository.findById(commentId);
         if (ratingOpt.isPresent()) {
             Rating rating = ratingOpt.get();
-            rating.setAccepted(null);
+            rating.setIsDeleted(true);
+            rating.setAccepted(false);
             ratingRepository.save(rating);
         } else {
             throw new IllegalArgumentException("");
@@ -64,7 +67,11 @@ public class RatingService {
     }
     
     public List<Rating> getRatingsByOfferId(int offerId) {
-        return ratingRepository.findByOfferId(offerId);
+        return ratingRepository.findByOfferIdAndAcceptedTrue(offerId);
+    }
+    
+    public List<Rating> getAllRatings() {
+        return ratingRepository.findAll();
     }
 
     public Rating getRatingById(int ratingId) {

@@ -1,7 +1,7 @@
 INSERT INTO AUTHENTIFIED_USER(IS_DELETED, SUSPENSION_END_DATE, DTYPE, DESCRIPTION, EMAIL, NAME, PASSWORD, PHONE_NUMBER, PICTURE, PROVIDER_NAME, RESIDENCY, SURNAME, CITY)
 VALUES
 (0, '2024-12-31', 'Provider', 'Provider 1', 'milion@example.com', 'Milion', 'hashedpassword123', '1234567890', 'image1.jpg', 'Provider1', 'USA', 'Doe', 'Houston'),
-(0, '2024-11-30', 'Provider', 'Provider 2', 'mirkodjukic23@gmail.com', 'Lobanja', 'MikroMirza123!MikroMirza123!', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', 'New York City'),
+(0, '2024-11-30', 'Provider', 'Provider 2', 'mirkodjukic718@gmail.com', 'Lobanja', 'MikroMirza123!MikroMirza123!', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', 'New York City'),
 (0, '2024-12-31', 'Provider', 'Provider 3', 'mikro@example.com', 'Mikro', 'hashedpassword123', '1234567890', 'image1.jpg', 'Provider1', 'USA', 'Doe', 'Jew York City'),
 (0, '2024-11-30', 'Provider', 'Provider 4', 'magistrala@domain.com', 'Magistrala', 'encryptedpassword456', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', '3ew York City');
 
@@ -128,4 +128,12 @@ VALUES
  FALSE,
  TRUE,
  2);
- 
+ INSERT INTO rating (rating_value, comment, accepted, is_deleted, author_id, offer_id) VALUES
+(5, 'Excellent deal, highly recommend!', FALSE, FALSE, 1, 1),
+(4, 'Good value for the price.', FALSE, FALSE, 2, 1),
+(3, 'Average offer, nothing special.', FALSE, FALSE, 3, 2),
+(5, 'Absolutely fantastic!', FALSE, FALSE, 1, 3),
+(2, 'Not worth the money.', FALSE, FALSE, 2, 2),
+(4, 'Pretty good but could be better.', TRUE, FALSE, 3, 3),
+(1, 'Terrible experience.', FALSE, FALSE, 1, 1),
+(5, 'Best deal I have ever found!', FALSE, FALSE, 2, 3);

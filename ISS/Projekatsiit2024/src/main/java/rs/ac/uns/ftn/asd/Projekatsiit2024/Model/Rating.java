@@ -14,18 +14,15 @@ import lombok.Setter;
 public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int ratingValue;
+    private Integer id;
+    private Integer ratingValue;
     private String comment; 
     private Boolean accepted;
+    private Boolean isDeleted;
 
     @ManyToOne
     private AuthentifiedUser author;
     
     @ManyToOne
     private Offer offer; 
-
-    public void setId(int ID) {
-    	id=ID;
-    }
 }
