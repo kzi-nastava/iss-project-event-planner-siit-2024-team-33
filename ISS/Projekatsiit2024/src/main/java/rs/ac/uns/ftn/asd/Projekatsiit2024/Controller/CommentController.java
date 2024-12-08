@@ -17,6 +17,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.OfferDTO;
 @RestController
 @RequestMapping("/api/offers/{offerID}")
 public class CommentController {
+	
 	@PostMapping("/comments")
 	public ResponseEntity<GetCommentDTO> PostComment(@PathVariable Integer offerID, @RequestBody PostCommentDTO data){
 		//403: Forbidden if user didn't purchase the offer

@@ -58,8 +58,8 @@ public class invitationService {
 
             String subject = "Invitation to " + event.getName();
             String body = invitedUser != null
-                ? "You are invited to join the event. Please log in to accept the invitation."
-                : "You are invited to join the event. Click here to register and accept the invitation.";
+                ? "You are invited to join the event. Please log in to accept the invitation. \n\n http://localhost:4200/authentication/signin"
+                : "You are invited to join the event. Click here to register and accept the invitation. \n\n http://localhost:4200/authentication/AK";
 
             sendEmail(senderEmail, senderPassword, email, subject, body);
         }
@@ -67,7 +67,7 @@ public class invitationService {
 
 
     public void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
-        JavaMailSender mailSender = DynamicMailSender.createMailSender(senderEmail, senderPassword);
+        JavaMailSender mailSender = DynamicMailSender.createMailSender(senderEmail, "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");
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(senderEmail);
@@ -77,11 +77,12 @@ public class invitationService {
 
         try {
             mailSender.send(message);
+            System.out.println("Email sent successfully!");
         } catch (Exception e) {
-            System.err.println(e);
+            System.err.println("Failed to send email: " + e.getMessage());
         }
     }
-    
+
     public List<Invitation> getInvitationsByForEvent(Integer id){
     	Optional<Event> ev = eventRepo.findById(id);
     	

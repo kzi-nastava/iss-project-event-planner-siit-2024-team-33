@@ -1,6 +1,7 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
+	package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,9 +9,12 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Notification;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.NotificationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.GetNotificationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PostNotificationDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PutNotificationDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.sql.Date;
 
 @RestController
@@ -31,7 +35,7 @@ public class NotificationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetNotificationDTO>> getNotifications(@RequestAttribute int receiverId) {
+    public ResponseEntity<List<GetNotificationDTO>> getNotifications(@RequestParam int receiverId) {
         if (receiverId <= 0) {
             return ResponseEntity.status(403).build();
         }
@@ -41,9 +45,11 @@ public class NotificationController {
         
         for (Notification notification : notifications) {
             GetNotificationDTO dto = new GetNotificationDTO();
+            dto.setIndex(notification.getId());
             dto.setContent(notification.getContent());
-            dto.setDateOfSending(notification.getTimeOfSending());
+            dto.setDateOfSending(notification.getTimeOfSending().toString());
             dto.setIsRead(notification.getIsRead());
+            dto.setIsSelected(notification.getIsSelected());
             notificationsDTO.add(dto);
         }
 
@@ -59,4 +65,36 @@ public class NotificationController {
         notificationService.deleteNotification(id);
         return ResponseEntity.ok("Notification deleted successfully.");
     }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, String>> updateNotification(
+            @PathVariable Integer id,
+            @RequestBody PutNotificationDTO putNotificationDTO) {
+        if (id <= 0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        try {
+            Notification notification = notificationService.updateNotification(
+                    id,
+                    putNotificationDTO.getReceiverId(),
+                    putNotificationDTO.getContent(),
+                    putNotificationDTO.getDateOfSending(),
+                    putNotificationDTO.getIsRead(),
+                    putNotificationDTO.getIsSelected());
+            
+            if (notification != null) {
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Notification updated successfully.");
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid data provided."));
+        }
+    }
+
+
+
 }
