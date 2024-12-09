@@ -24,6 +24,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.BudgetItemDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.BudgetOfferDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.GetBudgetDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 
@@ -132,20 +133,21 @@ public class BudgetService {
 		Map<Integer, List<Offer>> offersByCategory = reservedOffers.stream()
 				.collect(Collectors.groupingBy(Offer::getCategoryId, Collectors.toList()));
 		
-		List<BudgetItem> budgetItems = offersByCategory.keySet().stream().map(offerId -> getOrCreateItem(eventId, offerId)).toList();
+		Set<BudgetItem> budgetItems = budgetItemRepo.findByEventId(eventId);
+		budgetItems.addAll(offersByCategory.keySet().stream().map(offerId -> getOrCreateItem(eventId, offerId)).toList());
 		
 		Set<OfferCategory> takenCategories = budgetItems.stream().map(item -> item.getBudgetCategory()).collect(Collectors.toSet());
 		
 		//Don't recommend already taken categories
 		recommendedCategories.removeAll(takenCategories);
 		
-		//TODO
-		budget.EventID = eventId;
-		budget.EventName = e.get().getName();
+		budget.eventID = eventId;
+		budget.eventName = e.get().getName();
 		
-		budget.TakenOfferTypes = takenCategories.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
-		budget.RecommendedOfferTypes = recommendedCategories.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
-		budget.Items = budgetItems.stream().map(item -> new BudgetItemDTO(item, offersByCategory.get(item.getBudgetCategory().getId()))).toList();
+		budget.recommendedOfferTypes = recommendedCategories.stream().map(cat -> new MinimalOfferCategoryDTO(cat)).toList();
+		budget.takenItems = budgetItems.stream().map(item -> new BudgetItemDTO(item, offersByCategory.getOrDefault(item.getBudgetCategory().getId(), new ArrayList<Offer>()))).toList();
+		
+		budget.takenOffers = reservedOffers.stream().map(off -> new BudgetOfferDTO(off)).toList();
 		
 		return budget;
 	}

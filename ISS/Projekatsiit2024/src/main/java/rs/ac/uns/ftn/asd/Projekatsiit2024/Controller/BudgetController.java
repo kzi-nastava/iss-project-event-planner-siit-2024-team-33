@@ -43,7 +43,7 @@ public class BudgetController {
 	@PostMapping
 	public ResponseEntity AddBudgetItem(@PathVariable Integer eventID, @RequestBody PostBudgetItemDTO PostDTO){
 		try {
-			BudgetItem bi = budgetService.createItem(eventID, PostDTO.OfferCategoryID, PostDTO.MaxBudget);
+			BudgetItem bi = budgetService.createItem(eventID, PostDTO.offerCategoryID, PostDTO.maxBudget);
 			return ResponseEntity.ok(new MinimalBudgetItemDTO(bi));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(e.toString());
@@ -57,7 +57,7 @@ public class BudgetController {
 	@PutMapping("/{categoryID}")
 	public ResponseEntity EditBudgetItem(@PathVariable Integer eventID, @PathVariable Integer categoryID, @RequestBody PutBudgetItemDTO PutDTO){
 		try {
-			BudgetItem bi = budgetService.editItem(eventID, categoryID, PutDTO.MaxBudget);
+			BudgetItem bi = budgetService.editItem(eventID, categoryID, PutDTO.maxBudget);
 			return ResponseEntity.ok(new MinimalBudgetItemDTO(bi));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(e.toString());

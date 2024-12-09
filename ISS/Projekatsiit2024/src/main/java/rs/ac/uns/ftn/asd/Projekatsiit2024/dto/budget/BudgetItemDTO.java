@@ -14,13 +14,11 @@ public class BudgetItemDTO {
 	public String offerCategoryName;
 	public Double maxBudget;
 	public Double usedBudget;
-	public List<OfferDTO> reservedOffers;
 	
 	public BudgetItemDTO(BudgetItem bi, List<Offer> offers) {
 		this.offerCategoryID = bi.getBudgetCategory().getId();
 		this.offerCategoryName = bi.getBudgetCategory().getName();
 		this.maxBudget = bi.getBudget();
 		this.usedBudget = offers.stream().mapToDouble(offer -> offer.getPrice()-offer.getDiscount()).sum();
-		this.reservedOffers = offers.stream().map(offer -> new OfferDTO(offer)).toList();
 	}
 }

@@ -121,6 +121,9 @@ INSERT INTO EVENT (
 INSERT INTO authentified_user_blocked_users (AUTHENTIFIED_USER_ID, BLOCKED_USERS_ID)
 VALUES (2,1);
 
+INSERT INTO EVENT_TYPE_RECOMMENDED_CATEGORIES(EVENT_TYPE_ID, RECOMMENDED_CATEGORIES_ID) VALUES (1,1), (1,2), (1,3);
+INSERT INTO EVENT_EVENT_TYPES(EVENT_ID, EVENT_TYPES_ID) VALUES (1,1), (1,2);
+
 INSERT INTO notification (content, time_of_sending, is_read,is_selected, receiver_id)
 VALUES 
 ('You have been invited to the Annual Winter Gala event happening on 2024-12-15!', 
@@ -144,3 +147,4 @@ INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
 ('Feedback on the event organization.', '2024-12-07', 1, 3),
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
+
