@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -29,12 +30,15 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "username", unique = true)
     private String email;
 
     @JsonIgnore
     @Column(name = "password")
     private String password;
+    
+    @Column(name = "last_password_reset_date")
+    private Timestamp lastPasswordResetDate;
     
     @ManyToOne
     private Role role;
@@ -48,5 +52,25 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+    
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

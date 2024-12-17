@@ -3,8 +3,11 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.utils;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,10 +16,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.User;
 @Component
 public class TokenUtils {
 	
-	@Value("spring-security-example")
+	@Value("event-planner")
 	private String APP_NAME;
 	
-	@Value("somesecret")
+	@Value("mysecret")
 	public String SECRET;
 	
 	@Value("1800000")
@@ -40,12 +43,9 @@ public class TokenUtils {
 				.setSubject(user.getUsername())
 				.setAudience(generateAudience())
 				.setIssuedAt(new Date())
-				.claim("roles", user.getRole().toString())
+				.claim("role", user.getRole().toString())
 				.setExpiration(generateExpirationDate())
 				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
-		
-
-		// moguce je postavljanje proizvoljnih podataka u telo JWT tokena pozivom funkcije .claim("key", value), npr. .claim("role", user.getRole())
 	}
 	
 	private String generateAudience() {
@@ -80,6 +80,68 @@ public class TokenUtils {
 		}
 
 		return null;
+	}
+	
+	public String getUsernameFromToken(String token) {
+		String username;
+		
+		try {
+			final Claims claims = this.getAllClaimsFromToken(token);
+			username = claims.getSubject();
+		}
+		catch(ExpiredJwtException ex) {
+			throw ex;
+		}
+		catch(Exception e) {
+			username = null;
+		}
+		
+		return username;
+	}
+	
+	public Date getIssuedAtDateFromToken(String token) {
+		Date issueAt;
+		try {
+			final Claims claims = this.getAllClaimsFromToken(token);
+			issueAt = claims.getIssuedAt();
+		}
+		catch (ExpiredJwtException ex) {
+			throw ex;
+		}
+		catch(Exception e) {
+			issueAt = null;
+		}
+		
+		return issueAt;
+	}
+	
+	private Claims getAllClaimsFromToken(String token) {
+		Claims claims;
+		try {
+			claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+		}
+		catch(ExpiredJwtException ex) {
+			throw ex;
+		}
+		catch(Exception e) {
+			claims = null;
+		}
+		
+		return claims;
+	}
+	
+	public Boolean validateToken(String token, UserDetails userDetails) {
+		User user = (User) userDetails;
+		final String username = getUsernameFromToken(token);
+		final Date created = getIssuedAtDateFromToken(token);
+		
+		return (username != null 
+				&& username.equals(userDetails.getUsername()) 
+				&& !isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate()));
+	}
+	
+	private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
+		return (lastPasswordReset != null && created.before(lastPasswordReset));
 	}
 	
 	public String getAuthHeaderFromHeader(HttpServletRequest request) {
