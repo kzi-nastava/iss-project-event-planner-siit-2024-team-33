@@ -11,7 +11,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.User;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.User;
 
 @Component
 public class TokenUtils {

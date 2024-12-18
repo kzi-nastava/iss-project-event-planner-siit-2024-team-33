@@ -6,9 +6,9 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Organizer;
 
 @Getter
 @Setter

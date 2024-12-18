@@ -2,7 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class BudgetOfferDTO {

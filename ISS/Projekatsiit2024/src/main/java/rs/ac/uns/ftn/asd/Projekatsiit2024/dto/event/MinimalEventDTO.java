@@ -2,7 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
 @Setter
 @Getter
 public class MinimalEventDTO {

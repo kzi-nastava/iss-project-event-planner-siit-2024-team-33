@@ -24,9 +24,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.AuthenticationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth.RestAuthenticationEntryPoint;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth.TokenAuthenticationFilter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.AuthenticationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.TokenUtils;
 
 @Configuration
@@ -73,10 +73,14 @@ public class WebSecurityConfig {
 		
         
         http.authorizeHttpRequests(request -> {
-            request.requestMatchers(new AntPathRequestMatcher("/auth/login")).permitAll()
-                   .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
-                 //.requestMatchers(new AntPathRequestMatcher("/api/whoami")).hasRole("USER")
-            .anyRequest().authenticated();
+            request//.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
+                   //.requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
+                   //.requestMatchers(new AntPathRequestMatcher("/api/events/**")).permitAll()
+                   //.requestMatchers(new AntPathRequestMatcher("/api/offers/**")).permitAll()
+                   //.requestMatchers(new AntPathRequestMatcher("/api/services/**")).permitAll()
+                   //.requestMatchers(new AntPathRequestMatcher("/api/whoami")).hasRole("USER")
+            .anyRequest().permitAll();
+            ;
         });
         http.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
         http.authenticationProvider(authenticationProvider());

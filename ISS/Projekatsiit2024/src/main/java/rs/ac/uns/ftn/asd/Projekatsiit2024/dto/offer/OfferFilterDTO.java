@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
 
 @Setter
 @Getter
