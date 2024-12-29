@@ -4,9 +4,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Product;
 
 public class MinimalProductDTO {
-	private Integer id;
-	private String name;
-	private String description;
+	public Integer id;
+	public String name;
+	public String description;
 	public Availability availability;
 	
 	public MinimalProductDTO(Product p) {

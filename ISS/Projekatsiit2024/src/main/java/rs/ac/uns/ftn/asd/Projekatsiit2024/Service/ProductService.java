@@ -22,6 +22,14 @@ public class ProductService {
 	@Autowired
 	private offerReservationService reservationService;
 	
+	public Product get(Integer offerId) {
+		Optional<Product> product = productRepo.findById(offerId);
+		if(product.isEmpty())
+			throw new EntityNotFoundException("No product with that id exists");
+		
+		return product.get();
+	}
+	
 	@Transactional
 	public Product buyProduct(Integer productId, Integer eventId) {
 		Optional<Product> product = productRepo.findById(productId);
@@ -36,8 +44,27 @@ public class ProductService {
 			throw new IllegalArgumentException("Product is currently unavailable");
 		
 		product.get().setAvailability(Availability.UNAVAILABLE);
+		productRepo.save(product.get());
 		reservationService.createProductReservation(product.get(), event.get());
 		
 		return product.get();
+	}
+	
+	@Transactional
+	public Product cancelReservation(Integer productId, Integer eventId) {
+		Optional<Product> product = productRepo.findById(productId);
+		if(product.isEmpty())
+			throw new EntityNotFoundException("No product with that id exists");
+		
+		Optional<Event> event = eventRepo.findById(eventId);
+		if(product.isEmpty())
+			throw new EntityNotFoundException("No event with that id exists");
+		
+		product.get().setAvailability(Availability.AVAILABLE);
+		productRepo.save(product.get());
+		reservationService.cancelProductReservation(product.get(), event.get());
+		
+		return product.get();
+		
 	}
 }

@@ -1,8 +1,11 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Exception.UserCreationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
@@ -18,6 +21,14 @@ public class ProviderService {
 	
 	@Autowired
     private ProviderRepository providerRepository;
+	
+	public Provider get(Integer id) {
+		Optional<Provider> p = providerRepository.findById(id);
+		if(p.isEmpty())
+			throw new EntityNotFoundException("Provider with that ID doesn't exist");
+		
+		return p.get();
+	}
 	
 	@Transactional
     public Provider createProvider(CreateProviderDTO providerDTO) throws UserCreationException {

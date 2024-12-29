@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
 
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Common.ImageManager;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
@@ -115,6 +117,9 @@ public class ServiceService {
 	public Service get(Integer offerID) {
 		Service s = serviceRepo.getLatestServiceVersion(offerID);
 		if(s == null)
+			throw new EntityNotFoundException("Service with that id doesn't exist");
+		
+		if(s.getIsDeleted() || s.getAvailability() == Availability.INVISIBLE)
 			throw new EntityNotFoundException("Service with that id doesn't exist");
 		
 		return s;
@@ -257,7 +262,17 @@ public class ServiceService {
 	
 	
 	
-	public void deleteService() {
-		//TODO
+	public void deleteService(Integer offerId) throws SQLIntegrityConstraintViolationException {
+		//TODO User validation
+	    List<Service> services = serviceRepo.findServicesByOfferID(offerId);
+	    if(services.stream().anyMatch(s -> s.getOfferReservations().size() > 0))
+	    	throw new SQLIntegrityConstraintViolationException("Can't delete service when it has reservations");
+	    
+	    services.forEach(s -> {
+	    	s.setIsDeleted(true);
+	    });
+	    
+	    serviceRepo.saveAll(services);
+	    serviceRepo.flush();
 	}
 }

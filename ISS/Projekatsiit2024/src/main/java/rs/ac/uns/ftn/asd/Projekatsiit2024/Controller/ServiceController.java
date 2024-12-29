@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.io.Console;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,8 +81,13 @@ public class ServiceController {
 		}
 	}
 	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<GetServiceDTO> deleteService(@RequestAttribute Integer id){
-		return ResponseEntity.ok().build();
+	@DeleteMapping("/{offerId}")
+	public ResponseEntity deleteService(@PathVariable Integer offerId){
+		try {
+			serviceService.deleteService(offerId);
+			return ResponseEntity.noContent().build();
+		} catch (SQLIntegrityConstraintViolationException e) {
+			return ResponseEntity.status(409).build();
+		}
 	}
 }
