@@ -1,0 +1,194 @@
+[33mcommit e81ed536c93bf910cd97bb7e53b8e1a20f6900be[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mDevelop[m[33m, [m[1;31morigin/Develop[m[33m)[m
+Merge: 945e7c9 8665d67
+Author: MikroMirza <mirkodjukic314@gmail.com>
+Date:   Thu Dec 5 23:30:46 2024 +0100
+
+    [FIX] Minor fix in merge
+
+[33mcommit 37b62fa72dabf22f6c09f7efb4c26daa93f163d7[m
+Merge: 02fb00f 37e40cb
+Author: Sergej <149822556+segr-mikr@users.noreply.github.com>
+Date:   Thu Dec 5 12:35:26 2024 +0100
+
+    Merge pull request #11 from kzi-nastava/feature/event
+    
+    Feature/event
+
+[33mcommit 37e40cb27ef66e6f01f3c6dec877cf637013fcd5[m[33m ([m[1;31morigin/feature/event[m[33m)[m
+Merge: 89ce84f 02fb00f
+Author: Sergej <149822556+segr-mikr@users.noreply.github.com>
+Date:   Thu Dec 5 12:35:17 2024 +0100
+
+    Merge branch 'Develop' into feature/event
+
+[33mcommit 34f0bc5b051100df2161fcc915d1a11d8bd95485[m
+Merge: 7573b76 0d64c2a
+Author: MikroMirza <mirkodjukic314@gmail.com>
+Date:   Thu Dec 5 03:54:21 2024 +0100
+
+    Resolved merge conflicts
+
+[33mcommit 0d64c2ac8c1986ee44d09d385f77abdde755435b[m
+Merge: 491bf5a 410629b
+Author: MikroMirza <150567280+MikroMirza@users.noreply.github.com>
+Date:   Wed Dec 4 13:08:57 2024 -0800
+
+    Merge pull request #10 from kzi-nastava/feature/registration
+    
+    Feature/registration
+
+[33mcommit 18df6b518bf586cce03104a810935fb14a4c0bda[m
+Merge: 6eac2a9 278b57b
+Author: MilicMilosRS <milicmilos.rs@gmail.com>
+Date:   Wed Dec 4 12:38:47 2024 +0100
+
+    Merge branch 'Develop' of git@github.com:kzi-nastava/iss-project-event-planner-siit-2024-team-33.git into Develop
+
+[33mcommit e6f727a75255cae6a921e1530e76e747c24745bb[m
+Merge: 6410d9f 8aeeb58
+Author: MikroMirza <mirkodjukic314@gmail.com>
+Date:   Wed Dec 4 00:36:34 2024 +0100
+
+    Merge branch 'Develop' of https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-33 into Develop
+
+[33mcommit cfb7bac0e3182c55592bfa057735f1165f9c92b5[m
+Merge: 8dfcf3c 347ba90
+Author: MilicMilosRS <milicmilos.rs@gmail.com>
+Date:   Tue Dec 3 20:39:33 2024 +0100
+
+    Merge branch 'Develop' of git@github.com:kzi-nastava/iss-project-event-planner-siit-2024-team-33.git into Develop
+
+[33mcommit cf910cbb94e5aa4b5813c1d40182ee914d87d047[m[33m ([m[1;32mNotification[m[33m)[m
+Merge: 7cd95c1 e5ac834
+Author: MikroMirza <mirkodjukic314@gmail.com>
+Date:   Mon Dec 2 12:42:31 2024 +0100
+
+    [ADD] Added block options
+
+[33mcommit 7cd95c13a33d8948d58453a76ad275fedda0bb11[m
+Merge: 80c3a81 a6b7b0b
+Author: MikroMirza <mirkodjukic314@gmail.com>
+Date:   Mon Dec 2 12:41:21 2024 +0100
+
+    Merge branch 'Develop' of https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-33 into Develop
+
+[33mcommit 358a6e8bf5551d98e3ec13582f270351f94d9a65[m
+Merge: e16c22d 3081c42
+Author: MikroMirza <mirkodjukic314@gmail.com>
+Date:   Sun Dec 1 16:23:17 2024 +0100
+
+    [FIX] Minor fix
+
+[33mcommit fac9a53df936addb7c24c1dd8557b084c5f12020[m
+Merge: 7c1dd40 bc9e075
+Author: MilicMilosRS <milicmilos.rs@gmail.com>
+Date:   Sun Dec 1 13:50:00 2024 +0100
+
+    Merge branch 'feature/budget' into Develop
+
+[33mcommit 554ab0e375c2ff99b950ff9b805ac72afe8a4205[m
+Merge: 27e868e bca26b8
+Author: MikroMirza <mirkodjukic314@gmail.com>
+Date:   Sat Nov 30 18:32:28 2024 +0100
+
+    Merge branch 'Develop' of https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-33 into Develop
+
+[33mcommit bca26b80f394101c825b1628b9e07587f1237604[m
+Merge: 7e1f9f4 02d189c
+Author: MikroMirza <150567280+MikroMirza@users.noreply.github.com>
+Date:   Sat Nov 30 07:16:16 2024 -0800
+
+    Merge pull request #9 from kzi-nastava/feature/serviceCategory
+    
+    [ADD] Offer category CRUD controller, service and repo works..
+
+[33mcommit 15a05551509e011b438131c4dc4e09debd03a064[m
+Merge: 0b51401 fdec04d
+Author: MilicMilosRS <milicmilos.rs@gmail.com>
+Date:   Sat Nov 30 09:55:55 2024 +0100
+
+    Merge branch 'Develop' of
+    git@github.com:kzi-nastava/iss-project-event-planner-siit-2024-team-33.git
+    into Develop
+
+[33mcommit 7e50d20367bd84f69824552466ed0a53df653022[m
+Merge: 85b510f b0eeae0
+Author: MilicMilosRS <milicmilos.rs@gmail.com>
+Date:   Fri Nov 29 13:38:26 2024 +0100
+
+    Merge branch 'Develop' of git@github.com:kzi-nastava/iss-project-event-planner-siit-2024-team-33.git into Develop
+
+[33mcommit af13ee79d321166209b3f72fd43d99acc92979f3[m
+Merge: 7bba846 4298155
+Author: Sergej <149822556+segr-mikr@users.noreply.github.com>
+Date:   Thu Nov 28 13:11:55 2024 +0100
+
+    Merge pull request #7 from kzi-nastava/feature/users
+    
+    [ADD] Added endpoints for users and sign in
+
+[33mcommit c06a47ef361318e21ec623d7648a8eecef15c25e[m
+Merge: 905f00f 8d5ee1b
+Author: Sergej <149822556+segr-mikr@users.noreply.github.com>
+Date:   Thu Nov 28 00:23:36 2024 +0100
+
+    Merge pull request #6 from kzi-nastava/feature/products
+    
+    [FIX] Products endpoints
+
+[33mcommit 905f00fefeb051302b3f44ab5eb7f2aff772cddd[m
+Merge: ea9dd1f 5f10312
+Author: Sergej <149822556+segr-mikr@users.noreply.github.com>
+Date:   Wed Nov 27 22:10:56 2024 +0100
+
+    Merge pull request #5 from kzi-nastava/feature/products
+    
+    [ADD] CRUD endpoints for products
+
+[33mcommit 5f10312ca01b06e8b1ab733fbb5abc7ae61583ef[m
+Merge: e0e050c ea9dd1f
+Author: Sergej <149822556+segr-mikr@users.noreply.github.com>
+Date:   Wed Nov 27 22:10:48 2024 +0100
+
+    Merge branch 'Develop' into feature/products
+
+[33mcommit bcd1ca5608dc3ae0efca7dcac0ec622061db5c4c[m
+Merge: dbb3852 616fbf5
+Author: MikroMirza <mirkodjukic314@gmail.com>
+Date:   Tue Nov 26 12:22:55 2024 +0100
+
+    [ADD] Added few changes
+
+[33mcommit 616fbf5eef2402d324868f41786b4b0970e01922[m
+Merge: 2308a3e ee5556e
+Author: MikroMirza <150567280+MikroMirza@users.noreply.github.com>
+Date:   Tue Nov 26 03:02:41 2024 -0800
+
+    Merge pull request #4 from kzi-nastava/feature/models
+    
+    Feature/models
+
+[33mcommit 1fd77e1b979013a2e6a273bbb890a8bc10ebd8ff[m
+Merge: f36b0fd e390c3d
+Author: MilicMilosRS <milicmilos.rs@gmail.com>
+Date:   Mon Nov 25 18:11:48 2024 +0100
+
+    Merge branch 'feature/dto/service' into Develop
+
+[33mcommit 920d695303bf6fcc096b1bae977a4aafbc9b5f36[m
+Merge: 0cefeed 2b91d58
+Author: MikroMirza <150567280+MikroMirza@users.noreply.github.com>
+Date:   Mon Nov 25 08:01:28 2024 -0800
+
+    Merge pull request #3 from kzi-nastava/feature/dto/budget
+    
+    [ADD] Budgeting REST Endpoints and DTOs
+
+[33mcommit 7e11a624ea2381aee12238d72a0f91b6eb6eee28[m
+Merge: 969f160 a9f9c23
+Author: MikroMirza <150567280+MikroMirza@users.noreply.github.com>
+Date:   Sat Nov 23 05:46:05 2024 -0800
+
+    Merge pull request #1 from kzi-nastava/feature/dto/service
+    
+    Feature/dto/service
