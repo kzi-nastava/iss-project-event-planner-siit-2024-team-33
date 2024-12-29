@@ -2,11 +2,13 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.Controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreateProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreatedProductDTO;
@@ -39,7 +43,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Service.authentifiedUserService;
 public class UserController {
 	
 	@Autowired
-	private authentifiedUserService userRepo;
+	private AuthentifiedUserRepository userRepo;
+	
+	@Autowired
+	private authentifiedUserService userService;
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<GetUserDTO>> getUsers() {
@@ -61,6 +68,19 @@ public class UserController {
 		if (user == null) {
 			return new ResponseEntity<GetUserDTO>(HttpStatus.NOT_FOUND);
 		}
+		
+		return new ResponseEntity<GetUserDTO>(user, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<GetUserDTO> getMyUser(@PathVariable("id") Long id) {
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		Optional<AuthentifiedUser> au = userRepo.findByEmail(email);
+		if(au.isEmpty())
+			return ResponseEntity.notFound().build();
+		
+		GetUserDTO user = new GetUserDTO(au.get());
 		
 		return new ResponseEntity<GetUserDTO>(user, HttpStatus.OK);
 	}
@@ -88,7 +108,7 @@ public class UserController {
     @PostMapping(value = "/{blockerId}/block/{blockedId}")
     public ResponseEntity<String> blockUser(@PathVariable Integer blockerId, @PathVariable Integer blockedId) {
         try {
-            userRepo.blockAUser(blockerId, blockedId);
+            userService.blockAUser(blockerId, blockedId);
             return ResponseEntity.ok("");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -100,7 +120,7 @@ public class UserController {
     @DeleteMapping(value = "/{blockerId}/block/{blockedId}")
     public ResponseEntity<String> unblockUser(@PathVariable Integer blockerId, @PathVariable Integer blockedId) {
         try {
-            userRepo.unblockAUser(blockerId, blockedId);
+            userService.unblockAUser(blockerId, blockedId);
             return ResponseEntity.ok("");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

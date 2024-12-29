@@ -8,6 +8,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
 import java.util.Optional;
 
 public interface AuthentifiedUserRepository extends JpaRepository<AuthentifiedUser, Integer> {
-    @Query("SELECT u FROM AuthentifiedUser u WHERE u.email = :email")
+	@Query("SELECT u FROM AuthentifiedUser u WHERE u.email = :email")
     Optional<AuthentifiedUser> findByEmail(@Param("email") String email);
 }
