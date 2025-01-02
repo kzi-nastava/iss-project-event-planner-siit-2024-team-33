@@ -73,7 +73,7 @@ public class UserController {
 	}
 	
 	@GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<GetUserDTO> getMyUser(@PathVariable("id") Long id) {
+	public ResponseEntity<GetUserDTO> getMyUser() {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
 		
 		Optional<AuthentifiedUser> au = userRepo.findByEmail(email);

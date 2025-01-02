@@ -19,8 +19,8 @@ public class JwtService {
 	public String generateToken(UserDetails ud) {
 		return Jwts.builder()
 				.setSubject(ud.getUsername())
-				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.signWith(getKey(), SignatureAlgorithm.ES256)
+				.setIssuedAt(new Date())
+				.signWith(getKey())
 				.compact();
 	}
 	
@@ -34,7 +34,7 @@ public class JwtService {
 	}
 	
 	public Boolean isTokenValid(String token, UserDetails ud) {
-		return extractUsername(token) == ud.getUsername();
+		return extractUsername(token).equals(ud.getUsername());
 	}
 	
 	private Key getKey() {
