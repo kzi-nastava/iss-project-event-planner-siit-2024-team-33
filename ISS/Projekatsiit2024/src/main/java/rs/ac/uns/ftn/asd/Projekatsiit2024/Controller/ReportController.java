@@ -27,7 +27,7 @@ public class ReportController {
         return ResponseEntity.ok("");
     }
 
-    @GetMapping
+    @GetMapping("/reports")
     public ResponseEntity<List<GetReportDTO>> getReports() {
         List<Report> reports = reportService.getAllReports();
         List<GetReportDTO> reportDTOs = reports.stream()
