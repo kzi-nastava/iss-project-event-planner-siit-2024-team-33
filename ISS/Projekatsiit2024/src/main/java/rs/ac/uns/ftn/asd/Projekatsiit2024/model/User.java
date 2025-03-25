@@ -46,6 +46,9 @@ public class User implements UserDetails {
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+    	if (role == null) {
+            return Collections.emptyList();
+        }
         return Collections.singletonList(role);
     }
     

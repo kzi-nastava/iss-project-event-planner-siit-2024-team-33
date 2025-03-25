@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -58,7 +59,6 @@ public class AuthenticationController {
 		int expiresIn = tokenUtils.getExpiredIn();
 		
 		return ResponseEntity.ok(new UserToken(jwt, expiresIn));
-		
 	}
 	
 	@PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -99,8 +99,15 @@ public class AuthenticationController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
 	}
 	
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<String> handleException(BadCredentialsException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
+	}
+	
 	@ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
+		System.err.println("Caught exception: " + ex.getClass().getName());
+		System.err.println("Exception message: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
     }
 	
