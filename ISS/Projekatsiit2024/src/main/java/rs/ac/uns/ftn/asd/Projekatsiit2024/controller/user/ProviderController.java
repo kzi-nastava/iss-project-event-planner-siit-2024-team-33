@@ -15,22 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.persistence.EntityNotFoundException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Organizer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.OrganizerService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.ProviderService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.provider.ProviderDetailsDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.GetProviderRatingDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreateOrganizerDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreateProviderDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreatedOrganizerDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreatedProviderDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.OrganizerService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.ProviderService;
+
 
 @RestController
 @RequestMapping("api/providers")
@@ -39,7 +31,7 @@ public class ProviderController {
 	@Autowired
 	ProviderService providerService = new ProviderService();
 	
-	/*@GetMapping("/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<ProviderDetailsDTO> getProvider(@PathVariable Integer id) {
 		return ResponseEntity.ok(new ProviderDetailsDTO(providerService.get(id)));
 	}
@@ -48,7 +40,7 @@ public class ProviderController {
 	public ResponseEntity<List<GetProviderRatingDTO>> getRatings(@PathVariable Integer id){
 		Provider p = providerService.get(id);
 		return ResponseEntity.ok(p.getRatings().stream().map(pr -> new GetProviderRatingDTO(pr)).toList());
-	}*/
+	}
 	
 	/*@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CreatedProviderDTO> createProvider(@RequestBody CreateProviderDTO providerDTO) throws UserCreationException {
