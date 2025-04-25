@@ -34,7 +34,7 @@ public class NotificationController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/xdd")
     public ResponseEntity<List<GetNotificationDTO>> getNotifications(@RequestParam int receiverId) {
         if (receiverId <= 0) {
             return ResponseEntity.status(403).build();

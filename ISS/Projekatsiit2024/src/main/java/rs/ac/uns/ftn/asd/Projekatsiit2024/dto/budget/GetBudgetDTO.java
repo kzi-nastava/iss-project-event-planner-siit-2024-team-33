@@ -11,4 +11,6 @@ public class GetBudgetDTO {
 	public List<MinimalOfferCategoryDTO> recommendedOfferTypes;
 	public List<BudgetItemDTO> takenItems;
 	public List<BudgetOfferDTO> takenOffers;
+	public double maxBudget;
+	public double usedBudget;
 }

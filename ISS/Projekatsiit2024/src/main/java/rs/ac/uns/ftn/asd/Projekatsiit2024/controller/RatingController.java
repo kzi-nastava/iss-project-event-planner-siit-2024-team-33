@@ -47,7 +47,7 @@ public class RatingController {
         return ResponseEntity.ok(ratingDTOs);
     }
     
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<GetRatingDTO>> getRatings(){
     	List<Rating> ratings = ratingService.getAllRatings();
         List<GetRatingDTO> ratingDTOs = ratings.stream()

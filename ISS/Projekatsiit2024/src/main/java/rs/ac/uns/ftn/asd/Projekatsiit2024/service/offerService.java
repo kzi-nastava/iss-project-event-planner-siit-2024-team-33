@@ -226,7 +226,7 @@ public class offerService {
     				.toList();
     	}
     	
-    	if(!eventTypes.isEmpty()) {
+        if (eventTypes != null && !eventTypes.isEmpty()) {
     		offers = offers.stream()
                     .filter(offer -> offer.getValidEvents() != null && offer.getValidEvents().stream().anyMatch(eventTypes::contains))
     				.toList();

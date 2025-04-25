@@ -3,63 +3,45 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product;
 import java.sql.Date;
 import java.util.List;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.common.ImageManager;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 
 public class GetProductDTO {
-	private Integer Id;
-	private String Name;
-	private String Description;
-	private Double Price;
-	private Double Discount;
-	private List<String> Pictures;
-	public Availability Availability;
-    public Date CreationDate;
-    public Boolean IsPending;
-    public Boolean IsDeleted;
-    public OfferCategory Category;
-    public Provider Provider;
-    public List<EventType> ValidEvents;
-    public List<OfferReservation> OfferReservations;
-    public List<Rating> Ratings; 
-	public String getName() {
-		return Name;
-	}
-	public void setName(String name) {
-		Name = name;
-	}
-	public Double getPrice() {
-		return Price;
-	}
-	public void setPrice(Double price) {
-		Price = price;
-	}
-	public String getDescription() {
-		return Description;
-	}
-	public void setDescription(String description) {
-		Description = description;
-	}
-	public Double getDiscount() {
-		return Discount;
-	}
-	public void setDiscount(Double discount) {
-		Discount = discount;
-	}
-	public List<String> getPictures() {
-		return Pictures;
-	}
-	public void setPictures(List<String> pictures) {
-		Pictures = pictures;
-	}
-	public Integer getId() {
-		return Id;
-	}
-	public void setId(Integer id) {
-		Id = id;
-	}
+	public Integer versionId;
+	public Integer offerId;
+	public String name;
+	public String description;
+	public Double price;
+	public Double discount;
+	public List<String> picturesDataURI;
+	public Availability availability;
+    public MinimalOfferCategoryDTO category;
+    
+    public Integer providerId;
+    public String providerName;
+    
+    public List<MinimalEventTypeDTO> validEvents;
+    
+    public GetProductDTO(Product p) {
+    	this.versionId = p.getId();
+    	this.offerId = p.getOfferID();
+    	this.name = p.getName();
+    	this.description = p.getDescription();
+    	this.price = p.getPrice();
+    	this.discount = p.getDiscount();
+    	this.picturesDataURI = p.getPictures().stream().map(imgpath -> ImageManager.loadAsDataURI(imgpath)).toList();
+    	this.availability = p.getAvailability();
+    	this.category = new MinimalOfferCategoryDTO(p.getCategory());
+    	this.providerId = p.getProvider().getId();
+    	this.providerName = p.getProvider().getProviderName();
+    	this.validEvents = p.getValidEvents().stream().map(et -> new MinimalEventTypeDTO(et)).toList();
+    }
 }

@@ -31,5 +31,8 @@ public interface OfferReservationRepository extends JpaRepository<OfferReservati
     
     @Query("SELECT res.offer FROM OfferReservation res WHERE res.offer.category=:#{#bi.budgetCategory} AND res.event=:#{#bi.event}")
     List<Offer> findByBudgetItem(@Param("bi") BudgetItem bi);
+    
+    @Query("SELECT res FROM OfferReservation res WHERE res.offer.id=:offerId AND res.event.id=:eventId")
+    OfferReservation findByEventAndOffer(@Param("offerId") Integer offerId, @Param("eventId") Integer eventId);
 
 }

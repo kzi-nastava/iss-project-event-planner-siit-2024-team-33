@@ -69,6 +69,13 @@ public class offerReservationService {
     	return reservation;
     }
     
+    public void cancelProductReservation(Product product, Event event) {
+    	OfferReservation reservation = offerReservationRepo.findByEventAndOffer(product.getId(), event.getId());
+    	if(reservation != null) {
+    		offerReservationRepo.delete(reservation);
+    	}
+    }
+    
     public OfferReservation createOfferReservation(
             LocalDate dateOfReservation,
             Integer offerId,

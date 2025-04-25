@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,4 +19,7 @@ public interface ServiceRepository extends JpaRepository<Service, Integer>{
 	
 	@Query("SELECT s FROM Service s WHERE s.id=:versionId AND s.offerID=:offerId")
 	public Service findServiceWithVersion(@Param("offerId") Integer offerId, @Param("versionId") Integer versionId);
+	
+	@Query("SELECT s FROM Service s WHERE s.offerID=:offerId")
+	public List<Service> findServicesByOfferID(@Param("offerId") Integer offerId);
 }

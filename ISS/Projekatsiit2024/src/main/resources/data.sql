@@ -1,12 +1,12 @@
-INSERT INTO AUTHENTIFIED_USER(IS_DELETED, SUSPENSION_END_DATE, DTYPE, DESCRIPTION, EMAIL, NAME, PASSWORD, PHONE_NUMBER, PICTURE, PROVIDER_NAME, RESIDENCY, SURNAME, CITY)
+INSERT INTO AUTHENTIFIED_USER(IS_DELETED, SUSPENSION_END_DATE, DTYPE, DESCRIPTION, EMAIL, NAME, PASSWORD, PHONE_NUMBER, PICTURES, PROVIDER_NAME, RESIDENCY, SURNAME, CITY)
 VALUES
-(0, '2024-12-31', 'Provider', 'Provider 1', 'milion@example.com', 'Milion', 'hashedpassword123', '1234567890', 'image1.jpg', 'Provider1', 'USA', 'Doe', 'Houston'),
+(0, '2024-12-31', 'Provider', 'Provider 1', 'milion@example.com', 'Milion', '$2a$10$Ows0FMF/4k9URReg.Cptr.JtgIuOpsUnpHd9VmH/UVEyOMg4/zcQW', '1234567890', ARRAY['milion.jpg'], 'Provider1', 'USA', 'Doe', 'Houston'),
 (0, '2024-11-30', 'Provider', 'Provider 2', 'mirkodjukic718@gmail.com', 'Lobanja', 'MikroMirza123!MikroMirza123!', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', 'New York City'),
 (0, '2024-12-31', 'Provider', 'Provider 3', 'mikro@example.com', 'Mikro', 'hashedpassword123', '1234567890', 'image1.jpg', 'Provider1', 'USA', 'Doe', 'Jew York City'),
 (0, '2024-11-30', 'Provider', 'Provider 4', 'magistrala@domain.com', 'Magistrala', 'encryptedpassword456', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', '3ew York City');
 
 INSERT INTO AUTHENTIFIED_USER (
-    ID, IS_DELETED, SUSPENSION_END_DATE, DTYPE, DESCRIPTION, EMAIL, NAME, PASSWORD, PHONE_NUMBER, PICTURE, PROVIDER_NAME, RESIDENCY, SURNAME, CITY
+    ID, IS_DELETED, SUSPENSION_END_DATE, DTYPE, DESCRIPTION, EMAIL, NAME, PASSWORD, PHONE_NUMBER, PICTURES, PROVIDER_NAME, RESIDENCY, SURNAME, CITY
 ) VALUES (
     5, 0, '2024-12-02', 'Organizer', 'Organizer 1', 'BOOMBOOMPALACINKE@domain.com', 'BOOMBOOM', 'encryptedpassword456', '9876543210', 'image2.png', 'BUMBUM', 'Swaziland', 'xSmithy', 'Jew York City'
 );
@@ -19,7 +19,7 @@ VALUES
 
 INSERT INTO OFFER (CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME, AVAILABILITY, PICTURES,CITY)
 VALUES
-(1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 1, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', 'image1.jpg','Mew York City'),
+(1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 1, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'],'Mew York City'),
 (2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 2, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', 'image2.png','Jew York City'),
 (3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 3, 'PRODUCT', 'Product', 'Beautiful sour yummy candeis', 'Candy', 'AVAILABLE', 'image3.jpg','New  City');
 

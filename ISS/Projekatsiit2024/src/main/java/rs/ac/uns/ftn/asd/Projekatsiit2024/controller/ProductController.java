@@ -21,6 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.persistence.EntityNotFoundException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Product;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ProductService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerReservationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.GetEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreateProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreatedProductDTO;
@@ -49,13 +55,13 @@ public class ProductController {
 	
 	
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<GetProductDTO> getProduct(@PathVariable("id") Long id) {
-		GetProductDTO product = new GetProductDTO();
-
-		if (product == null) {
-			return new ResponseEntity<GetProductDTO>(HttpStatus.NOT_FOUND);
+	public ResponseEntity getProduct(@PathVariable("id") Integer id) {
+		try {
+			Product p = productService.get(id);
+			return ResponseEntity.ok(new GetProductDTO(p));
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
 		}
-		return new ResponseEntity<GetProductDTO>(product, HttpStatus.OK);
 	}
 	
 	
@@ -85,10 +91,20 @@ public class ProductController {
 	@PostMapping("/{id}/reservations")
 	public ResponseEntity buyProduct(@PathVariable Integer id, @RequestBody PostProductPurchaseDTO data){
 		try {
-			return ResponseEntity.ok(new MinimalProductDTO(productService.buyProduct(id, data.EventID)));
+			return ResponseEntity.ok(new MinimalProductDTO(productService.buyProduct(id, data.eventId)));
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(404).body(e.toString());
 		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.toString());
+		}
+	}
+	
+	@DeleteMapping("/{id}/reservations/{eventId}")
+	public ResponseEntity cancelReservation(@PathVariable Integer id, @PathVariable Integer eventId) {
+		try {
+			productService.cancelReservation(id, eventId);
+			return ResponseEntity.noContent().build();
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.toString());
 		}
 	}

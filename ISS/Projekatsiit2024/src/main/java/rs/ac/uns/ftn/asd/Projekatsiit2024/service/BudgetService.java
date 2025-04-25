@@ -149,6 +149,9 @@ public class BudgetService {
 		
 		budget.takenOffers = reservedOffers.stream().map(off -> new BudgetOfferDTO(off)).toList();
 		
+		budget.maxBudget = budgetItems.stream().mapToDouble(bi -> bi.getBudget()).sum();
+		budget.usedBudget = budget.takenOffers.stream().mapToDouble(o -> o.cost).sum();
+		
 		return budget;
 	}
 }

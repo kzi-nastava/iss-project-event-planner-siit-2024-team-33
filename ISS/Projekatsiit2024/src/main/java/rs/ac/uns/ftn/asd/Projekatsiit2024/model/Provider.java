@@ -19,4 +19,6 @@ public class Provider extends AuthentifiedUser {
     @OneToMany(mappedBy = "provider")
     private List<Offer> offers;
 
+    @OneToMany(mappedBy = "provider")
+    private List<ProviderRating> ratings;
 }
