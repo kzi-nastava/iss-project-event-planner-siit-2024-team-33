@@ -2,7 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service;
 
 import java.util.List;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
 
 public class PostServiceDTO {
 	//DTO Will either contain this

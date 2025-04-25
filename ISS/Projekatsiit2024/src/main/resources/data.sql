@@ -148,3 +148,9 @@ INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
 
+INSERT INTO Role (name) VALUES ('ORGANIZER_ROLE');
+INSERT INTO Role (name) VALUES ('PROVIDER_ROLE');
+INSERT INTO Role (name) VALUES ('AUSER_ROLE');
+INSERT INTO Role (name) VALUES ('ADMIN_ROLE');
+
+

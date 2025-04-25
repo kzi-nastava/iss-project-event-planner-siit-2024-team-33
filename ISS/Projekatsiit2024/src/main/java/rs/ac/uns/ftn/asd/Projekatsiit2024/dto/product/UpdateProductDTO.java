@@ -3,12 +3,12 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product;
 import java.sql.Date;
 import java.util.List;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Rating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
 
 public class UpdateProductDTO {
 	public String Name;

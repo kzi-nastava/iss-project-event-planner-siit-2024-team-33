@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.Service;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
 import java.util.Optional;
 
@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Exception.UserCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Repository.ProviderRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ProviderRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreateOrganizerDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreateProviderDTO;
 

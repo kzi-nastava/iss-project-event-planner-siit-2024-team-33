@@ -7,9 +7,9 @@ import java.time.LocalTime;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service;
 @Setter
 @Getter
 public class GetServiceReservationDTO {

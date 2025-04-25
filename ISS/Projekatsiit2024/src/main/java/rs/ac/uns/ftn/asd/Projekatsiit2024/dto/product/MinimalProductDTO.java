@@ -1,7 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Availability;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Product;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Product;
 
 public class MinimalProductDTO {
 	public Integer id;

@@ -2,7 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
 
 @Getter
 @Setter

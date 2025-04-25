@@ -4,8 +4,8 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Common.ImageManager;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.common.ImageManager;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
 
 @Getter
 @Setter

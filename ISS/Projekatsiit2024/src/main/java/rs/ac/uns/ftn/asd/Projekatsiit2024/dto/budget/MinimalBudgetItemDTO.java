@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.BudgetItem;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.OfferDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.BudgetItem;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class MinimalBudgetItemDTO {
