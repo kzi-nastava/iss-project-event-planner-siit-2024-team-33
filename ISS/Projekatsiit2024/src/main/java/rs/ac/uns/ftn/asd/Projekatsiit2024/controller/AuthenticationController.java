@@ -1,5 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +30,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.User;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.AuthenticationService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ErrorMessages;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.TokenUtils;
 
 @RestController
@@ -95,13 +99,15 @@ public class AuthenticationController {
     }
 	
 	@ExceptionHandler(AuthenticationException.class)
-	public ResponseEntity<String> handleException(AuthenticationException ex) {
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
+	public ResponseEntity<ErrorMessages> handleException(AuthenticationException ex) {
+	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorMessages(
+	    		"Invalid email or password."));
 	}
-	
+
 	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity<String> handleException(BadCredentialsException ex) {
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
+	public ResponseEntity<ErrorMessages> handleException(BadCredentialsException ex) {
+	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorMessages(
+	    		"Invalid email or password."));
 	}
 	
 	@ExceptionHandler(Exception.class)
