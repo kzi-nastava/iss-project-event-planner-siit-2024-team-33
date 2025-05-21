@@ -4,9 +4,9 @@ import java.sql.Date;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 @Setter
 @Getter
 public class GetRatingDTO {

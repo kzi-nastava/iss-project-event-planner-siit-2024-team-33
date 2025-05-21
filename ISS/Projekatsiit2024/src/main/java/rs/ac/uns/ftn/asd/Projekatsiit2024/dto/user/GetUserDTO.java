@@ -4,8 +4,8 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.common.ImageManager;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 @Getter
 @Setter
@@ -27,6 +27,6 @@ public class GetUserDTO {
 		this.setPassword(au.getPassword());
 		this.setName(au.getName());
 		this.setSurname(au.getSurname());
-		this.setPictures(au.getPictures().stream().map(imgUrl -> ImageManager.loadAsDataURI(imgUrl)).toList());
+		//this.setPicture(au.getPictures().stream().map(imgUrl -> ImageManager.loadAsDataURI(imgUrl)).toList());
 	}
 }

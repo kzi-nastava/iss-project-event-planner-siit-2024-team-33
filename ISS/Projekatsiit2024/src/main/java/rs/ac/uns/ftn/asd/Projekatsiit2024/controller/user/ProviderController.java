@@ -4,23 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.provider.ProviderDetailsDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.GetProviderRatingDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreateProviderDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreatedProviderDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.ProviderService;
 
 
@@ -29,7 +24,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.ProviderService;
 public class ProviderController {
 	
 	@Autowired
-	ProviderService providerService = new ProviderService();
+	ProviderService providerService;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ProviderDetailsDTO> getProvider(@PathVariable Integer id) {

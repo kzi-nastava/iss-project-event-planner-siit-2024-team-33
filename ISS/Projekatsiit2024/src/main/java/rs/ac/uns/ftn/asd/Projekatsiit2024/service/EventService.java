@@ -12,15 +12,15 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Organizer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventTypeRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OrganizerRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ProviderRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.OrganizerRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;

@@ -10,11 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreatedProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.session.CreateSessionDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.session.CreatedSessionDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreateUserDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreatedUserDTO;
 
 @RestController
 @RequestMapping("api/sessions")

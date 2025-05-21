@@ -1,15 +1,18 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
 
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.auth.RegisterUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Organizer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OrganizerRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.OrganizerRepository;
 
 @Service
 public class OrganizerService {
@@ -18,6 +21,9 @@ public class OrganizerService {
 	
 	@Autowired
     private OrganizerRepository organizerRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
 	
 	@Transactional(propagation = Propagation.REQUIRED)
     public Organizer createOrganizer(RegisterUser registerUser) throws OrganizerCreationException {
@@ -33,17 +39,39 @@ public class OrganizerService {
         organizer.setSurname(registerUser.getSurname());
         organizer.setPicture(registerUser.getPicture());
         organizer.setResidency(registerUser.getResidency());
+        organizer.setCity(registerUser.getResidency().split(" ")[0]);
         organizer.setPhoneNumber(registerUser.getPhoneNumber());
+        organizer.setIsDeleted(false);
+        organizer.setSuspensionEndDate(null);
+        organizer.setLastPasswordResetDate(null);
+        organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
         
         return organizerRepository.save(organizer);
     }
 	
-	
-	//TODO: validation of data
 	private boolean isDataCorrect(RegisterUser registerUser) throws OrganizerCreationException {
-		if (userRepository.findByEmail(registerUser.getEmail()).isPresent()) {
+		
+		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", registerUser.getEmail())) {
+			throw new OrganizerCreationException("Email is not of valid format.");
+		}
+		if (userRepository.findByEmail(registerUser.getEmail()) != null) {
             throw new OrganizerCreationException("That email is already taken.");
         }
+		if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", registerUser.getPassword())) {
+			throw new OrganizerCreationException("Password is not of valid format.");
+		}
+		if (!Pattern.matches("^[a-zA-Z]{1,50}$", registerUser.getName())) {
+			throw new OrganizerCreationException("Name is not of valid format.");
+		}
+		if (!Pattern.matches("^[a-zA-Z]{1,50}$", registerUser.getSurname())) {
+			throw new OrganizerCreationException("Surname is not of valid format.");
+		}
+		if (!Pattern.matches("^[A-Za-z\\s,]{1,50}$", registerUser.getResidency())) {
+			throw new OrganizerCreationException("Residency is not of valid format.");
+		}
+		if (!Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", registerUser.getPhoneNumber())) {
+			throw new OrganizerCreationException("Phone number is not of valid format.");
+		}
 		
 		return true;
 	}

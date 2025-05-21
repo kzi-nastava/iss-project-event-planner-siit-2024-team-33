@@ -15,8 +15,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 
 public class CreatedProductDTO {
 	public Integer Id;

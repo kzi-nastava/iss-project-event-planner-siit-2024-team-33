@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.GetInvitationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Invitation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.invitationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.AuthentifiedUserService;
 

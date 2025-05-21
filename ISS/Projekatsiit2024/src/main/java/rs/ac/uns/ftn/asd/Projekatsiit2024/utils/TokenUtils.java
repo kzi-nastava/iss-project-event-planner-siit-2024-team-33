@@ -11,7 +11,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.User;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 
 @Component
 public class TokenUtils {
@@ -37,13 +37,13 @@ public class TokenUtils {
 	private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 	
 	
-	public String generateToken(User user) {
+	public String generateToken(UserPrincipal user) {
 		return Jwts.builder()
 				.setIssuer(APP_NAME)
 				.setSubject(user.getUsername())
 				.setAudience(generateAudience())
 				.setIssuedAt(new Date())
-				.claim("role", user.getRole().toString())
+				.claim("role", user.getAuthorities().toString())
 				.setExpiration(generateExpirationDate())
 				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
 	}
@@ -131,7 +131,7 @@ public class TokenUtils {
 	}
 	
 	public Boolean validateToken(String token, UserDetails userDetails) {
-		User user = (User) userDetails;
+		UserPrincipal user = (UserPrincipal) userDetails;
 		final String username = getUsernameFromToken(token);
 		final Date created = getIssuedAtDateFromToken(token);
 		

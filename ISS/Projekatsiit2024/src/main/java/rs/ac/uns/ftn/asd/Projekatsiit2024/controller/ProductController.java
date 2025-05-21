@@ -24,7 +24,7 @@ import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Product;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ProductService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerReservationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.GetEventDTO;
@@ -38,7 +38,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.productPurchase.PostProductPurchas
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ProductService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerReservationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerService;

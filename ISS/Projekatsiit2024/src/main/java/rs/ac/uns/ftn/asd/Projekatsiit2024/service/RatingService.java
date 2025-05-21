@@ -3,12 +3,12 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.RatingRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
 import java.util.List;
 import java.util.Optional;
