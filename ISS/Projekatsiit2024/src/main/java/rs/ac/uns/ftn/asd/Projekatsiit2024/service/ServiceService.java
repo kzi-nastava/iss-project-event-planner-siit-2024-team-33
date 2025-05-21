@@ -1,25 +1,23 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
-import java.io.IOException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.common.ImageManager;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ProviderRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ServiceRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 @org.springframework.stereotype.Service
 public class ServiceService {

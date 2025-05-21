@@ -2,8 +2,8 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.provider;
 
 import java.util.List;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.common.ImageManager;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 public class ProviderDetailsDTO {
 	public Integer id;

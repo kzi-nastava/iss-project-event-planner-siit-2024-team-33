@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PutNotificationDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Notification;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.NotificationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
 
 @Service

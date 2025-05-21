@@ -1,19 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreateOrganizerDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.CreatedOrganizerDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.OrganizerService;
 
 @RestController
@@ -21,7 +10,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.OrganizerService;
 public class OrganizerController {
 	
 	@Autowired
-	OrganizerService organizerService = new OrganizerService();
+	OrganizerService organizerService;
 	
 	/*@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CreatedOrganizerDTO> createOrganizer(@RequestBody CreateOrganizerDTO organizerDTO) throws UserCreationException {
@@ -32,7 +21,7 @@ public class OrganizerController {
 		return new ResponseEntity<CreatedOrganizerDTO>(savedOrganizer, HttpStatus.CREATED);
 	}*/
 	
-	@ExceptionHandler(UserCreationException.class)
+	/*@ExceptionHandler(UserCreationException.class)
 	public ResponseEntity<String> handleOrganizerCreationException(UserCreationException ex) {
         //bad request
         return ResponseEntity.badRequest().body(ex.getMessage());
@@ -41,5 +30,5 @@ public class OrganizerController {
 	@ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
-    }
+    }*/
 }

@@ -17,16 +17,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth.RestAuthenticationEntryPoint;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth.TokenAuthenticationFilter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.AuthenticationService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.auth.AuthenticationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.TokenUtils;
 
 @Configuration
@@ -45,9 +46,14 @@ public class WebSecurityConfig {
 		return new AuthenticationService();
 	}
 	
-	@Bean
+	/*@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}*/
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+	    return NoOpPasswordEncoder.getInstance(); // Not for production!
 	}
 	
 	@Bean
@@ -70,7 +76,6 @@ public class WebSecurityConfig {
 		http.csrf((csrf) -> csrf.disable());
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(restAuthenticationEntryPoint));
-		
         
         http.authorizeHttpRequests(request -> {
             request//.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
@@ -79,12 +84,21 @@ public class WebSecurityConfig {
                    //.requestMatchers(new AntPathRequestMatcher("/api/offers/**")).permitAll()
                    //.requestMatchers(new AntPathRequestMatcher("/api/services/**")).permitAll()
                    //.requestMatchers(new AntPathRequestMatcher("/api/whoami")).hasRole("USER")
+            		 .requestMatchers("/h2-console/**").permitAll()
             .anyRequest().permitAll();
-            ;
         });
         http.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
         http.authenticationProvider(authenticationProvider());
-		return http.build();
+        
+        http.headers(headers -> headers
+                .addHeaderWriter((request, response) ->
+                    response.addHeader("Content-Security-Policy", "frame-ancestors 'self'")
+                )
+            );
+        
+        http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
+
+        return http.build();
 	}
 	
 	@Bean

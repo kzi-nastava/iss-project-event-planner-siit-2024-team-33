@@ -1,15 +1,28 @@
-INSERT INTO AUTHENTIFIED_USER(IS_DELETED, SUSPENSION_END_DATE, DTYPE, DESCRIPTION, EMAIL, NAME, PASSWORD, PHONE_NUMBER, PICTURES, PROVIDER_NAME, RESIDENCY, SURNAME, CITY)
-VALUES
-(0, '2024-12-31', 'Provider', 'Provider 1', 'milion@example.com', 'Milion', '$2a$10$Ows0FMF/4k9URReg.Cptr.JtgIuOpsUnpHd9VmH/UVEyOMg4/zcQW', '1234567890', ARRAY['milion.jpg'], 'Provider1', 'USA', 'Doe', 'Houston'),
-(0, '2024-11-30', 'Provider', 'Provider 2', 'mirkodjukic718@gmail.com', 'Lobanja', 'MikroMirza123!MikroMirza123!', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', 'New York City'),
-(0, '2024-12-31', 'Provider', 'Provider 3', 'mikro@example.com', 'Mikro', 'hashedpassword123', '1234567890', 'image1.jpg', 'Provider1', 'USA', 'Doe', 'Jew York City'),
-(0, '2024-11-30', 'Provider', 'Provider 4', 'magistrala@domain.com', 'Magistrala', 'encryptedpassword456', '9876543210', 'image2.png', 'Provider2', 'Canada', 'Smith', '3ew York City');
+INSERT INTO Role (id, name) VALUES (0, 'ADMIN_ROLE');
+INSERT INTO Role (id, name) VALUES (1, 'AUSER_ROLE');
+INSERT INTO Role (id, name) VALUES (2, 'ORGANIZER_ROLE');
+INSERT INTO Role (id, name) VALUES (3, 'PROVIDER_ROLE');
 
-INSERT INTO AUTHENTIFIED_USER (
-    ID, IS_DELETED, SUSPENSION_END_DATE, DTYPE, DESCRIPTION, EMAIL, NAME, PASSWORD, PHONE_NUMBER, PICTURES, PROVIDER_NAME, RESIDENCY, SURNAME, CITY
-) VALUES (
-    5, 0, '2024-12-02', 'Organizer', 'Organizer 1', 'BOOMBOOMPALACINKE@domain.com', 'BOOMBOOM', 'encryptedpassword456', '9876543210', 'image2.png', 'BUMBUM', 'Swaziland', 'xSmithy', 'Jew York City'
-);
+INSERT INTO authentified_user 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
+VALUES 
+('admin@example.com', 'pass123', 'Admin', 'User', 'Headquarters', 'admin.jpg', false, NULL, 0, NULL, 'Admin');
+INSERT INTO authentified_user 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
+VALUES 
+('organizer@example.com', 'hashedpassword6', 'John', 'Doe', 'Berlin', 'organizer.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
+INSERT INTO authentified_user 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE) 
+VALUES 
+('provider@example.com', 'hashedpassword7', 'Provider', 'Company', 'Paris', 'provider.jpg', false, NULL, 3, CURRENT_TIMESTAMP, 'France', '987-654-321', 'TechProvider', 'Provider of tech services', 'Provider');
+INSERT INTO authentified_user 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
+VALUES 
+('admin2@example.com', 'hashedpassword8', 'Alice', 'Johnson', 'San Francisco', 'admin2.jpg', false, NULL, 0, CURRENT_TIMESTAMP, 'Admin');
+INSERT INTO authentified_user 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
+VALUES 
+('organizer2@example.com', 'hashedpassword9', 'Steve', 'Williams', 'Madrid', 'organizer2.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Spain', '321-654-987', 'Organizer');
 
 INSERT INTO OFFER_CATEGORY (IS_ACCEPTED, IS_ENABLED, DESCRIPTION, NAME)
 VALUES
@@ -39,6 +52,7 @@ INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (FALSE, 'A sports-related event such as a game or tournament.', 'Sports Event'),
 (TRUE, 'A community gathering or public fair.', 'Festival'),
 (TRUE, 'A casual outdoor gathering with food and entertainment.', 'Picnic');
+
 INSERT INTO EVENT (
     DATE_OF_EVENT, END_OF_EVENT, IS_PRIVATE, ITS_JOEVER, LATITUDE, LONGITUDE, NUM_OF_ATTENDEES, ORGANIZER_ID, PRICE, DESCRIPTION, NAME, PICTURE, PLACE
 ) VALUES 
@@ -147,10 +161,5 @@ INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
 ('Feedback on the event organization.', '2024-12-07', 1, 3),
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
-
-INSERT INTO Role (name) VALUES ('ORGANIZER_ROLE');
-INSERT INTO Role (name) VALUES ('PROVIDER_ROLE');
-INSERT INTO Role (name) VALUES ('AUSER_ROLE');
-INSERT INTO Role (name) VALUES ('ADMIN_ROLE');
 
 

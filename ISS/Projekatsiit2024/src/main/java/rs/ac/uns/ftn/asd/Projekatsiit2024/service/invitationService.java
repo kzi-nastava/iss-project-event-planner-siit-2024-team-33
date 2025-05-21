@@ -10,12 +10,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Invitation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
 @Service
 public class invitationService {
@@ -47,7 +47,7 @@ public class invitationService {
             .orElseThrow(() -> new IllegalArgumentException(""));
 
         for (String email : emails) {
-            AuthentifiedUser invitedUser = authentifiedUserRepo.findByEmail(email).orElse(null);
+            AuthentifiedUser invitedUser = authentifiedUserRepo.findByEmail(email);
 
             Invitation invitation = new Invitation();
             invitation.setText(invitationText);

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.CreateEventTypeDTO;
@@ -25,9 +24,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.GetEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.UpdateEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.UpdatedEventTypeDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.GetUserDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUserDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatedUserDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.EventTypeService;

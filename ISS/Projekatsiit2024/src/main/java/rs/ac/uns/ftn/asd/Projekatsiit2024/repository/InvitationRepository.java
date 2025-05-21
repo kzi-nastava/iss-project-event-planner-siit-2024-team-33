@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Invitation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
 public interface InvitationRepository extends JpaRepository<Invitation, Integer> {
     List<Invitation> findByInviter(AuthentifiedUser inviter);

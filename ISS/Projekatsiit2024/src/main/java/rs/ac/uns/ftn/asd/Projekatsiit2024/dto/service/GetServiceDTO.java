@@ -2,11 +2,11 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service;
 
 import java.util.List;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.common.ImageManager;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 public class GetServiceDTO {
 	public Integer versionId;

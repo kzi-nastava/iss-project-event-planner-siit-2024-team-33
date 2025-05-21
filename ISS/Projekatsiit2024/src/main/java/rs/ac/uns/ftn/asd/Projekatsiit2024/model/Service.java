@@ -7,6 +7,7 @@ import java.util.List;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 
 @Entity
 @Setter
