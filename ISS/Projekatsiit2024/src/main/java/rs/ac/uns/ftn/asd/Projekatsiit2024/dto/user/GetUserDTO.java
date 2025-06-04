@@ -4,29 +4,70 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Admin;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 
 @Getter
 @Setter
 public class GetUserDTO {
-	private Integer Id;
-	private String Email;
-	private String Password;
-	private String Name;
-	private String Surname;
-	private List<String> Pictures;
+	private String email;
+	private String password;
+	private String name;
+	private String surname;
+	private String city;
+	private String picture;
+	private String residency;
+    private String phoneNumber;
+    private String providerName;
+    private String description;
+    private List<String> pictures;
+	
 	
 	public GetUserDTO() {
-		
 	}
 	
 	public GetUserDTO(AuthentifiedUser au) {
-		this.setId(au.getId());
 		this.setEmail(au.getEmail());
 		this.setPassword(au.getPassword());
 		this.setName(au.getName());
 		this.setSurname(au.getSurname());
-		//this.setPicture(au.getPictures().stream().map(imgUrl -> ImageManager.loadAsDataURI(imgUrl)).toList());
+		this.setCity(au.getCity());
+		this.setPicture(au.getPicture());
+	}
+	
+	public GetUserDTO(Admin admin) {
+		this.setEmail(admin.getEmail());
+		this.setPassword(admin.getPassword());
+		this.setName(admin.getName());
+		this.setSurname(admin.getSurname());
+		this.setCity(admin.getCity());
+		this.setPicture(admin.getPicture());
+	}
+	
+	public GetUserDTO(Organizer organizer) {
+		this.setEmail(organizer.getEmail());
+		this.setPassword(organizer.getPassword());
+		this.setName(organizer.getName());
+		this.setSurname(organizer.getSurname());
+		this.setCity(organizer.getCity());
+		this.setPicture(organizer.getPicture());
+		this.setResidency(organizer.getResidency());
+		this.setPhoneNumber(organizer.getPhoneNumber());
+	}
+	
+	public GetUserDTO(Provider provider) {
+		this.setEmail(provider.getEmail());
+		this.setPassword(provider.getPassword());
+		this.setName(provider.getName());
+		this.setSurname(provider.getSurname());
+		this.setCity(provider.getCity());
+		this.setPicture(provider.getPicture());
+		this.setResidency(provider.getResidency());
+		this.setPhoneNumber(provider.getPhoneNumber());
+		this.setProviderName(provider.getProviderName());
+		this.setDescription(provider.getDescription());
+		this.setPictures(provider.getPictures());
 	}
 }

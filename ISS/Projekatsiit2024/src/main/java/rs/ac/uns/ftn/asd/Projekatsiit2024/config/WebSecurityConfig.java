@@ -84,8 +84,28 @@ public class WebSecurityConfig {
                    //.requestMatchers(new AntPathRequestMatcher("/api/offers/**")).permitAll()
                    //.requestMatchers(new AntPathRequestMatcher("/api/services/**")).permitAll()
                    //.requestMatchers(new AntPathRequestMatcher("/api/whoami")).hasRole("USER")
-            		 .requestMatchers("/h2-console/**").permitAll()
-            .anyRequest().permitAll();
+		        .requestMatchers("/api/auth/login").permitAll()
+		        .requestMatchers("/api/auth/check-email").permitAll()
+		        .requestMatchers("/api/images/**").permitAll()
+		        .requestMatchers("/api/providers/**").permitAll()
+		        .requestMatchers("/api/users/signup").permitAll()
+		        .requestMatchers("/h2-console/**").permitAll()
+		        .requestMatchers("/api/events/*/budget/**").permitAll()
+		        .requestMatchers("/api/chat/*/**").permitAll()
+		        .requestMatchers("/api/offers/*/**").permitAll()
+		        .requestMatchers("/api/events/**").permitAll()
+		        .requestMatchers("/api/events/types/**").permitAll()
+		        .requestMatchers("/api/events/*/invitations/**").permitAll()
+		        .requestMatchers("/api/notifications/**").permitAll()
+		        .requestMatchers("/api/offers/categories/**").permitAll()
+		        .requestMatchers("/api/offers/**").permitAll()
+		        .requestMatchers("/api/user/*/offer-prices/**").permitAll()
+		        .requestMatchers("/api/products/**").permitAll()
+		        .requestMatchers("/api/ratings/**").permitAll()
+		        .requestMatchers("/api/reports/**").permitAll()
+		        .requestMatchers("/api/services/**").permitAll()
+		        .requestMatchers("/api/services/*/reservations/**").permitAll()
+		        .anyRequest().authenticated();
         });
         http.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
         http.authenticationProvider(authenticationProvider());

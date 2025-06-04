@@ -6,11 +6,11 @@ INSERT INTO Role (id, name) VALUES (3, 'PROVIDER_ROLE');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
 VALUES 
-('admin@example.com', 'pass123', 'Admin', 'User', 'Headquarters', 'admin.jpg', false, NULL, 0, NULL, 'Admin');
+('admin@example.com', 'pass123', 'Admin', 'User', 'Headquarters', 'milion.jpg', false, NULL, 0, NULL, 'Admin');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
 VALUES 
-('organizer@example.com', 'hashedpassword6', 'John', 'Doe', 'Berlin', 'organizer.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
+('organizer@example.com', 'hashedpassword6', 'John', 'Doe', 'New York City', 'jbl.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE) 
 VALUES 
@@ -66,9 +66,10 @@ INSERT INTO EVENT (
     150, 
     5, 
     50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event1.jpg', 
+    'Neam pojma nesto kenjam kao neka jaka deskripcija sdjfksdjfksdjkfjsdkj
+sdfklsdfklsdlfkslkfklslkdfklsdf', 
+    'Winter Wonderlandsdafasdfasdfsdafdsa', 
+    '5b7ae507-975d-4de8-ad5e-dea8173c8dad.png', 
     'New York City'
 ),
 (
@@ -81,8 +82,8 @@ INSERT INTO EVENT (
     150, 
     5, 
     50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
+    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
+    'Alo najjaca zureza ikadas dfdskfdsk', 
     'event1.jpg', 
     'Jew York City'
 ),
@@ -98,7 +99,7 @@ INSERT INTO EVENT (
     50, 
     'Annual Winter Gala', 
     'Winter Wonderland', 
-    'event1.jpg', 
+    'event2.jpg', 
     'New York City'
 ),
 (

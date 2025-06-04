@@ -13,6 +13,7 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken {
 	public TokenBasedAuthentication(UserDetails principle) {
 		super(principle.getAuthorities());
 		this.principle = principle;
+		super.setAuthenticated(true);
 	}
 	
 	public String getToken() {
@@ -21,11 +22,6 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken {
 	
 	public void setToken(String token) {
 		this.token = token;
-	}
-	
-	@Override
-	public boolean isAuthenticated() {
-		return true;
 	}
 	
 	@Override

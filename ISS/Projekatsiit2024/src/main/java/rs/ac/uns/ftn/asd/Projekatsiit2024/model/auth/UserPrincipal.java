@@ -8,6 +8,8 @@ import java.time.LocalDate;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
 public class UserPrincipal implements UserDetails {
@@ -60,5 +62,10 @@ public class UserPrincipal implements UserDetails {
 
 	public Timestamp getLastPasswordResetDate() {
 		return this.user.getLastPasswordResetDate();
+	}
+	
+	@JsonIgnore
+	public AuthentifiedUser getUser() {
+		return this.user;
 	}
 }

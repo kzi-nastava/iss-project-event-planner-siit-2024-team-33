@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,16 +22,13 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserCreatio
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerCreationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderCreationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.UserService;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-	
-	@Autowired
-	private AuthentifiedUserRepository userRepo;
 	
 	@Autowired
 	private UserService userService;
@@ -45,7 +43,13 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
 	}
 	
-	@GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/me")
+    public ResponseEntity<GetUserDTO> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		return ResponseEntity.ok(new GetUserDTO(userPrincipal.getUser()));
+    }
+	
+	/*@GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GetUserDTO> getMyUser() {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
 		
@@ -56,7 +60,7 @@ public class UserController {
 		GetUserDTO user = new GetUserDTO(au);
 		
 		return new ResponseEntity<GetUserDTO>(user, HttpStatus.OK);
-	}
+	}*/
 	
     @PostMapping(value = "/{blockerId}/block/{blockedId}")
     public ResponseEntity<String> blockUser(@PathVariable Integer blockerId, @PathVariable Integer blockedId) {
@@ -106,6 +110,7 @@ public class UserController {
     
 	@ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
+		ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
     }
     

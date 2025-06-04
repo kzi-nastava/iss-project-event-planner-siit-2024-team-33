@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 import lombok.Getter;
 import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 @Setter
 @Getter
 public class MinimalEventDTO {
@@ -15,7 +16,7 @@ public class MinimalEventDTO {
     
     public MinimalEventDTO(Event event) {
     	this.setId(event.getId());;
-        this.setImage(event.getPicture());
+        this.setImage(ImageManager.loadAsDataURI(event.getPicture()));
         this.setName(event.getName());
         this.setDescription(event.getDescription());
         this.setCost(event.getPrice());

@@ -1,8 +1,10 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.utils;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +45,9 @@ public class TokenUtils {
 				.setSubject(user.getUsername())
 				.setAudience(generateAudience())
 				.setIssuedAt(new Date())
-				.claim("role", user.getAuthorities().toString())
+				.claim("role", user.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toList()))
 				.setExpiration(generateExpirationDate())
 				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
 	}
@@ -72,6 +76,7 @@ public class TokenUtils {
 	
 	public String getToken(HttpServletRequest request) {
 		String authHeader = getAuthHeaderFromHeader(request);
+		System.out.println(authHeader);
 		// JWT se prosledjuje kroz header 'Authorization' u formatu:
 		// Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 		
