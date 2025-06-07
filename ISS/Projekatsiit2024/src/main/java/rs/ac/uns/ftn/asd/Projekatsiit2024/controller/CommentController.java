@@ -20,17 +20,14 @@ public class CommentController {
 	
 	@PostMapping("/comments")
 	public ResponseEntity<GetCommentDTO> PostComment(@PathVariable Integer offerID, @RequestBody PostCommentDTO data){
-		//403: Forbidden if user didn't purchase the offer
 		Boolean wrongUser = false;
 		if(wrongUser)
 			return ResponseEntity.status(403).build();
 		
-		//404: Offer not found
 		Boolean notFound = false;
 		if(notFound)
 			return ResponseEntity.notFound().build();
 		
-		//409: Conflict, already commented
 		Boolean alreadyCommented = false;
 		if(alreadyCommented)
 			return ResponseEntity.status(409).build();
@@ -40,12 +37,10 @@ public class CommentController {
 	
 	@PutMapping("/comments/{commentID}")
 	public ResponseEntity<GetCommentDTO> EditComment(@PathVariable Integer commentID, @PathVariable Integer offerID, @RequestBody PostCommentDTO data){
-		//403: Forbidden if user didn't make the comment being edited
 		Boolean wrongUser = false;
 		if(wrongUser)
 			return ResponseEntity.status(403).build();
 		
-		//404: Comment not found
 		Boolean notFound = false;
 		if(notFound)
 			return ResponseEntity.notFound().build();
