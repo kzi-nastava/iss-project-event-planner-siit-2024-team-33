@@ -24,15 +24,18 @@ public class RatingController {
 
     @Autowired
     private RatingService ratingService;
-
+    @Autowired
+    private AuthentifiedUserRepository userRepo;
     @PostMapping
     public ResponseEntity<GetRatingDTO> submitRating(@RequestBody PostRatingDTO postRatingDTO,
                                                      @RequestParam int offerId)  {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
-        AuthentifiedUser authUser = principal.getUser();
-        
-        Integer userId = authUser.getId();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int userId = user.getId();
         Rating rating = ratingService.submitComment(postRatingDTO.getValue(), postRatingDTO.getComment(), userId, offerId);
         return ResponseEntity.ok(new GetRatingDTO(rating));
     }
