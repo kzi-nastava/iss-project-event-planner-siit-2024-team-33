@@ -1,12 +1,17 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +36,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerService;
 
@@ -42,9 +49,18 @@ public class OfferController {
 	
 	@Autowired
 	private offerService offerService;
+	@Autowired
+	private AuthentifiedUserRepository userRepo;
 	
 	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<MinimalOfferDTO>> GetTop5Offers(@RequestParam Integer id) {
+	public ResponseEntity<List<MinimalOfferDTO>> GetTop5Offers() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int id = user.getId();
 	    List<MinimalOfferDTO> offers = new ArrayList<>();
 	    List<Offer> offerz = offerService.getTop5Offers(id);
 	    
@@ -57,7 +73,14 @@ public class OfferController {
 	}
 	
     @GetMapping(value = "/rest", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalOfferDTO>> GetAllOffers(@RequestParam Integer id) {
+    public ResponseEntity<List<MinimalOfferDTO>> GetAllOffers() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int id = user.getId();
         List<Offer> offers = offerService.getRestOffers(id);
         
         List<MinimalOfferDTO> offersDTO = offers.stream()
@@ -74,8 +97,15 @@ public class OfferController {
     														  @RequestParam(name="category",required=false) String categoryName,
     														  @RequestParam(name="lowestPrice",required=false) Integer lowestPrice,
     														  @RequestParam(name="isAvailable",required=false) Availability isAvailable,
-    														  @RequestParam(name="eventTypes",required=false) List<Integer> eventTypes,
-    														  @RequestParam Integer id) {
+    														  @RequestParam(name="eventTypes",required=false) List<Integer> eventTypes) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int id = user.getId();
+    	
         List<Offer> offers = offerService.getFileteredOffers(isProduct,isService,name,categoryName,lowestPrice,isAvailable,eventTypes,id);
 
         List<MinimalOfferDTO> offersDTO = offers.stream()

@@ -3,7 +3,13 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,7 +45,8 @@ public class EventController {
 	
 	@Autowired
 	EventService eventService;
-	
+	@Autowired
+	AuthentifiedUserRepository userRepo;
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CreatedEventDTO> createEvent(@RequestBody CreateEventDTO eventDTO) throws Exception {
@@ -52,7 +59,14 @@ public class EventController {
 	
 	
     @GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetTop5Events(@RequestParam Integer id) {
+    public ResponseEntity<List<MinimalEventDTO>> GetTop5Events() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int id = user.getId();
         List<MinimalEventDTO> eventsDTO = new ArrayList<>();
         List<Event> events = eventService.getTop5OpenEvents(id);
         
@@ -65,8 +79,16 @@ public class EventController {
     }
     
     @GetMapping(value = "/rest", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetAllEvents(@RequestParam Integer id) {
-        List<Event> events = eventService.getRestEvents(id);
+    public ResponseEntity<List<MinimalEventDTO>> GetAllEvents() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int id = user.getId();
+
+    	List<Event> events = eventService.getRestEvents(id);
         
         List<MinimalEventDTO> eventsDTO = events.stream()
                 .map(MinimalEventDTO::new)
@@ -81,9 +103,15 @@ public class EventController {
 												    		@RequestParam(name="numOfAttendees" ,required=false)  Integer numOfAttendees,
 												    		@RequestParam(name="firstPossibleDate" ,required=false)  String firstPossibleDate,
 												    		@RequestParam(name="lastPossibleDate" ,required=false)  String lastPossibleDate,
-												    		@RequestParam(name="eventTypes" ,required=false)  List<Integer> eventTypes,
-												    		@RequestParam Integer id) throws ParseException {
-        List<Event> events = eventService.getFilteredEvents(name, location, numOfAttendees, firstPossibleDate,
+												    		@RequestParam(name="eventTypes" ,required=false)  List<Integer> eventTypes) throws ParseException {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int id = user.getId();
+    	List<Event> events = eventService.getFilteredEvents(name, location, numOfAttendees, firstPossibleDate,
         													lastPossibleDate,eventTypes,id);
 
         List<MinimalEventDTO> eventsDTO = events.stream()
@@ -130,9 +158,16 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
      }
     
-    @GetMapping(value = "/organizer/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetEventsForOrganizer(@PathVariable Integer id) {
-        List<MinimalEventDTO> eventsDTO = new ArrayList<>();
+    @GetMapping(value = "/organizer", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalEventDTO>> GetEventsForOrganizer() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int id = user.getId();
+    	List<MinimalEventDTO> eventsDTO = new ArrayList<>();
         List<Event> events = eventService.geteventsByOrganizerID(id);
         
         for (Event ev : events) {

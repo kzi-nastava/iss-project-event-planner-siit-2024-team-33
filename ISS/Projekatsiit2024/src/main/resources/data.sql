@@ -6,11 +6,11 @@ INSERT INTO Role (id, name) VALUES (3, 'PROVIDER_ROLE');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
 VALUES 
-('admin@example.com', 'pass123', 'Admin', 'User', 'Headquarters', 'milion.jpg', false, NULL, 0, NULL, 'Admin');
+('admin@example.com', 'pass123', 'Admin', 'User', 'Paris', 'milion.jpg', false, NULL, 0, NULL, 'Admin');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
 VALUES 
-('organizer@example.com', 'hashedpassword6', 'John', 'Doe', 'New York City', 'jbl.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
+('organizer@example.com', 'hashedpassword6', 'John', 'Doe', 'Paris', 'jbl.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE) 
 VALUES 
@@ -18,11 +18,11 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
 VALUES 
-('admin2@example.com', 'hashedpassword8', 'Alice', 'Johnson', 'San Francisco', 'admin2.jpg', false, NULL, 0, CURRENT_TIMESTAMP, 'Admin');
+('admin2@example.com', 'hashedpassword8', 'Alice', 'Johnson', 'Paris', 'admin2.jpg', false, NULL, 0, CURRENT_TIMESTAMP, 'Admin');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
 VALUES 
-('organizer2@example.com', 'hashedpassword9', 'Steve', 'Williams', 'Madrid', 'organizer2.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Spain', '321-654-987', 'Organizer');
+('organizer2@example.com', 'hashedpassword9', 'Steve', 'Williams', 'Paris', 'organizer2.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Spain', '321-654-987', 'Organizer');
 
 INSERT INTO OFFER_CATEGORY (IS_ACCEPTED, IS_ENABLED, DESCRIPTION, NAME)
 VALUES
@@ -32,9 +32,9 @@ VALUES
 
 INSERT INTO OFFER (CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME, AVAILABILITY, PICTURES,CITY)
 VALUES
-(1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 1, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'],'Mew York City'),
-(2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 2, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', 'image2.png','Jew York City'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 3, 'PRODUCT', 'Product', 'Beautiful sour yummy candeis', 'Candy', 'AVAILABLE', 'image3.jpg','New  City');
+(1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 1, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'],'Paris'),
+(2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 2, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', 'image2.png','Paris'),
+(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 3, 'PRODUCT', 'Product', 'Beautiful sour yummy candeis', 'Candy', 'AVAILABLE', 'image3.jpg','Paris');
 
 INSERT INTO OFFER (CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, MAX_LENGTH_IN_MINS, MIN_LENGTH_IN_MINS, OFFERID, PRICE, PROVIDER_ID, RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME, AVAILABILITY, PICTURES, TYPE, CITY)
 VALUES
@@ -70,7 +70,7 @@ INSERT INTO EVENT (
 sdfklsdfklsdlfkslkfklslkdfklsdf', 
     'Winter Wonderlandsdafasdfasdfsdafdsa', 
     '5b7ae507-975d-4de8-ad5e-dea8173c8dad.png', 
-    'New York City'
+    'Paris'
 ),
 (
     CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
