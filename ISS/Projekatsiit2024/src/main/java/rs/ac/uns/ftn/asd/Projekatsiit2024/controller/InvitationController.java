@@ -35,7 +35,7 @@ public class InvitationController {
 	@Autowired
 	EventRepository eventRepo;
     
-	@PostMapping("/{inviterId}")
+	@PostMapping()
 	public ResponseEntity<HttpStatus> createInvitations( @RequestBody PostInvitationDTO postInvitationDTO) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails userDetails = (UserDetails) auth.getPrincipal();
