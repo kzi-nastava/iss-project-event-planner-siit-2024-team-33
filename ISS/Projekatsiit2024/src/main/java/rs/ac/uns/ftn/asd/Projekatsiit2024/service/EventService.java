@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -114,6 +115,7 @@ public class EventService {
 
         return events;
     }
+
     
     //Paginated like the ones above
     //Might filter the ones you MIGHT like more to be in the first rows

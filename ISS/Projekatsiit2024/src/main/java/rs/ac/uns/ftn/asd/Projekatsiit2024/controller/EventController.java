@@ -67,9 +67,9 @@ public class EventController {
 	
 		AuthentifiedUser user = userRepo.findByEmail(email);
 		
-		int id = user.getId();
+		int userId = user.getId();
         List<MinimalEventDTO> eventsDTO = new ArrayList<>();
-        List<Event> events = eventService.getTop5OpenEvents(id);
+        List<Event> events = eventService.getTop5OpenEvents(userId);
         
         for(Event ev:events) {
         	MinimalEventDTO minEve = new MinimalEventDTO(ev);
@@ -87,9 +87,9 @@ public class EventController {
 	
 		AuthentifiedUser user = userRepo.findByEmail(email);
 		
-		int id = user.getId();
+		int userId= user.getId();
 
-    	List<Event> events = eventService.getRestEvents(id);
+    	List<Event> events = eventService.getRestEvents(userId);
         
         List<MinimalEventDTO> eventsDTO = events.stream()
                 .map(MinimalEventDTO::new)
@@ -97,6 +97,7 @@ public class EventController {
   
         return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
     }
+    
 
     @GetMapping(value = "/paginated", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<MinimalEventDTO>> getPaginatedEvents(
@@ -185,9 +186,9 @@ public class EventController {
 	
 		AuthentifiedUser user = userRepo.findByEmail(email);
 		
-		int id = user.getId();
+		int userId= user.getId();
     	List<MinimalEventDTO> eventsDTO = new ArrayList<>();
-        List<Event> events = eventService.geteventsByOrganizerID(id);
+        List<Event> events = eventService.geteventsByOrganizerID(userId);
         
         for (Event ev : events) {
             MinimalEventDTO minEve = new MinimalEventDTO(ev);
