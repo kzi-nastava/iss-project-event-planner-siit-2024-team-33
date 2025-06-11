@@ -48,16 +48,16 @@ public class offerService {
         AuthentifiedUser user = optionalUser.get();
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
         
-        List<Offer> offers = offerRepo.findCurrentOffers();
+        List<Offer> offers = offerRepo.findAll();
         String city = user.getCity();
-        List<Offer> filteredEvents = offers.stream()
-        		.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
+        List<Offer> filteredOffers = offers.stream()
+        		.filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
                 .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
                 .limit(5)
                 .toList();
         
-    	return filteredEvents;
+    	return filteredOffers;
     }
     
     public List<Offer> getRestOffers(Integer id){        
