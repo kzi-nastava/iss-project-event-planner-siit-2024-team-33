@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -66,9 +67,9 @@ public class EventController {
 	
 		AuthentifiedUser user = userRepo.findByEmail(email);
 		
-		int id = user.getId();
+		int userId = user.getId();
         List<MinimalEventDTO> eventsDTO = new ArrayList<>();
-        List<Event> events = eventService.getTop5OpenEvents(id);
+        List<Event> events = eventService.getTop5OpenEvents(userId);
         
         for(Event ev:events) {
         	MinimalEventDTO minEve = new MinimalEventDTO(ev);
@@ -86,9 +87,9 @@ public class EventController {
 	
 		AuthentifiedUser user = userRepo.findByEmail(email);
 		
-		int id = user.getId();
+		int userId= user.getId();
 
-    	List<Event> events = eventService.getRestEvents(id);
+    	List<Event> events = eventService.getRestEvents(userId);
         
         List<MinimalEventDTO> eventsDTO = events.stream()
                 .map(MinimalEventDTO::new)
@@ -96,6 +97,26 @@ public class EventController {
   
         return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
     }
+    
+    @GetMapping(value="/paginated", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalEventDTO>> getPaginatedEvents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size){
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	UserDetails principal = (UserDetails) auth.getPrincipal();
+    	String email = principal.getUsername();
+    	AuthentifiedUser user = userRepo.findByEmail(email);
+    	
+    	int userId=user.getId();
+    	
+        Page<Event> eventsPage = eventService.getRestEventsPaginated(userId, page, size);
+        List<MinimalEventDTO> eventDTOs = eventsPage.getContent().stream()
+                .map(MinimalEventDTO::new)
+                .toList();
+
+        return new ResponseEntity<>(eventDTOs, HttpStatus.OK);
+    }
+    
 
     @GetMapping(value="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MinimalEventDTO>> GetEventList(@RequestParam(name="name" ,required=false)  String name,
@@ -166,9 +187,9 @@ public class EventController {
 	
 		AuthentifiedUser user = userRepo.findByEmail(email);
 		
-		int id = user.getId();
+		int userId= user.getId();
     	List<MinimalEventDTO> eventsDTO = new ArrayList<>();
-        List<Event> events = eventService.geteventsByOrganizerID(id);
+        List<Event> events = eventService.geteventsByOrganizerID(userId);
         
         for (Event ev : events) {
             MinimalEventDTO minEve = new MinimalEventDTO(ev);

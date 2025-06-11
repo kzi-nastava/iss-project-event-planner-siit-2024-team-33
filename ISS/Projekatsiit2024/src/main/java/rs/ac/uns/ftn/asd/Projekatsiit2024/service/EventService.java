@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -110,6 +113,11 @@ public class EventService {
         List<Event> events = getRestEvents(allEvents, id);
 
         return events;
+    }
+    //Paginated like the ones aboev
+    public Page<Event> getRestEventsPaginated(int userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findAllByUserId(userId, pageable);
     }
     
     public List<Event> getFilteredEvents(String name, String location, Integer numberOfAttendees, String before, String after, List<Integer> eventTypes, Integer id) throws java.text.ParseException {
