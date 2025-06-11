@@ -3,6 +3,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -90,33 +91,57 @@ public class OfferController {
         return new ResponseEntity<>(offersDTO, HttpStatus.OK);
     }
 	
-    @GetMapping(value="/filter",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalOfferDTO>> GetOfferList(@RequestParam(name="isProduct", required=false) Boolean isProduct,
-    														  @RequestParam(name="isService",required=false) Boolean isService,
-    														  @RequestParam(name="name",required=false) String name,
-    														  @RequestParam(name="category",required=false) String categoryName,
-    														  @RequestParam(name="lowestPrice",required=false) Integer lowestPrice,
-    														  @RequestParam(name="isAvailable",required=false) Availability isAvailable,
-    														  @RequestParam(name="eventTypes",required=false) List<Integer> eventTypes) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
+//    @GetMapping(value="/filter",produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<List<MinimalOfferDTO>> GetOfferList(@RequestParam(name="isProduct", required=false) Boolean isProduct,
+//    														  @RequestParam(name="isService",required=false) Boolean isService,
+//    														  @RequestParam(name="name",required=false) String name,
+//    														  @RequestParam(name="category",required=false) String categoryName,
+//    														  @RequestParam(name="lowestPrice",required=false) Integer lowestPrice,
+//    														  @RequestParam(name="isAvailable",required=false) Availability isAvailable,
+//    														  @RequestParam(name="eventTypes",required=false) List<Integer> eventTypes) {
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		UserDetails principal = (UserDetails) auth.getPrincipal();
+//		String email = principal.getUsername();
+//	
+//		AuthentifiedUser user = userRepo.findByEmail(email);
+//		
+//		int id = user.getId();
+//    	
+//        List<Offer> offers = offerService.getFileteredOffers(isProduct,isService,name,categoryName,lowestPrice,isAvailable,eventTypes,id);
+//
+//        List<MinimalOfferDTO> offersDTO = offers.stream()
+//                .map(MinimalOfferDTO::new)
+//                .toList();      
+//        
+//        return new ResponseEntity<>(offersDTO, HttpStatus.OK);
+//    }
 	
-		AuthentifiedUser user = userRepo.findByEmail(email);
-		
-		int id = user.getId();
-    	
-        List<Offer> offers = offerService.getFileteredOffers(isProduct,isService,name,categoryName,lowestPrice,isAvailable,eventTypes,id);
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<MinimalOfferDTO>> getOfferList(
+            @RequestParam(name = "isProduct", required = false) Boolean isProduct,
+            @RequestParam(name = "isService", required = false) Boolean isService,
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "category", required = false) String categoryName,
+            @RequestParam(name = "lowestPrice", required = false) Integer lowestPrice,
+            @RequestParam(name = "isAvailable", required = false) Availability isAvailable,
+            @RequestParam(name = "eventTypes", required = false) List<Integer> eventTypes,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "6") int size) {
 
-        List<MinimalOfferDTO> offersDTO = offers.stream()
-                .map(MinimalOfferDTO::new)
-                .toList();      
-        
-        return new ResponseEntity<>(offersDTO, HttpStatus.OK);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) auth.getPrincipal();
+        String email = principal.getUsername();
+
+        AuthentifiedUser user = userRepo.findByEmail(email);
+        int userId = user.getId();
+
+        Page<Offer> filteredOffers = offerService.getFilteredOffers(
+                isProduct, isService, name, categoryName, lowestPrice, isAvailable, eventTypes, userId, page, size);
+
+        Page<MinimalOfferDTO> offersDto = filteredOffers.map(MinimalOfferDTO::new);
+
+        return new ResponseEntity<>(offersDto, HttpStatus.OK);
     }
-	
-	
-	
 
 	
 }

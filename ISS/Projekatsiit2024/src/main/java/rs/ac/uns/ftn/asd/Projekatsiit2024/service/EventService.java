@@ -1,9 +1,11 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,56 +132,114 @@ public class EventService {
         return new PageImpl<>(paginatedEvents, PageRequest.of(page, size), events.size());
     }
     
-    public List<Event> getFilteredEvents(String name, String location, Integer numberOfAttendees, String before, String after, List<Integer> eventTypes, Integer id) throws java.text.ParseException {
-        List<Event> allevents = eventRepository.findAll();
+//    public List<Event> getFilteredEvents(String name, String location, Integer numberOfAttendees, String before, String after, List<Integer> eventTypes, Integer id) throws java.text.ParseException {
+//        List<Event> allevents = eventRepository.findAll();
+//
+//        List<Event> events = getRestEvents(allevents, id);
+//        
+//
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+//        LocalDate beforeDate = (before == null || before.isEmpty())? null : LocalDate.parse(before);
+//        LocalDate afterDate = (after == null || after.isEmpty())? null : LocalDate.parse(after);
+//
+//        if (name != null && !name.isEmpty()) {
+//            events = events.stream()
+//                .filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
+//                .toList();
+//        }
+//
+//        if (location != null && !location.isEmpty()) {
+//            events = events.stream()
+//                .filter(event -> event.getPlace() != null && event.getPlace().toLowerCase().contains(location.toLowerCase()))
+//                .toList();
+//        }
+//
+//        if (numberOfAttendees > 0) {
+//            events = events.stream()
+//                .filter(event -> event.getNumOfAttendees() >= numberOfAttendees)
+//                .toList();
+//        }
+//
+//        if (beforeDate != null) {
+//            events = events.stream()
+//                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isBefore(beforeDate))
+//                .toList();
+//        }
+//
+//        if (afterDate != null) {
+//            events = events.stream()
+//                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isAfter(afterDate))
+//                .toList();
+//        }
+//        
+//        if (eventTypes != null && !eventTypes.isEmpty()) {
+//            events = events.stream()
+//                .filter(event -> event.getEventTypes() != null && event.getEventTypes().stream().anyMatch(eventTypes::contains))
+//                .toList();
+//        }
+//        
+//        events = events.stream().limit(10).toList();
+//
+//        return events;
+//    }
 
-        List<Event> events = getRestEvents(allevents, id);
-        
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-        LocalDate beforeDate = (before == null || before.isEmpty())? null : LocalDate.parse(before);
-        LocalDate afterDate = (after == null || after.isEmpty())? null : LocalDate.parse(after);
+    public Page<Event> getFilteredEvents(String name, String location, Integer numberOfAttendees, 
+            String before, String after, List<Integer> eventTypes, 
+            Integer id, int page, int size) throws ParseException {
 
-        if (name != null && !name.isEmpty()) {
-            events = events.stream()
-                .filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
-                .toList();
-        }
-
-        if (location != null && !location.isEmpty()) {
-            events = events.stream()
-                .filter(event -> event.getPlace() != null && event.getPlace().toLowerCase().contains(location.toLowerCase()))
-                .toList();
-        }
-
-        if (numberOfAttendees > 0) {
-            events = events.stream()
-                .filter(event -> event.getNumOfAttendees() >= numberOfAttendees)
-                .toList();
-        }
-
-        if (beforeDate != null) {
-            events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isBefore(beforeDate))
-                .toList();
-        }
-
-        if (afterDate != null) {
-            events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isAfter(afterDate))
-                .toList();
-        }
-        
-        if (eventTypes != null && !eventTypes.isEmpty()) {
-            events = events.stream()
-                .filter(event -> event.getEventTypes() != null && event.getEventTypes().stream().anyMatch(eventTypes::contains))
-                .toList();
-        }
-        
-        events = events.stream().limit(10).toList();
-
-        return events;
-    }
+		List<Event> allEvents = eventRepository.findAll();
+		List<Event> events = getRestEvents(allEvents, id);
+		
+		LocalDate beforeDate = (before == null || before.isEmpty()) ? null : LocalDate.parse(before);
+		LocalDate afterDate = (after == null || after.isEmpty()) ? null : LocalDate.parse(after);
+		
+		if (name != null && !name.isEmpty()) {
+		events = events.stream()
+		.filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
+		.toList();
+		}
+		
+		if (location != null && !location.isEmpty()) {
+		events = events.stream()
+		.filter(event -> event.getPlace() != null && event.getPlace().toLowerCase().contains(location.toLowerCase()))
+		.toList();
+		}
+		
+		if (numberOfAttendees != null && numberOfAttendees > 0) {
+		events = events.stream()
+		.filter(event -> event.getNumOfAttendees() >= numberOfAttendees)
+		.toList();
+		}
+		
+		if (beforeDate != null) {
+		events = events.stream()
+		.filter(event -> event.getDateOfEvent() != null &&
+		    event.getDateOfEvent().toLocalDate().isBefore(beforeDate))
+		.toList();
+		}
+		
+		if (afterDate != null) {
+		events = events.stream()
+		.filter(event -> event.getDateOfEvent() != null &&
+		    event.getDateOfEvent().toLocalDate().isAfter(afterDate))
+		.toList();
+		}
+		
+		if (eventTypes != null && !eventTypes.isEmpty()) {
+		events = events.stream()
+		.filter(event -> event.getEventTypes() != null &&
+		    event.getEventTypes().stream().anyMatch(eventTypes::contains))
+		.toList();
+		}
+		
+		int start = page * size;
+		int end = Math.min(start + size, events.size());
+		
+		List<Event> pageContent = (start >= events.size()) ? Collections.emptyList() : events.subList(start, end);
+		
+		return new PageImpl<>(pageContent, PageRequest.of(page, size), events.size());
+		}
 
     public void hidePassedEvents() {
         List<Event> allEvents = eventRepository.findAll();
