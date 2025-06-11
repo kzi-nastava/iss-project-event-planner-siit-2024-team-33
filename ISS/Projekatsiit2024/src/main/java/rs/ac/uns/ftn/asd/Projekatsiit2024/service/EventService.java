@@ -116,7 +116,8 @@ public class EventService {
         return events;
     }
 
-    //Paginated like the ones aboev
+    //Paginated like the ones above
+    //Might filter the ones you MIGHT like more to be in the first rows
     public Page<Event> getRestEventsPaginated(int userId, int page, int size) {
         List<Event> allEvents = eventRepository.findAll();
         List<Event> events = getRestEvents(allEvents, userId);

@@ -94,6 +94,7 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/chat/*/**").permitAll()
 		        .requestMatchers("/api/offers/*/**").authenticated()
 		        .requestMatchers("/api/events/**").authenticated()
+		        .requestMatchers("api/events/paginated").authenticated()
 		        .requestMatchers("/api/events/types/**").permitAll()
 		        .requestMatchers("/api/events/*/invitations/**").permitAll()
 		        .requestMatchers("/api/notifications/**").permitAll()
