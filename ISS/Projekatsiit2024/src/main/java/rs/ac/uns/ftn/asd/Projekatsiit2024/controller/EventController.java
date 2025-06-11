@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -97,6 +98,24 @@ public class EventController {
         return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/paginated", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<MinimalEventDTO>> getPaginatedEvents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) auth.getPrincipal();
+        String email = principal.getUsername();
+        AuthentifiedUser user = userRepo.findByEmail(email);
+        int userId = user.getId();
+
+        Page<Event> eventsPage = eventService.getRestEventsPaginated(userId, page, size);
+        Page<MinimalEventDTO> dtoPage = eventsPage.map(MinimalEventDTO::new);
+
+        return ResponseEntity.ok(dtoPage);
+    }
+
+    
     @GetMapping(value="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MinimalEventDTO>> GetEventList(@RequestParam(name="name" ,required=false)  String name,
 												    		@RequestParam(name="location" ,required=false)  String location,
