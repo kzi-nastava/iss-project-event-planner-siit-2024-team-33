@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -114,10 +115,17 @@ public class EventService {
 
         return events;
     }
+
     //Paginated like the ones aboev
     public Page<Event> getRestEventsPaginated(int userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return eventRepository.findAllByUserId(userId, pageable);
+        List<Event> allEvents = eventRepository.findAll();
+        List<Event> events = getRestEvents(allEvents, userId);
+        int start = page*size;
+        int end = Math.min((start+size), events.size());
+        
+        List<Event> paginatedEvents = events.subList(start, end);
+    	
+        return new PageImpl<>(paginatedEvents, PageRequest.of(page, size), events.size());
     }
     
     public List<Event> getFilteredEvents(String name, String location, Integer numberOfAttendees, String before, String after, List<Integer> eventTypes, Integer id) throws java.text.ParseException {
