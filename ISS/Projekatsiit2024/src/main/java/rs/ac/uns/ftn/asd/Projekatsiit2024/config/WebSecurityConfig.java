@@ -106,6 +106,9 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/reports/**").permitAll()
 		        .requestMatchers("/api/services/**").permitAll()
 		        .requestMatchers("/api/services/*/reservations/**").permitAll()
+		        .requestMatchers("/api/events/filter/unauthentified").permitAll()
+		        .requestMatchers("/api/events/filter/authentified").authenticated()
+		        .requestMatchers("/api/events/filter/unauthentified").permitAll()
 		        .anyRequest().permitAll();
         });
         http.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
