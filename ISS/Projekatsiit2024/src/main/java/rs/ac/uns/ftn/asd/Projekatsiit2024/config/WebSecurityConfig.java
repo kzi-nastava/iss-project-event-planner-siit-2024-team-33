@@ -92,21 +92,21 @@ public class WebSecurityConfig {
 		        .requestMatchers("/h2-console/**").permitAll()
 		        .requestMatchers("/api/events/*/budget/**").permitAll()
 		        .requestMatchers("/api/chat/*/**").permitAll()
-		        .requestMatchers("/api/offers/*/**").authenticated()
-		        .requestMatchers("/api/events/**").authenticated()
-		        .requestMatchers("api/events/paginated").authenticated()
+		        .requestMatchers("/api/offers/*/**").permitAll()
+		        .requestMatchers("/api/events/**").permitAll()
+		        .requestMatchers("api/events/paginated").permitAll()
 		        .requestMatchers("/api/events/types/**").permitAll()
 		        .requestMatchers("/api/events/*/invitations/**").permitAll()
 		        .requestMatchers("/api/notifications/**").permitAll()
 		        .requestMatchers("/api/offers/categories/**").permitAll()
-		        .requestMatchers("/api/offers/**").authenticated()
+		        .requestMatchers("/api/offers/**").permitAll()
 		        .requestMatchers("/api/user/*/offer-prices/**").permitAll()
 		        .requestMatchers("/api/products/**").permitAll()
 		        .requestMatchers("/api/ratings/**").permitAll()
 		        .requestMatchers("/api/reports/**").permitAll()
 		        .requestMatchers("/api/services/**").permitAll()
 		        .requestMatchers("/api/services/*/reservations/**").permitAll()
-		        .anyRequest().authenticated();
+		        .anyRequest().permitAll();
         });
         http.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
         http.authenticationProvider(authenticationProvider());

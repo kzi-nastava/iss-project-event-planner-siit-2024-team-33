@@ -30,7 +30,6 @@ VALUES
 (TRUE, TRUE, 'Best service', 'Catering'),
 (TRUE, TRUE, 'Delicious food', 'Food');
 
--- Insert PRODUCT offers
 INSERT INTO OFFER (
     CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, 
     OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME, 
@@ -41,7 +40,6 @@ VALUES
 (2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 1, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', ARRAY['image2.png'], 'Paris'),
 (3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 1, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
 
--- Insert SERVICE offer
 INSERT INTO OFFER (
     CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, 
     MAX_LENGTH_IN_MINS, MIN_LENGTH_IN_MINS, OFFERID, PRICE, PROVIDER_ID, 
@@ -80,8 +78,8 @@ INSERT INTO EVENT (
     DATE_OF_EVENT, END_OF_EVENT, IS_PRIVATE, ITS_JOEVER, LATITUDE, LONGITUDE, NUM_OF_ATTENDEES, ORGANIZER_ID, PRICE, DESCRIPTION, NAME, PICTURE, PLACE
 ) VALUES 
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
     0, 
     0, 
     40.712776, 
@@ -96,8 +94,8 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     'Paris'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
     0, 
     0, 
     40.712776, 
@@ -111,8 +109,8 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     'Jew York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
     0, 
     0, 
     40.712776, 
@@ -126,8 +124,8 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     'Jew York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
     0, 
     0, 
     40.712776, 
@@ -141,8 +139,8 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     'Jew York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
     0, 
     0, 
     40.712776, 
@@ -156,8 +154,8 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     'Jew York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
     0, 
     0, 
     40.712776, 
@@ -171,8 +169,8 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     'Jew York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
     0, 
     0, 
     40.712776, 
