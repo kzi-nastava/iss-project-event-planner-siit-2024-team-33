@@ -9,11 +9,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderCreationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
 @Service
@@ -34,7 +39,7 @@ public class UserService {
 	//creates user of which ever role wanted
 	@Transactional(propagation = Propagation.REQUIRED)
 	public AuthentifiedUser registerUser(RegisterUser registerUser) throws Exception, 
-		UserCreationException, OrganizerCreationException, ProviderCreationException, AuthentifiedUserCreationException {
+		UserCreationException, OrganizerValidationException, ProviderValidationException, AuthentifiedUserValidationException {
 		
 		AuthentifiedUser registeredUser = null;
 		//what type of user is it
@@ -49,12 +54,10 @@ public class UserService {
 				break;
 		
 			case "ORGANIZER_ROLE":
-				
 				registeredUser = organizerService.createOrganizer(registerUser);
 				break;
 				
 			case "PROVIDER_ROLE":
-				
 				registeredUser = providerService.createProvider(registerUser);
 				break;
 			
@@ -64,6 +67,48 @@ public class UserService {
 		
 		return registeredUser;
 	}
+	
+	//updates user of which role it is
+	@Transactional(propagation = Propagation.REQUIRED)
+	public UpdatedUser updateUser(AuthentifiedUser user, UpdateUser updateUser) throws  
+	UserUpdateException, AuthentifiedUserValidationException, OrganizerValidationException, 
+	ProviderValidationException {
+		UpdatedUser updatedUser = null;
+		
+		if (user.getRole() == null) {
+			throw new UserUpdateException("The user with such role doesn't exist.");
+		}
+		
+		switch(user.getRole().toString()) {
+		case "AUSER_ROLE":
+			AuthentifiedUser aUser = authentifiedUserService.updateAuthentifiedUser(user, updateUser);
+			updatedUser = new UpdatedUser(aUser);
+			break;
+
+		case "ORGANIZER_ROLE":
+			Organizer organizer = organizerService.updateOrganizer(user, updateUser);
+			updatedUser = new UpdatedUser(organizer);
+			break;
+
+		case "PROVIDER_ROLE":
+			Provider provider = providerService.updateProvider(user, updateUser);
+			updatedUser = new UpdatedUser(provider);
+			break;
+
+		default:
+			throw new UserUpdateException("The user with such role doesn't exist.");
+		}
+		
+		return updatedUser;
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public AuthentifiedUser terminateUser(AuthentifiedUser user) {
+		user.setIsDeleted(true);
+		
+		return userRepo.save(user);
+	}
+	
 		
 	public void blockAUser(Integer blockerID, Integer blockedID) {
 	    Optional<AuthentifiedUser> blockerOptional = userRepo.findById(blockerID);

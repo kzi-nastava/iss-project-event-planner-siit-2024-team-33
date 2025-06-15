@@ -255,7 +255,7 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     50, 
     'Neam pojma nesto kenjam kao neka jaka deskripcija', 
     'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
+    '7752c6aa-a0cc-475c-8c75-18ee110d3d3b.png', 
     'Jew York City'
 ),
 (
@@ -555,7 +555,7 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     50, 
     'Annual Winter Gala', 
     'Winter Wonderland', 
-    'event1.jpg', 
+    '7752c6aa-a0cc-475c-8c75-18ee110d3d3b.png', 
     'New York City'
 ),
 (

@@ -87,4 +87,9 @@ public class ImageManager {
 			return false;
 		}
 	}
+	
+	public static boolean deleteFile(String filename) {
+	    File f = new File(IMAGE_DIR + "/" + filename);
+	    return f.exists() && f.delete();
+	}
 }
