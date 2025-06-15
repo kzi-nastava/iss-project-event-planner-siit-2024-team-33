@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.GetUserDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisteredUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerCreationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderCreationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.UserService;
@@ -34,8 +37,9 @@ public class UserController {
 	private UserService userService;
 	
 	@PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<RegisteredUser> createUser(@RequestBody RegisterUser registerUser) throws Exception, 
-	UserCreationException, AuthentifiedUserCreationException, OrganizerCreationException, ProviderCreationException {
+	public ResponseEntity<RegisteredUser> createUser(@RequestBody RegisterUser registerUser) 
+			throws Exception, UserCreationException, AuthentifiedUserValidationException, 
+			OrganizerValidationException, ProviderValidationException {
 		
 		AuthentifiedUser user = userService.registerUser(registerUser);
 		RegisteredUser registeredUser = new RegisteredUser(user);
@@ -44,10 +48,37 @@ public class UserController {
 	}
 	
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/me")
+	@GetMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetUserDTO> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		return ResponseEntity.ok(new GetUserDTO(userPrincipal.getUser()));
+		return ResponseEntity.ok(GetUserDTO.from(userPrincipal.getUser()));
     }
+	
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping(value = "/update/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UpdatedUser> updateUser(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+	@RequestBody UpdateUser updateUser) throws Exception, UserUpdateException, AuthentifiedUserValidationException, 
+	OrganizerValidationException, ProviderValidationException {
+		AuthentifiedUser user = userPrincipal.getUser();
+		UpdatedUser updatedUser = userService.updateUser(user, updateUser);
+		
+		return ResponseEntity.ok(updatedUser);
+	}
+	
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping(value = "/update/password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updatePassword(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		return null;
+	}
+	
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping(value = "/terminate/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Boolean> terminateUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		
+		AuthentifiedUser user = userPrincipal.getUser();
+		AuthentifiedUser updatedUser = userService.terminateUser(user);
+		
+		return ResponseEntity.ok(updatedUser.getIsDeleted());
+	}
 	
 	/*@GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GetUserDTO> getMyUser() {
@@ -92,19 +123,24 @@ public class UserController {
     public ResponseEntity<String> handleException(UserCreationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
-	
-	@ExceptionHandler(OrganizerCreationException.class)
-    public ResponseEntity<String> handleException(OrganizerCreationException ex) {
+    
+    @ExceptionHandler(UserUpdateException.class)
+    public ResponseEntity<String> handleException(UserUpdateException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 	
-	@ExceptionHandler(ProviderCreationException.class)
-    public ResponseEntity<String> handleException(ProviderCreationException ex) {
+	@ExceptionHandler(OrganizerValidationException.class)
+    public ResponseEntity<String> handleException(OrganizerValidationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 	
-	@ExceptionHandler(AuthentifiedUserCreationException.class)
-    public ResponseEntity<String> handleException(AuthentifiedUserCreationException ex) {
+	@ExceptionHandler(ProviderValidationException.class)
+    public ResponseEntity<String> handleException(ProviderValidationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+	
+	@ExceptionHandler(AuthentifiedUserValidationException.class)
+    public ResponseEntity<String> handleException(AuthentifiedUserValidationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
     

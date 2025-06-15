@@ -10,7 +10,7 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
 VALUES 
-('organizer@example.com', 'hashedpassword6', 'John', 'Doe', 'New York City', 'jbl.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
+('organizer12345678@example.com', 'hashedpassword6', 'John', 'Doe', 'New York City', 'jbl.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE) 
 VALUES 
@@ -84,7 +84,7 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     50, 
     'Neam pojma nesto kenjam kao neka jaka deskripcija', 
     'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
+    '7752c6aa-a0cc-475c-8c75-18ee110d3d3b.png', 
     'Jew York City'
 ),
 (
@@ -114,7 +114,7 @@ sdfklsdfklsdlfkslkfklslkdfklsdf',
     50, 
     'Annual Winter Gala', 
     'Winter Wonderland', 
-    'event1.jpg', 
+    '7752c6aa-a0cc-475c-8c75-18ee110d3d3b.png', 
     'New York City'
 ),
 (

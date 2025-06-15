@@ -23,6 +23,13 @@ public class GetUserDTO {
     private String providerName;
     private String description;
     private List<String> pictures;
+    
+    public static GetUserDTO from(AuthentifiedUser user) {
+        if (user instanceof Provider) return new GetUserDTO((Provider) user);
+        if (user instanceof Organizer) return new GetUserDTO((Organizer) user);
+        if (user instanceof Admin) return new GetUserDTO((Admin) user);
+        return new GetUserDTO(user);
+    }
 	
 	
 	public GetUserDTO() {
