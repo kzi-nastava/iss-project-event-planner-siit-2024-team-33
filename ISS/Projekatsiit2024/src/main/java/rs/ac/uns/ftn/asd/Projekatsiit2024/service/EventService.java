@@ -1,13 +1,19 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -101,67 +107,154 @@ public class EventService {
                 .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
                 .limit(5)
                 .toList();
+        
         return filteredEvents;
     }
     
-    //TODO: Check if to get events for the city or ALL events.
-    public List<Event> getRestEvents(Integer id) {
+    public List<Event> getTop5OpenEventsUnauthorized() {
+        
         List<Event> allEvents = eventRepository.findAll();
-        List<Event> events = getRestEvents(allEvents, id);
-
-        return events;
+        
+        List<Event> filteredEvents = allEvents.stream()
+                .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()) &&
+                		!Boolean.TRUE.equals(event.getIsPrivate())			&&
+                		!Boolean.TRUE.equals(event.getItsJoever())          &&
+                		event.getDateOfEvent().isAfter(LocalDateTime.now()) &&
+                		(event.getPrice() == null || event.getPrice() <= 1000))
+                .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
+                .limit(5)
+                .toList();
+        return filteredEvents;
     }
     
-    public List<Event> getFilteredEvents(String name, String location, Integer numberOfAttendees, String before, String after, List<Integer> eventTypes, Integer id) throws java.text.ParseException {
-        List<Event> allevents = eventRepository.findAll();
+    
+    
 
-        List<Event> events = getRestEvents(allevents, id);
+    
+    //Paginated like the ones above
+    //Might filter the ones you MIGHT like more to be in the first rows
+    public Page<Event> getRestEventsPaginated(int userId, int page, int size) {
+
+        List<Event> events = getRestEvents(userId);
+        int start = page*size;
+        int end = Math.min((start+size), events.size());
         
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-        LocalDate beforeDate = (before == null || before.isEmpty())? null : LocalDate.parse(before);
-        LocalDate afterDate = (after == null || after.isEmpty())? null : LocalDate.parse(after);
-
-        if (name != null && !name.isEmpty()) {
-            events = events.stream()
-                .filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
-                .toList();
-        }
-
-        if (location != null && !location.isEmpty()) {
-            events = events.stream()
-                .filter(event -> event.getPlace() != null && event.getPlace().toLowerCase().contains(location.toLowerCase()))
-                .toList();
-        }
-
-        if (numberOfAttendees > 0) {
-            events = events.stream()
-                .filter(event -> event.getNumOfAttendees() >= numberOfAttendees)
-                .toList();
-        }
-
-        if (beforeDate != null) {
-            events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isBefore(beforeDate))
-                .toList();
-        }
-
-        if (afterDate != null) {
-            events = events.stream()
-                .filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isAfter(afterDate))
-                .toList();
-        }
-        
-        if (eventTypes != null && !eventTypes.isEmpty()) {
-            events = events.stream()
-                .filter(event -> event.getEventTypes() != null && event.getEventTypes().stream().anyMatch(eventTypes::contains))
-                .toList();
-        }
-        
-        events = events.stream().limit(10).toList();
-
-        return events;
+        List<Event> paginatedEvents = events.subList(start, end);
+    	
+        return new PageImpl<>(paginatedEvents, PageRequest.of(page, size), events.size());
     }
+    
+
+    public Page<Event> getFilteredEvents(String name, String location, Integer numberOfAttendees, 
+            String before, String after, List<Integer> eventTypes, 
+            Integer id, int page, int size) throws ParseException {
+
+		List<Event> events = getRestEvents( id);
+		
+		LocalDate beforeDate = (before == null || before.isEmpty()) ? null : LocalDate.parse(before);
+		LocalDate afterDate = (after == null || after.isEmpty()) ? null : LocalDate.parse(after);
+		
+		if (name != null && !name.isEmpty()) {
+		events = events.stream()
+		.filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
+		.toList();
+		}
+		
+		if (location != null && !location.isEmpty()) {
+		events = events.stream()
+		.filter(event -> event.getPlace() != null && event.getPlace().toLowerCase().contains(location.toLowerCase()))
+		.toList();
+		}
+		
+		if (numberOfAttendees != null && numberOfAttendees > 0) {
+		events = events.stream()
+		.filter(event -> event.getNumOfAttendees() >= numberOfAttendees)
+		.toList();
+		}
+		
+		if (beforeDate != null) {
+		events = events.stream()
+		.filter(event -> event.getDateOfEvent() != null &&
+		    event.getDateOfEvent().toLocalDate().isBefore(beforeDate))
+		.toList();
+		}
+		
+		if (afterDate != null) {
+		events = events.stream()
+		.filter(event -> event.getDateOfEvent() != null &&
+		    event.getDateOfEvent().toLocalDate().isAfter(afterDate))
+		.toList();
+		}
+		
+		if (eventTypes != null && !eventTypes.isEmpty()) {
+		events = events.stream()
+		.filter(event -> event.getEventTypes() != null &&
+		    event.getEventTypes().stream().anyMatch(eventTypes::contains))
+		.toList();
+		}
+		
+		int start = page * size;
+		int end = Math.min(start + size, events.size());
+		
+		List<Event> pageContent = (start >= events.size()) ? Collections.emptyList() : events.subList(start, end);
+		
+		return new PageImpl<>(pageContent, PageRequest.of(page, size), events.size());
+		}
+
+    
+    public Page<Event> getFilteredEventsUnauthorized(String name, String location, Integer numberOfAttendees, 
+            String before, String after, List<Integer> eventTypes, 
+            int page, int size) throws ParseException {
+    	List<Event> allEvents = eventRepository.findAll();
+    	
+		List<Event> events = getRestEventsUnauthorized(allEvents);
+		
+		LocalDate beforeDate = (before == null || before.isEmpty()) ? null : LocalDate.parse(before);
+		LocalDate afterDate = (after == null || after.isEmpty()) ? null : LocalDate.parse(after);
+		
+		if (name != null && !name.isEmpty()) {
+		events = events.stream()
+		.filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
+		.toList();
+		}
+		
+		if (location != null && !location.isEmpty()) {
+		events = events.stream()
+		.filter(event -> event.getPlace() != null && event.getPlace().toLowerCase().contains(location.toLowerCase()))
+		.toList();
+		}
+		
+		if (numberOfAttendees != null && numberOfAttendees > 0) {
+		events = events.stream()
+		.filter(event -> event.getNumOfAttendees() >= numberOfAttendees)
+		.toList();
+		}
+		
+		if (beforeDate != null) {
+		events = events.stream()
+		.filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isBefore(beforeDate))
+		.toList();
+		}
+		
+		if (afterDate != null) {
+		events = events.stream()
+		.filter(event -> event.getDateOfEvent() != null && event.getDateOfEvent().toLocalDate().isAfter(afterDate))
+		.toList();
+		}
+		
+		if (eventTypes != null && !eventTypes.isEmpty()) {
+			events = events.stream()
+			.filter(event -> event.getEventTypes() != null && event.getEventTypes().stream().anyMatch(eventTypes::contains))
+			.toList();
+		}
+		
+		int start = page * size;
+		int end = Math.min(start + size, events.size());
+		
+		List<Event> pageContent = (start >= events.size()) ? Collections.emptyList() : events.subList(start, end);
+		
+		return new PageImpl<>(pageContent, PageRequest.of(page, size), events.size());
+		}
 
     public void hidePassedEvents() {
         List<Event> allEvents = eventRepository.findAll();
@@ -318,7 +411,7 @@ public class EventService {
     }
     
     
-    private List<Event> getRestEvents(List<Event> allEvents, Integer id) {
+    public List<Event> getRestEvents(Integer id) {
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
             throw new IllegalArgumentException("");
@@ -329,14 +422,8 @@ public class EventService {
 
         String city = user.getCity();
         
-    	
-    	List<Event> top5Events = allEvents.stream()
-                .filter(event -> city.equalsIgnoreCase(event.getPlace()))
-                .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
-                .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
-                .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
-                .limit(5)
-                .toList();
+        List<Event> allEvents = eventRepository.findAll();
+    	List<Event> top5Events = getTop5OpenEvents(id);
         
         List<Event> events = allEvents.stream()
 //              .filter(event -> city.equalsIgnoreCase(event.getPlace()))
@@ -346,6 +433,19 @@ public class EventService {
               .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
               .toList(); 
     	
+    	
+    	return events;
+    }
+    
+    public List<Event> getRestEventsUnauthorized(List<Event> allEvents) {
+    	
+    	List<Event> top5Events = getTop5OpenEventsUnauthorized();
+    	
+        List<Event> events = allEvents.stream()
+              .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
+              .filter(event -> !top5Events.contains(event))
+              .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
+              .toList(); 
     	
     	return events;
     }

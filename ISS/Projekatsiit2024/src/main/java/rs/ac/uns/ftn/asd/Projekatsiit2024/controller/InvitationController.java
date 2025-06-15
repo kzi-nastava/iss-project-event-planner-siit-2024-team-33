@@ -3,6 +3,9 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.GetInvitationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
@@ -28,19 +31,26 @@ public class InvitationController {
 	@Autowired
 	AuthentifiedUserService AUS;
 	@Autowired
-	AuthentifiedUserRepository AUR;
+	AuthentifiedUserRepository userRepo;
 	@Autowired
 	EventRepository eventRepo;
     
-	@PostMapping("/{inviterId}")
-	public ResponseEntity<HttpStatus> createInvitations(@PathVariable Integer inviterId, @RequestBody PostInvitationDTO postInvitationDTO) {
-        Optional<AuthentifiedUser> user = AUR.findById(inviterId);
+	@PostMapping()
+	public ResponseEntity<HttpStatus> createInvitations( @RequestBody PostInvitationDTO postInvitationDTO) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = (UserDetails) auth.getPrincipal();
+		String email = userDetails.getUsername();
+		
+		AuthentifiedUser userInviter = userRepo.findByEmail(email);
+		int id = userInviter.getId();
+		
+        Optional<AuthentifiedUser> userInvited = userRepo.findById(id);
 
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("User not found with ID: " + inviterId);
+        if (userInvited .isEmpty()) {
+            throw new IllegalArgumentException("User not found");
         }
 
-        AuthentifiedUser userReal = user.get();
+        AuthentifiedUser userReal = userInvited.get();
 
         try {
             invitationService.createInvitations(
@@ -48,15 +58,13 @@ public class InvitationController {
                     postInvitationDTO.getEmailAddresses(),
                     postInvitationDTO.getMessage(),
                     new Date(System.currentTimeMillis()),
-                    inviterId,
+                    id,
                     userReal.getEmail(),
                     userReal.getPassword()
             );
         } catch (IllegalArgumentException e) {
-            // Return appropriate response for IllegalArgumentException
             return (ResponseEntity<HttpStatus>) ResponseEntity.badRequest();
         } catch (Exception e) {
-            // Handle other exceptions
             return (ResponseEntity<HttpStatus>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);

@@ -1,6 +1,9 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
@@ -17,6 +20,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -48,23 +52,33 @@ public class offerService {
         AuthentifiedUser user = optionalUser.get();
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
         
-        List<Offer> offers = offerRepo.findCurrentOffers();
+        List<Offer> offers = offerRepo.findAll();
         String city = user.getCity();
-        List<Offer> filteredEvents = offers.stream()
-        		.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
+        List<Offer> filteredOffers = offers.stream()
+        		.filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
                 .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
                 .limit(5)
                 .toList();
         
-    	return filteredEvents;
+    	return filteredOffers;
     }
-    
-    public List<Offer> getRestOffers(Integer id){        
+    public List<Offer> getTop5OffersUnauthorized() {
+        
         List<Offer> offers = offerRepo.findAll();
-        List<Offer> restOffers = getRestOffers(offers, id);
 
-    	return restOffers;
+        List<Offer> filteredOffers = offers.stream()
+                .filter(offer -> 
+                    !Boolean.TRUE.equals(offer.getIsDeleted()) &&
+                    !Boolean.TRUE.equals(offer.getIsPending()) &&
+                    offer.getAvailability() == Availability.AVAILABLE &&
+                    offer.getPrice() != null && offer.getPrice() <= 200
+                )
+                .sorted((o1, o2) -> Double.compare(o2.getDiscount(), o1.getDiscount()))
+                .limit(5)
+                .toList();
+
+        return filteredOffers;
     }
     
     
@@ -180,62 +194,132 @@ public class offerService {
     }
     
     
-    public List<Offer> getFileteredOffers(Boolean isProduct, Boolean isService, String name, String category, Integer lowestPrice, Availability isAvailable, List<Integer> eventTypes, Integer id){
-    	if(isProduct==false && isService==false) {
-    		isProduct=true;
-    		isService=true;
-    	}
-    	
-		List<Offer> offerz = offerRepo.findCurrentOffers();
-    	List<Offer> offers = getRestOffers(offerz, id);
 
-    	
-    	if(isProduct && isService) {
-    		
-    	}else if(isProduct) {
-    		offers = offers.stream()
-    				.filter(offer -> offer.getType()==OfferType.PRODUCT)
-    				.toList();
-    	}else {
-    		offers = offers.stream()
-    				.filter(offer -> offer.getType()==OfferType.SERVICE)
-    				.toList();
-    	}
-    	
-    	if(name !="") {
-    		offers = offers.stream()
-    				.filter(offer -> name!=null && offer.getName().toLowerCase().contains(name.toLowerCase()))
-    				.toList();
-    	}
-    	
-    	if(category !="") {
-    		offers = offers.stream()
-    				.filter(offer -> category!=null && offer.getCategory().getName().toLowerCase().contains(category.toLowerCase()))
-    				.toList();
-    	}
-    	
-    	if(isAvailable !=null) {
-    		offers = offers.stream()
-    				.filter(offer -> offer.getAvailability() == isAvailable)
-    				.toList();
-    	}
-    	
-    	if(lowestPrice!=0) {
-    		offers = offers.stream()
-    				.filter(offer-> offer.getPrice()>lowestPrice)
-    				.toList();
-    	}
-    	
-        if (eventTypes != null && !eventTypes.isEmpty()) {
-    		offers = offers.stream()
-                    .filter(offer -> offer.getValidEvents() != null && offer.getValidEvents().stream().anyMatch(eventTypes::contains))
-    				.toList();
-    	}
-    	offers = offers.stream().limit(10).toList();
-    	return offers;
+    
+    public Page<Offer> getFilteredOffers(Boolean isProduct, Boolean isService, String name, String category,
+            Integer lowestPrice, Availability isAvailable, List<Integer> eventTypes,
+            Integer userId, int page, int size) {
+			if (Boolean.FALSE.equals(isProduct) && Boolean.FALSE.equals(isService)) {
+				isProduct = true;
+				isService = true;
+			}
+			
+			List<Offer> offers = getRestOffers(userId);
+			
+			if (isProduct && !isService) {
+				offers = offers.stream()
+							.filter(offer -> offer.getType() == OfferType.PRODUCT)
+							.toList();
+			} else if (!isProduct && isService) {
+					offers = offers.stream()
+					.filter(offer -> offer.getType() == OfferType.SERVICE)
+					.toList();
+			}
+			
+			if (name != null && !name.isEmpty()) {
+					offers = offers.stream()
+					.filter(offer -> offer.getName() != null && offer.getName().toLowerCase().contains(name.toLowerCase()))
+					.toList();
+			}
+			
+			if (category != null && !category.isEmpty()) {
+					offers = offers.stream()
+					.filter(offer -> offer.getCategory() != null &&
+					offer.getCategory().getName().toLowerCase().contains(category.toLowerCase()))
+					.toList();
+			}
+			
+			if (isAvailable != null) {
+					offers = offers.stream()
+					.filter(offer -> offer.getAvailability() == isAvailable)
+					.toList();
+			}
+			
+			if (lowestPrice != null && lowestPrice > 0) {
+					offers = offers.stream()
+					.filter(offer -> offer.getPrice() != null && offer.getPrice() > lowestPrice)
+					.toList();
+			}
+			
+			if (eventTypes != null && !eventTypes.isEmpty()) {
+					offers = offers.stream()
+					.filter(offer -> offer.getValidEvents() != null &&
+					offer.getValidEvents().stream().anyMatch(eventTypes::contains))
+					.toList();
+			}
+			
+			
+			int start = page * size;
+			int end = Math.min(start + size, offers.size());
+			List<Offer> pageContent = (start >= offers.size()) ? Collections.emptyList() : offers.subList(start, end);
+
+			return new PageImpl<>(pageContent, PageRequest.of(page, size), offers.size());
     }
     
-    private List<Offer> getRestOffers(List<Offer> allOffers, Integer id) {
+    
+    	
+    public Page<Offer> getFilteredOffersUnauthorized(Boolean isProduct, Boolean isService, String name, String category,
+            Integer lowestPrice, Availability isAvailable, List<Integer> eventTypes, int page, int size) {
+			if (Boolean.FALSE.equals(isProduct) && Boolean.FALSE.equals(isService)) {
+				isProduct = true;
+				isService = true;
+			}
+			
+			List<Offer> offers = getRestOffersUnauthorized();
+			
+			if (isProduct && !isService) {
+				offers = offers.stream()
+							.filter(offer -> offer.getType() == OfferType.PRODUCT)
+							.toList();
+			} else if (!isProduct && isService) {
+					offers = offers.stream()
+					.filter(offer -> offer.getType() == OfferType.SERVICE)
+					.toList();
+			}
+			
+			if (name != null && !name.isEmpty()) {
+					offers = offers.stream()
+					.filter(offer -> offer.getName() != null && offer.getName().toLowerCase().contains(name.toLowerCase()))
+					.toList();
+			}
+			
+			if (category != null && !category.isEmpty()) {
+					offers = offers.stream()
+					.filter(offer -> offer.getCategory() != null &&
+					offer.getCategory().getName().toLowerCase().contains(category.toLowerCase()))
+					.toList();
+			}
+			
+			if (isAvailable != null) {
+					offers = offers.stream()
+					.filter(offer -> offer.getAvailability() == isAvailable)
+					.toList();
+			}
+			
+			if (lowestPrice != null && lowestPrice > 0) {
+					offers = offers.stream()
+					.filter(offer -> offer.getPrice() != null && offer.getPrice() > lowestPrice)
+					.toList();
+			}
+			
+			if (eventTypes != null && !eventTypes.isEmpty()) {
+					offers = offers.stream()
+					.filter(offer -> offer.getValidEvents() != null &&
+					offer.getValidEvents().stream().anyMatch(eventTypes::contains))
+					.toList();
+			}
+			
+			
+			int start = page * size;
+			int end = Math.min(start + size, offers.size());
+			List<Offer> pageContent = (start >= offers.size()) ? Collections.emptyList() : offers.subList(start, end);
+
+			return new PageImpl<>(pageContent, PageRequest.of(page, size), offers.size());
+    }
+    
+    public List<Offer> getRestOffers(Integer id) {
+    	List<Offer> allOffers = offerRepo.findCurrentOffers();
+    	
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
             throw new IllegalArgumentException("");
@@ -247,16 +331,25 @@ public class offerService {
         String city = user.getCity();
         
     	
-    	List<Offer> top5Offers = allOffers.stream()
-        		.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
-                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
-                .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
-                .limit(5)
-                .toList();
+    	List<Offer> top5Offers = getTop5Offers(id);
         
         List<Offer> offers = allOffers.stream()
         		//.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
                 .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
+                .filter(offer -> !top5Offers.contains(offer))
+                .sorted((o1, o2) -> Double.compare(o1.getDiscount(), o2.getDiscount()))
+                .toList();
+    	
+    	
+    	return offers;
+    }
+    
+    public List<Offer> getRestOffersUnauthorized() {
+    	List<Offer> allOffers = offerRepo.findCurrentOffers();
+    	
+    	List<Offer> top5Offers = getTop5OffersUnauthorized();
+        
+        List<Offer> offers = allOffers.stream()
                 .filter(offer -> !top5Offers.contains(offer))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(), o2.getDiscount()))
                 .toList();

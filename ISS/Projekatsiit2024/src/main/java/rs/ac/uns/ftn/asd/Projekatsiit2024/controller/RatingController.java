@@ -2,12 +2,19 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.GetRatingDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.PostRatingDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.RatingService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.auth.AuthenticationService;
 
 import java.util.List;
 
@@ -17,13 +24,20 @@ public class RatingController {
 
     @Autowired
     private RatingService ratingService;
-
+    @Autowired
+    private AuthentifiedUserRepository userRepo;
     @PostMapping
-    public ResponseEntity<Rating> submitRating(@RequestBody PostRatingDTO postRatingDTO, 
-                                               @RequestParam int userId, 
-                                               @RequestParam int offerId) {
-        Rating rating = ratingService.submitComment(postRatingDTO.getValue(),postRatingDTO.getComment(), userId, offerId);
-        return ResponseEntity.ok(rating);
+    public ResponseEntity<GetRatingDTO> submitRating(@RequestBody PostRatingDTO postRatingDTO,
+                                                     @RequestParam int offerId)  {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int userId = user.getId();
+        Rating rating = ratingService.submitComment(postRatingDTO.getValue(), postRatingDTO.getComment(), userId, offerId);
+        return ResponseEntity.ok(new GetRatingDTO(rating));
     }
 
     @PutMapping("/approve/{commentId}")
@@ -57,8 +71,8 @@ public class RatingController {
     }
 
     @GetMapping("/{ratingId}")
-    public ResponseEntity<Rating> getRatingById(@PathVariable int ratingId) {
+    public ResponseEntity<GetRatingDTO> getRatingById(@PathVariable int ratingId) {
         Rating rating = ratingService.getRatingById(ratingId);
-        return ResponseEntity.ok(rating);
+        return ResponseEntity.ok(new GetRatingDTO(rating));
     }
 }

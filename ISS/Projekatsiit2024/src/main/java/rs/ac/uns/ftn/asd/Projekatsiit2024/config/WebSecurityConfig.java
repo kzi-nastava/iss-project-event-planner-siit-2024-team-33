@@ -80,8 +80,8 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests(request -> {
             request//.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
                    //.requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
-                   //.requestMatchers(new AntPathRequestMatcher("/api/events/**")).permitAll()
-                   //.requestMatchers(new AntPathRequestMatcher("/api/offers/**")).permitAll()
+//                   .requestMatchers(new AntPathRequestMatcher("/api/events/**")).permitAll()
+//                   .requestMatchers(new AntPathRequestMatcher("/api/offers/**")).permitAll()
                    //.requestMatchers(new AntPathRequestMatcher("/api/services/**")).permitAll()
                    //.requestMatchers(new AntPathRequestMatcher("/api/whoami")).hasRole("USER")
 		        .requestMatchers("/api/auth/login").permitAll()
@@ -94,6 +94,7 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/chat/*/**").permitAll()
 		        .requestMatchers("/api/offers/*/**").permitAll()
 		        .requestMatchers("/api/events/**").permitAll()
+		        .requestMatchers("api/events/paginated").permitAll()
 		        .requestMatchers("/api/events/types/**").permitAll()
 		        .requestMatchers("/api/events/*/invitations/**").permitAll()
 		        .requestMatchers("/api/notifications/**").permitAll()
@@ -105,7 +106,10 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/reports/**").permitAll()
 		        .requestMatchers("/api/services/**").permitAll()
 		        .requestMatchers("/api/services/*/reservations/**").permitAll()
-		        .anyRequest().authenticated();
+		        .requestMatchers("/api/events/filter/unauthentified").permitAll()
+		        .requestMatchers("/api/events/filter/authentified").authenticated()
+		        .requestMatchers("/api/events/filter/unauthentified").permitAll()
+		        .anyRequest().permitAll();
         });
         http.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
         http.authenticationProvider(authenticationProvider());
