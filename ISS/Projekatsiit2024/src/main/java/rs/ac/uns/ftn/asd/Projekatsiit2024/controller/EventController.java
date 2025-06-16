@@ -142,7 +142,7 @@ public class EventController {
             @RequestParam(name = "lastPossibleDate", required = false) String lastPossibleDate,
             @RequestParam(name = "eventTypes", required = false) List<Integer> eventTypes,
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size
+            @RequestParam(name = "size", defaultValue = "8") int size
     ) throws ParseException {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -170,7 +170,7 @@ public class EventController {
             @RequestParam(name = "lastPossibleDate", required = false) String lastPossibleDate,
             @RequestParam(name = "eventTypes", required = false) List<Integer> eventTypes,
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size
+            @RequestParam(name = "size", defaultValue = "8") int size
     ) throws ParseException {
 
         Page<Event> filteredEvents = eventService.getFilteredEventsUnauthorized(name, location, numOfAttendees,
