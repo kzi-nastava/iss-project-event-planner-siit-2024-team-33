@@ -16,7 +16,7 @@ public class DynamicMailSender {
         props.put("mail.smtp.host", "smtp.sendgrid.net");
         props.put("mail.smtp.port", "587");
 
-        // Use "apikey" as the username and senderPassword as the API key
+        // apikey username and API as password
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -24,13 +24,13 @@ public class DynamicMailSender {
             }
         });
 
-        // Configure JavaMailSender
+        // Configuration
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setSession(session);
         mailSender.setHost("smtp.sendgrid.net");
         mailSender.setPort(587);
         mailSender.setUsername("apikey");
-        mailSender.setPassword(senderPassword); // Your SendGrid API Key
+        mailSender.setPassword(senderPassword); // SendGrid API Key
         mailSender.setProtocol("smtp");
         mailSender.setDefaultEncoding("UTF-8");
 

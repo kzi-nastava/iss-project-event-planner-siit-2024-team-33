@@ -28,6 +28,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.UserService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.VerificationService;
 
 @RestController
 @RequestMapping("/api/users")
@@ -35,6 +36,8 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private VerificationService verificationService;
 	
 	@PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<RegisteredUser> createUser(@RequestBody RegisterUser registerUser) 
@@ -44,6 +47,7 @@ public class UserController {
 		AuthentifiedUser user = userService.registerUser(registerUser);
 		RegisteredUser registeredUser = new RegisteredUser(user);
 		
+		verificationService.sendVerificationEmail(user);
 		return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
 	}
 	

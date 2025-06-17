@@ -42,25 +42,12 @@ public class InvitationController {
 		String email = userDetails.getUsername();
 		
 		AuthentifiedUser userInviter = userRepo.findByEmail(email);
-		int id = userInviter.getId();
-		
-        Optional<AuthentifiedUser> userInvited = userRepo.findById(id);
-
-        if (userInvited .isEmpty()) {
-            throw new IllegalArgumentException("User not found");
-        }
-
-        AuthentifiedUser userReal = userInvited.get();
 
         try {
             invitationService.createInvitations(
-                    postInvitationDTO.getEventId(),
-                    postInvitationDTO.getEmailAddresses(),
-                    postInvitationDTO.getMessage(),
-                    new Date(System.currentTimeMillis()),
-                    id,
-                    userReal.getEmail(),
-                    userReal.getPassword()
+                    postInvitationDTO,
+                    userInviter,
+                    new Date(System.currentTimeMillis())
             );
         } catch (IllegalArgumentException e) {
             return (ResponseEntity<HttpStatus>) ResponseEntity.badRequest();

@@ -27,6 +27,7 @@ public class AuthentifiedUser {
     private String city;
     private String picture;
     private Boolean isDeleted;
+    private Boolean isVerified;
     private Date suspensionEndDate; //added for reports
     @ManyToOne
     private Role role;
