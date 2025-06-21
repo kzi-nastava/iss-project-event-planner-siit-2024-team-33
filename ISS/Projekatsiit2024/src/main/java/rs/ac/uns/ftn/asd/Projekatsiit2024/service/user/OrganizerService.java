@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,8 @@ public class OrganizerService {
 	@Autowired
 	private RoleRepository roleRepository;
 	
+	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+	
 	@Transactional(propagation = Propagation.REQUIRED)
     public Organizer createOrganizer(RegisterUser registerUser) 
     		throws OrganizerValidationException {
@@ -48,6 +51,9 @@ public class OrganizerService {
         organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
 
         isDataCorrect(organizer, false);
+        
+        //encoding password before storing it
+        organizer.setPassword(this.encoder.encode(organizer.getPassword()));
         
         return organizerRepository.save(organizer);
     }
@@ -76,12 +82,13 @@ public class OrganizerService {
 		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", organizer.getEmail())) {
 			throw new OrganizerValidationException("Email is not of valid format.");
 		}
-		if(!isUpdate)
+		if(!isUpdate) {
 			if (userRepository.findByEmail(organizer.getEmail()) != null) {
 	            throw new OrganizerValidationException("That email is already taken.");
 	        }
-		if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", organizer.getPassword())) {
-			throw new OrganizerValidationException("Password is not of valid format.");
+			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", organizer.getPassword())) {
+				throw new OrganizerValidationException("Password is not of valid format.");
+			}
 		}
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getName())) {
 			throw new OrganizerValidationException("Name is not of valid format.");

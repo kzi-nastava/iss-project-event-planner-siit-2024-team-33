@@ -17,8 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -46,14 +44,9 @@ public class WebSecurityConfig {
 		return new AuthenticationService();
 	}
 	
-	/*@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}*/
-	
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-	    return NoOpPasswordEncoder.getInstance(); // Not for production!
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(12);
 	}
 	
 	@Bean
@@ -89,6 +82,10 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/images/**").permitAll()
 		        .requestMatchers("/api/providers/**").permitAll()
 		        .requestMatchers("/api/users/signup").permitAll()
+		        .requestMatchers("/api/users/me").authenticated()
+		        .requestMatchers("/api/users/update/profile").authenticated()
+		        .requestMatchers("/api/users/update/password").authenticated()
+		        .requestMatchers("/api/users/terminate/profile").authenticated()
 		        .requestMatchers("/h2-console/**").permitAll()
 		        .requestMatchers("/api/events/*/budget/**").permitAll()
 		        .requestMatchers("/api/chat/*/**").permitAll()
