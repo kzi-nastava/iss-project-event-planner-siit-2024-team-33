@@ -4,12 +4,12 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
@@ -30,6 +30,8 @@ public class ProviderService {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 	
 	public Provider get(Integer id) {
 		Optional<Provider> p = providerRepository.findById(id);
@@ -63,6 +65,9 @@ public class ProviderService {
         
         isDataCorrect(provider, false);
         
+        //encoding password before storing it
+        provider.setPassword(this.encoder.encode(provider.getPassword()));
+        
         return providerRepository.save(provider);
 	}
 	
@@ -92,12 +97,13 @@ public class ProviderService {
 		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", provider.getEmail())) {
 			throw new ProviderValidationException("Email is not of valid format.");
 		}
-		if(!isUpdate)
+		if(!isUpdate) {
 			if (userRepository.findByEmail(provider.getEmail()) != null) {
 	            throw new ProviderValidationException("That email is already taken.");
 	        }
-		if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", provider.getPassword())) {
-			throw new ProviderValidationException("Password is not of valid format.");
+			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", provider.getPassword())) {
+				throw new ProviderValidationException("Password is not of valid format.");
+			}
 		}
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", provider.getName())) {
 			throw new ProviderValidationException("Name is not of valid format.");

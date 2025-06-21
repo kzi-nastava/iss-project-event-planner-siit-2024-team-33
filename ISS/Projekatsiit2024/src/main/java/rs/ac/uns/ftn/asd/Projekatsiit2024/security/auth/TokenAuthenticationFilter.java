@@ -44,11 +44,20 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 				if (username != null) {
 					UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 					
-					if (tokenUtils.validateToken(authToken, userDetails)) {
-						
-						TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
-						authentication.setToken(authToken);
-						SecurityContextHolder.getContext().setAuthentication(authentication);
+					//account check
+					if (userDetails.isEnabled() || 
+					    userDetails.isAccountNonLocked() || 
+					    userDetails.isAccountNonExpired() || 
+					    userDetails.isCredentialsNonExpired()) {
+						if (tokenUtils.validateToken(authToken, userDetails)) {
+							
+							TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
+							authentication.setToken(authToken);
+							SecurityContextHolder.getContext().setAuthentication(authentication);
+						}
+					}
+					else {
+						LOGGER.warn("User account state invalid.");
 					}
 				}
 			}

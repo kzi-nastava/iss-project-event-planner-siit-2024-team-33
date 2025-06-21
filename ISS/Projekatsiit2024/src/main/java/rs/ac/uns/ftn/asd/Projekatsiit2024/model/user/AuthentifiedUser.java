@@ -30,13 +30,14 @@ public class AuthentifiedUser {
     private Date suspensionEndDate; //added for reports
     @ManyToOne
     private Role role;
-    @Column(name = "last_password_reset_date")
+    @Column(name = "last_password_reset_date", columnDefinition = "TIMESTAMP(0)")
     private Timestamp lastPasswordResetDate;
 
     @ManyToMany
     private List<Offer> favoriteOffers;
     @ManyToMany
     private List<Event> favoriteEvents;
+    
     @ManyToMany
     private List<AuthentifiedUser> blockedUsers;
     @OneToMany(mappedBy = "receiver")
