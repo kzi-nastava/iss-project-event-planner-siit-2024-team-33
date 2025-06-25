@@ -20,8 +20,10 @@ import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.Role;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
@@ -92,24 +94,22 @@ public class EventService {
     public List<Event> getTop5OpenEvents(Integer id) {
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("User not found.");
         }
-        
-        AuthentifiedUser user = optionalUser.get();
-        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
-        List<Event> allEvents = eventRepository.findAll();
+        AuthentifiedUser user = optionalUser.get();
         String city = user.getCity();
-        List<Event> filteredEvents = allEvents.stream()
+
+        List<Event> allEvents = getUnblockedEvents(user);
+
+        return allEvents.stream()
                 .filter(event -> city.equalsIgnoreCase(event.getPlace()))
                 .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
-                .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
                 .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
                 .limit(5)
                 .toList();
-        
-        return filteredEvents;
     }
+
     
     public List<Event> getTop5OpenEventsUnauthorized() {
         
@@ -149,7 +149,7 @@ public class EventService {
             String before, String after, List<Integer> eventTypes, 
             Integer id, int page, int size) throws ParseException {
 
-		List<Event> events = getRestEvents( id);
+		List<Event> events = getRestEvents(id);
 		
 		LocalDate beforeDate = (before == null || before.isEmpty()) ? null : LocalDate.parse(before);
 		LocalDate afterDate = (after == null || after.isEmpty()) ? null : LocalDate.parse(after);
@@ -414,28 +414,23 @@ public class EventService {
     public List<Event> getRestEvents(Integer id) {
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("User not found.");
         }
-        
-        AuthentifiedUser user = optionalUser.get();
-        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
+        AuthentifiedUser user = optionalUser.get();
         String city = user.getCity();
-        
-        List<Event> allEvents = eventRepository.findAll();
-    	List<Event> top5Events = getTop5OpenEvents(id);
-        
-        List<Event> events = allEvents.stream()
-//              .filter(event -> city.equalsIgnoreCase(event.getPlace()))
-              .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
-              .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
-              .filter(event -> !top5Events.contains(event))
-              .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
-              .toList(); 
-    	
-    	
-    	return events;
+        List<Event> top5Events = getTop5OpenEvents(id);
+
+        List<Event> allEvents = getUnblockedEvents(user);
+
+        return allEvents.stream()
+                // .filter(event -> city.equalsIgnoreCase(event.getPlace())) // Optional if you want to limit to same city
+                .filter(event -> !Boolean.TRUE.equals(event.getItsJoever()))
+                .filter(event -> !top5Events.contains(event))
+                .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
+                .toList();
     }
+
     
     public List<Event> getRestEventsUnauthorized(List<Event> allEvents) {
     	
@@ -448,6 +443,28 @@ public class EventService {
               .toList(); 
     	
     	return events;
+    }
+
+    private List<Event> getUnblockedEvents(AuthentifiedUser user) {
+        List<Event> result = new ArrayList<>();
+        for (AuthentifiedUser potentialOrganizer : userRepo.findAll()) {
+            if (potentialOrganizer instanceof Organizer organizer) {
+                if (checkIfUserIsBlocked(user, organizer)) continue;
+                if ((user instanceof Provider || !(user instanceof Organizer)) && user.getBlockedUsers().contains(organizer)) continue;
+                result.addAll(organizer.getOrganizedEvents());
+            }
+        }
+        return result;
+    }
+
+    
+    private Boolean checkIfUserIsBlocked(AuthentifiedUser user, AuthentifiedUser organizer) {
+    	for(AuthentifiedUser blockedUser:organizer.getBlockedUsers()) {
+    		if(user.equals(blockedUser)) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
 }

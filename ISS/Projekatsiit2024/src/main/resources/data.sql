@@ -624,3 +624,9 @@ INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
 
+INSERT INTO invitation (text, date, status, inviter_id, event_id, invited_user_id) VALUES 
+('Please join our Winter Gala event!', '2024-12-01', 'PENDING', 1, 1, 2),
+('You are invited to the Annual Winter Gala!', '2024-12-01', 'PENDING', 1, 1, 3),
+('Don''t miss the upcoming Conference event!', '2025-12-01', 'PENDING', 2, 2, 3),
+('Invitation to the Festival - Join us!', '2024-11-20', 'PENDING', 3, 3, 2),
+('You have a special invitation to our Workshop.', '2024-10-10', 'PENDING', 2, 4, 1);

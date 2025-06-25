@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Invitation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.InvitationStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
@@ -60,6 +62,49 @@ public class invitationService {
             sendEmail(inviter.getEmail(), inviter.getPassword(), email, subject, body);
         }
     }
+    
+    @Transactional
+    public void acceptInvitation(Integer invitationId, AuthentifiedUser user) {
+        Invitation invitation = invitationRepo.findById(invitationId).orElseThrow(() -> new IllegalArgumentException("Invitation not found"));
+
+        if (invitation.getStatus() == InvitationStatus.ACCEPTED) {
+            throw new IllegalStateException("Invitation already accepted");
+        }
+
+        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("This invitation is not for you.");
+        }
+
+        invitation.setStatus(InvitationStatus.ACCEPTED);
+        invitation.setInvitedUser(user);
+        invitationRepo.save(invitation);
+    }
+    
+    @Transactional
+    public void denyInvitation(Integer invitationId, AuthentifiedUser user) {
+        Invitation invitation = invitationRepo.findById(invitationId)
+            .orElseThrow(() -> new IllegalArgumentException("Invitation not found"));
+
+        if (invitation.getStatus() == InvitationStatus.ACCEPTED) {
+            throw new IllegalStateException("Invitation already accepted");
+        }
+
+        if (invitation.getStatus() == InvitationStatus.DENIED) {
+            throw new IllegalStateException("Invitation already denied");
+        }
+
+        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("This invitation is not for you.");
+        }
+
+        invitation.setStatus(InvitationStatus.DENIED);
+        invitation.setInvitedUser(user);
+        invitationRepo.save(invitation);
+    }
+
+
+
+
 
 
     private void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
@@ -89,6 +134,17 @@ public class invitationService {
     	List<Invitation> invs = invitationRepo.findByEvent(event);
 		return invs;
     	
+    }
+    
+    public List<Invitation> getInvitationForUser(AuthentifiedUser user){
+    	List<Invitation> allInvitations = invitationRepo.findAll();
+    	List<Invitation> ret = new ArrayList<Invitation>(); 
+    	for(Invitation invitation:allInvitations) {
+    		if(invitation.getInvitedUser().getId() == user.getId() && invitation.getStatus() == InvitationStatus.PENDING) {
+    			ret.add(invitation);
+    		}
+    	}
+    	return ret;
     }
     
     public Invitation getInvitationById(Integer id) {

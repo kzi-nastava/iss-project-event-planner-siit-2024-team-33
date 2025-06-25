@@ -13,6 +13,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
@@ -43,26 +44,26 @@ public class offerService {
     @Autowired
     private AuthentifiedUserRepository userRepo;
 
-    public List<Offer> getTop5Offers(Integer id){
+    public List<Offer> getTop5Offers(Integer id) {
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("User not found.");
         }
-        
+
         AuthentifiedUser user = optionalUser.get();
-        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
-        
-        List<Offer> offers = offerRepo.findAll();
         String city = user.getCity();
-        List<Offer> filteredOffers = offers.stream()
-        		.filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
-                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
-                .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
+
+        List<Offer> allOffers = offerRepo.findAll();
+
+        return allOffers.stream()
+                .filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
+                .filter(offer -> !isProviderBlockingOrganizer(user, offer.getProvider()))
+                .sorted((o1, o2) -> Double.compare(o2.getDiscount(), o1.getDiscount()))
                 .limit(5)
                 .toList();
-        
-    	return filteredOffers;
     }
+
+    
     public List<Offer> getTop5OffersUnauthorized() {
         
         List<Offer> offers = offerRepo.findAll();
@@ -318,31 +319,25 @@ public class offerService {
     }
     
     public List<Offer> getRestOffers(Integer id) {
-    	List<Offer> allOffers = offerRepo.findCurrentOffers();
-    	
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("User not found.");
         }
-        
-        AuthentifiedUser user = optionalUser.get();
-        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
+        AuthentifiedUser user = optionalUser.get();
         String city = user.getCity();
-        
-    	
-    	List<Offer> top5Offers = getTop5Offers(id);
-        
-        List<Offer> offers = allOffers.stream()
-        		//.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
-                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
+
+        List<Offer> allOffers = offerRepo.findCurrentOffers();
+        List<Offer> top5Offers = getTop5Offers(id);
+
+        return allOffers.stream()
+                .filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
+                .filter(offer -> !isProviderBlockingOrganizer(user, offer.getProvider()))
                 .filter(offer -> !top5Offers.contains(offer))
-                .sorted((o1, o2) -> Double.compare(o1.getDiscount(), o2.getDiscount()))
+                .sorted((o1, o2) -> Double.compare(o2.getDiscount(), o1.getDiscount()))
                 .toList();
-    	
-    	
-    	return offers;
     }
+
     
     public List<Offer> getRestOffersUnauthorized() {
     	List<Offer> allOffers = offerRepo.findCurrentOffers();
@@ -357,4 +352,13 @@ public class offerService {
     	
     	return offers;
     }
+    
+    private boolean isProviderBlockingOrganizer(AuthentifiedUser user, AuthentifiedUser provider) {
+        if (!(user instanceof Organizer)) return false; 
+        if (provider == null) return false;
+
+        return provider.getBlockedUsers().contains(user);
+    }
+
+
 }
