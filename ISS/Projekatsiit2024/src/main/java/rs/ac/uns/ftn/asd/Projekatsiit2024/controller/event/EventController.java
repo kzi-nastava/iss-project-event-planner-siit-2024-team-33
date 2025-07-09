@@ -1,13 +1,16 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.event;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.event.EventService;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,29 +18,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreatedEventDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.FilterEventDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.GetEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.UpdateEventDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.GetServiceReservationDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.EventService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 
 
 @RestController
@@ -49,14 +40,21 @@ public class EventController {
 	@Autowired
 	AuthentifiedUserRepository userRepo;
 	
+	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<CreatedEventDTO> createEvent(@RequestBody CreateEventDTO eventDTO) throws Exception {
+	public ResponseEntity<CreatedEventDTO> createEvent(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+			@RequestBody CreateEventDTO event) throws EventValidationException, EventActivityValidationException {
+		Event createdEvent = eventService.createEvent(userPrincipal, event);
 		
-		Event event = eventService.createEvent(eventDTO);
-		CreatedEventDTO savedEvent = new CreatedEventDTO(event);
-
-		return new ResponseEntity<CreatedEventDTO>(savedEvent, HttpStatus.CREATED);
+		return ResponseEntity.ok(new CreatedEventDTO(createdEvent));
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
     @GetMapping(value = "/top5/authentified", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -183,8 +181,8 @@ public class EventController {
     
     
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GetEventDTO> PutEvent(@PathVariable Integer id, @RequestBody UpdateEventDTO data) {
+    /*@PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GetEventDTO> putEvent(@PathVariable Integer id, @RequestBody UpdateEventDTO data) {
     	Event updatedEvent = eventService.editEvent(
                 id,
                 data.getName(),data.getDescription(),data.getPlace(),data.getLatitude(),
@@ -194,16 +192,16 @@ public class EventController {
 
         GetEventDTO updatedEventDTO = new GetEventDTO(updatedEvent);
         return new ResponseEntity<>(updatedEventDTO, HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> DeleteEvent(@PathVariable Integer id) {
-        eventService.deleteEvent(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-     }
+    }*/
     
-    @GetMapping(value = "/organizer", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetEventsForOrganizer() {
+    
+    
+    
+    
+    
+    //TODO: change this
+    /*@GetMapping(value = "/organizer", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalEventDTO>> getEventsForOrganizer() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails principal = (UserDetails) auth.getPrincipal();
 		String email = principal.getUsername();
@@ -220,20 +218,5 @@ public class EventController {
         }
 
         return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
-    }
-
-    
-    		//Will do if needed.
-//    @GetMapping(value = "/{eventId}/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<List<GetServiceReservationDTO>> getAllReservationsForEvent(@PathVariable int eventId) {
-//        List<GetServiceReservationDTO> reservations = new ArrayList<>();
-//
-//        return new ResponseEntity<>(reservations, HttpStatus.OK);
-//    }
-    
-    
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
-    }
+    }*/
 }

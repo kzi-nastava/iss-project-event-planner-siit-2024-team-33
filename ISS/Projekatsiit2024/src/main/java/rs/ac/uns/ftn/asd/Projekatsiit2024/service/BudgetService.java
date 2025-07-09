@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,15 +19,15 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.BudgetItemDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.BudgetOfferDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.GetBudgetDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.BudgetItem;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.BudgetItem;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.BudgetItemRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 
 @Service
 public class BudgetService {
@@ -123,8 +124,8 @@ public class BudgetService {
 		if(e.isEmpty())
 			throw new EntityNotFoundException("Nonexistent event");
 		
-		Set<OfferCategory> recommendedCategories = e.get().getEventTypes().stream()
-				.flatMap(type -> type.getRecommendedCategories().stream()).collect(Collectors.toSet());
+		Set<OfferCategory> recommendedCategories = 
+			    new HashSet<>(e.get().getEventType().getRecommendedCategories());
 		
 		List<OfferReservation> offerReservations = offerReservationRepo.findByEvent(e.get());
 		

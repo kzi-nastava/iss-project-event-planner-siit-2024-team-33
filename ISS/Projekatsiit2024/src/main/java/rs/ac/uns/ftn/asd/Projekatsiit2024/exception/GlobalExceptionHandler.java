@@ -7,6 +7,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.InvalidPasswordException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.InvalidPasswordFormatException;
@@ -72,6 +75,25 @@ public class GlobalExceptionHandler {
 	}
 	
 	
+	//event exception
+	
+	@ExceptionHandler(EventValidationException.class)
+	public ResponseEntity<ErrorMessages> handleException(EventValidationException ex) {
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
+	}
+	
+	@ExceptionHandler(EventActivityValidationException.class)
+	public ResponseEntity<ErrorMessages> handleException(EventActivityValidationException ex) {
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
+	}
+	
+	
+	//event type exception
+	
+	@ExceptionHandler(EventTypeValidationException.class)
+	public ResponseEntity<ErrorMessages> handleException(EventTypeValidationException ex) {
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
+	}
 	
 	
     

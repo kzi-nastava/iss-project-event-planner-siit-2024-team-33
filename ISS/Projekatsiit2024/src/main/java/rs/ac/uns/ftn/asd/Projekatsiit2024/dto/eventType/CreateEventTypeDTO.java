@@ -1,7 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType;
 
-import java.util.List;
-
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +10,5 @@ import lombok.Setter;
 public class CreateEventTypeDTO {
 	private String name;
 	private String description;
-	private Boolean isActive;
-    private List<Integer> recommendedCategoriesIds;
+    private Set<Integer> recommendedCategoriesIds = new HashSet<>();
 }

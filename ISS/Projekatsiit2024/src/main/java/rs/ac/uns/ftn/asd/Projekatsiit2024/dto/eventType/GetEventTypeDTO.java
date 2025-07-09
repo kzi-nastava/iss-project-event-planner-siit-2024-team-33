@@ -1,11 +1,12 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 
 @Getter
 @Setter
@@ -14,13 +15,14 @@ public class GetEventTypeDTO {
 	private String name;
 	private String description;
 	private Boolean isActive;
-    private List<OfferCategory> recommendedCategories;
+    private Set<Integer> recommendedCategories;
     
     public GetEventTypeDTO(EventType eventType) {
     	this.setId(eventType.getId());
     	this.setName(eventType.getName());
     	this.setDescription(eventType.getDescription());
     	this.setIsActive(eventType.getIsActive());
-    	this.setRecommendedCategories(eventType.getRecommendedCategories());
+    	this.setRecommendedCategories(eventType.getRecommendedCategories().stream()
+    			.map(OfferCategory::getId).collect(Collectors.toSet()));
     }
 }
