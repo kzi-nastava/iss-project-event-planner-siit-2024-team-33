@@ -6,8 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.ProviderRating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 
 @Entity
 @Getter

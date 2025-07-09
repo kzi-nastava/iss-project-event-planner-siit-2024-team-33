@@ -12,13 +12,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Product;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 
 @Service
 public class offerReservationService {
@@ -155,7 +155,7 @@ public class offerReservationService {
     }
 
     public void cancelService(OfferReservation reservation) {
-        rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service service = (rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service) reservation.getOffer();
+        rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service service = (rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service) reservation.getOffer();
 //        long timeUntilCancellation = reservation.getDateOfReservation().minus(LocalDate.now());
         long timeUntilCancellation = ChronoUnit.MILLIS.between(reservation.getDateOfReservation(), LocalDate.now());
         long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000;

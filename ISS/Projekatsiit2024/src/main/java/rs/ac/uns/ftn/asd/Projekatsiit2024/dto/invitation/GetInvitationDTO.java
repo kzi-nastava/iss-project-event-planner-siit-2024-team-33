@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Invitation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
 
 @Setter
 @Getter

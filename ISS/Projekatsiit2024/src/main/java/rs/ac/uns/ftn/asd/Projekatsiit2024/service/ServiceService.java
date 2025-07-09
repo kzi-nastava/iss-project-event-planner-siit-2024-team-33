@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ServiceRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 

@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 
 public class MinimalOfferCategoryDTO {
 	public Integer id;

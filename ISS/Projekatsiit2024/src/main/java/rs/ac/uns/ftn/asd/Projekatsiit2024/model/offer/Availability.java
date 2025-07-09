@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.model;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer;
 
 public enum Availability {
 	AVAILABLE,

@@ -1,10 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model;
 
-import java.util.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 
 @Entity
 @Setter
@@ -32,6 +31,4 @@ public class OfferReservation {
     
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    
-    
 }

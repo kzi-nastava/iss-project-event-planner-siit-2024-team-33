@@ -8,8 +8,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 

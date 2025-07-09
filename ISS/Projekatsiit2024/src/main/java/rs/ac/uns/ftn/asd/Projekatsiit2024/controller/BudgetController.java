@@ -20,7 +20,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.GetBudgetDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.MinimalBudgetItemDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.PostBudgetItemDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.PutBudgetItemDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.BudgetItem;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.BudgetItem;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.BudgetService;
 
 @RestController
