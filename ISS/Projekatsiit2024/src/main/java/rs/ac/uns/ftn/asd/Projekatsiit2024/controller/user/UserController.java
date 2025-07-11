@@ -58,8 +58,9 @@ public class UserController {
 	}
 	
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/me",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetUserDTO> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+
 		return ResponseEntity.ok(GetUserDTO.from(userPrincipal.getUser()));
     }
 	

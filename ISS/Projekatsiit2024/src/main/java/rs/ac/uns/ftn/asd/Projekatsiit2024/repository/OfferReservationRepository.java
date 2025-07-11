@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.repository;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,13 +19,13 @@ public interface OfferReservationRepository extends JpaRepository<OfferReservati
 
     List<OfferReservation> findByEvent(Event event);
 
-    List<OfferReservation> findByDateOfReservation(Date reservationDate);
+    List<OfferReservation> findByDateOfReservation(LocalDate reservationDate);
 
     @Query("SELECT r FROM OfferReservation r WHERE r.dateOfReservation = :reservationDate AND r.startTime BETWEEN :startTime AND :endTime")
     List<OfferReservation> findByDateOfReservationAndStartTimeBetween(
-        @Param("reservationDate") Date reservationDate,
-        @Param("startTime") Time startTime,
-        @Param("endTime") Time endTime
+        @Param("reservationDate") LocalDate reservationDate,
+        @Param("startTime") LocalDateTime startTime,
+        @Param("endTime") LocalDateTime endTime
     );
     
     @Query("SELECT r FROM OfferReservation r WHERE r.offer.id = :offerId")

@@ -48,7 +48,7 @@ public class OfferReservationServiceTest {
 
         Event event = new Event();
         event.setId(2);
-        event.setDateOfEvent(LocalDateTime.of(2025, 6, 25, 12, 0));
+        event.setDateOfEvent(LocalDateTime.now().plusMonths(1));
 
         when(offerRepo.findById(1)).thenReturn(Optional.of(offer));
         when(eventRepo.findById(2)).thenReturn(Optional.of(event));
@@ -277,6 +277,11 @@ public class OfferReservationServiceTest {
     }
     
     @Test
+    public void BookAServiceSuccess() {
+    	
+    }
+    
+    @Test
     public void TestCreationWithoutProvidedEvent() {
     	LocalDate date = LocalDate.now();
     	LocalTime startTime = LocalTime.of(12, 0);
@@ -330,7 +335,125 @@ public class OfferReservationServiceTest {
 
         assertEquals("Cannot cancel the service less than " + service.getCancellationInHours() + " hours before the reservation.", exception.getMessage());
     }
+    
+    @Test
+    public void testServiceCancellationSuccess() {
+        // Given
+        OfferReservation reservation = new OfferReservation();
+        reservation.setDateOfReservation(LocalDate.now().plusDays(3));
 
+        Service service = new Service();
+        service.setCancellationInHours(48); 
+
+        reservation.setOffer(service);
+
+        assertDoesNotThrow(() -> reservationService.cancelService(reservation));
+
+        verify(offerReservationRepo, times(1)).delete(reservation);
+    }
+
+
+    
+    @Test
+    public void testfindReservationByIdAndServiceThrowsException() {
+        int reservationId = 1;
+        int serviceId = 100;
+
+        OfferReservation reservation = new OfferReservation();
+        Service service = new Service();
+        service.setId(999); 
+        reservation.setOffer(service);
+
+        when(offerReservationRepo.findById(reservationId)).thenReturn(Optional.of(reservation));
+
+        OfferReservation result = reservationService.findReservationByIdAndService(serviceId, reservationId);
+
+        assertNull(result);
+        verify(offerReservationRepo, times(1)).findById(reservationId);
+    }
+
+    @Test
+    public void testfindReservationByIdAndService() {
+        int reservationId = 1;
+        int serviceId = 100;
+
+        OfferReservation reservation = new OfferReservation();
+        Service service = new Service();
+        service.setId(serviceId);
+        reservation.setOffer(service);
+
+        when(offerReservationRepo.findById(reservationId)).thenReturn(Optional.of(reservation));
+
+        OfferReservation result = reservationService.findReservationByIdAndService(serviceId, reservationId);
+
+        assertNotNull(result);
+        assertEquals(reservation, result);
+        verify(offerReservationRepo, times(1)).findById(reservationId);
+    }
+    
+    //Update Reservation
+    @Test
+    public void updateReservationThrowsExceptionNotFound() {
+    	int reservationId = 0;
+    	when(offerReservationRepo.findById(reservationId)).thenReturn(Optional.empty());
+    	
+    	Exception exception = assertThrows(IllegalArgumentException.class, ()->{
+    		reservationService.updateReservation(reservationId, 0, LocalDate.now(), LocalTime.of(10, 11), LocalTime.of(15, 0));
+    	}
+    	);
+    	assertEquals("Reservation not found.", exception.getMessage());
+    }
+    
+    @Test
+    public void updateReservationThrowsExceptionMismatch() {
+    	int reservationId =0;
+    	int correctServiceId =1;
+    	int wrongServiceId =999;
+    	
+    	OfferReservation reservation = new OfferReservation();
+    	Service offer = new Service();
+    	offer.setId(correctServiceId);
+    	reservation.setOffer(offer);
+    	
+    	Event event = new Event();
+    	event.setId(2);
+    	reservation.setEvent(event);
+    	
+    	when(offerReservationRepo.findById(reservationId)).thenReturn(Optional.of(reservation));
+    	Exception exception = assertThrows(IllegalArgumentException.class, ()->{
+            reservationService.updateReservation(reservationId, wrongServiceId, LocalDate.now(), LocalTime.of(10, 0), LocalTime.of(12, 0));
+    	});
+        assertEquals("Service mismatch.", exception.getMessage());
+
+    }
+    
+    @Test
+    public void testUpdateReservationSuccess() {
+        int reservationId = 0;
+        int serviceId = 1;
+
+        OfferReservation reservation = new OfferReservation();
+        Service offer = new Service();
+        offer.setId(serviceId);
+        reservation.setOffer(offer);
+        Event event = new Event();
+        event.setId(3);
+        reservation.setEvent(event);
+
+        LocalDate date = LocalDate.now().plusDays(1);
+        LocalTime start = LocalTime.of(9, 0);
+        LocalTime end = LocalTime.of(11, 0);
+
+        when(offerReservationRepo.findById(reservationId)).thenReturn(Optional.of(reservation));
+        when(offerReservationRepo.save(any(OfferReservation.class))).thenReturn(reservation);
+
+        OfferReservation updated = reservationService.updateReservation(reservationId, serviceId, date, start, end);
+
+        assertEquals(date, updated.getDateOfReservation());
+        assertEquals(LocalDateTime.of(date, start), updated.getStartTime());
+        assertEquals(LocalDateTime.of(date, end), updated.getEndTime());
+        verify(offerReservationRepo, times(1)).save(reservation);
+    }
     
     
 }

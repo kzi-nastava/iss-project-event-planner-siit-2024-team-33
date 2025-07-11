@@ -62,8 +62,16 @@ public class EventController {
     @GetMapping(value = "/top5/authentified", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MinimalEventDTO>> GetTop5EventsAuthorized() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
+		String email;
+		
+		Object principal = auth.getPrincipal();
+		if (principal instanceof UserDetails) {
+		    email = ((UserDetails) principal).getUsername();
+		} else if (principal instanceof String) {
+		    email = (String) principal;
+		} else {
+		    throw new IllegalStateException("Unexpected principal type: " + principal.getClass());
+		}
 	
 		AuthentifiedUser user = userRepo.findByEmail(email);
 		

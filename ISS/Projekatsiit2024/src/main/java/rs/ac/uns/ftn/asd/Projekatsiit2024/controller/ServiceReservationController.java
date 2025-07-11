@@ -99,10 +99,6 @@ public class ServiceReservationController {
         }
 
         try {
-//        	LocalDateTime startTime = parseTime(postServiceReservationDTO.getStartTime(), postServiceReservationDTO.getReservationDate());
-//        	LocalDateTime endTime = parseTime(postServiceReservationDTO.getEndTime(), postServiceReservationDTO.getReservationDate());
-//        	LocalDate startDate = LocalDate.parse(postServiceReservationDTO.getReservationDate());
-//        	LocalTime startTime = LocalTime.parse(postServiceReservationDTO.getStartTime());
         	LocalDateTime startDateTime = LocalDateTime.parse(postServiceReservationDTO.getReservationDate()+"T"+postServiceReservationDTO.getStartTime());
         	LocalDateTime endDateTime = LocalDateTime.parse(postServiceReservationDTO.getReservationDate()+"T"+postServiceReservationDTO.getEndTime());
 	        LocalDate reservationDate = LocalDate.parse(postServiceReservationDTO.getReservationDate());
