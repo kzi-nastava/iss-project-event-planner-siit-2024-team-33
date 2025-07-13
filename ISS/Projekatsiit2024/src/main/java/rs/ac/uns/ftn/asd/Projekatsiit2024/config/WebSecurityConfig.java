@@ -91,8 +91,12 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/deactivation").hasAuthority("ADMIN_ROLE")
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes/exists").hasAuthority("ADMIN_ROLE")
 		        
+		        //events
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
-		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
+		        
+		        //offer categories
+		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
 		        
 		        .requestMatchers("/api/images/**").permitAll()
 		        .requestMatchers("/api/providers/**").permitAll()

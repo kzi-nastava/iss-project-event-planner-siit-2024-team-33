@@ -65,8 +65,6 @@ public class EventService {
         event.setEventActivities(eventActivities);
         
         Event createdEvent = eventRepository.save(event);
-        //adding event to the list of organizers events
-        organizer.addEvent(createdEvent);
         
         return createdEvent;
     }
@@ -100,17 +98,17 @@ public class EventService {
     
     
     private boolean isEventDataCorrect(Event event) throws EventValidationException {
-    	if (!Pattern.matches("^.{0,50}$", event.getName()))
-			throw new EventValidationException("Name can't be over 50 characters long.");
+    	if (!Pattern.matches("^.{5,50}$", event.getName()))
+			throw new EventValidationException("Name can't be less than 5 or over 50 characters long.");
     	
-    	if (!Pattern.matches("^.{0,800}$", event.getDescription()))
-			throw new EventValidationException("Description can't be over 800 characters long.");
+    	if (!Pattern.matches("^.{5,800}$", event.getDescription()))
+			throw new EventValidationException("Description can't be less than 5 or over 800 characters long.");
     	
     	if (event.getNumOfAttendees() < 0)
     		throw new EventValidationException("Number of attendees can't be less than 0.");
     	
-    	if (!Pattern.matches("^[A-Za-z\\s,]{1,50}$", event.getPlace()))
-			throw new EventValidationException("Place is not of valid format.");
+    	if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", event.getPlace()) || event.getPlace().length() > 150)
+    	    throw new EventValidationException("Place must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
     	
     	if (event.getDateOfEvent().isBefore(LocalDateTime.now()) && 
     			event.getEndOfEvent().isBefore(LocalDateTime.now()))
@@ -144,11 +142,11 @@ public class EventService {
     
     
     private boolean isEventActivityDataCorrect(EventActivity eventActivity) throws EventActivityValidationException {
-    	if (!Pattern.matches("^.{0,50}$", eventActivity.getName()))
-			throw new EventActivityValidationException("Name can't be over 50 characters long.");
+    	if (!Pattern.matches("^.{5,50}$", eventActivity.getName()))
+			throw new EventActivityValidationException("Name can't be less than 5 or over 50 characters long.");
     	
-    	if (!Pattern.matches("^.{0,300}$", eventActivity.getName()))
-			throw new EventActivityValidationException("Description can't be over 300 characters long.");
+    	if (!Pattern.matches("^.{5,80}$", eventActivity.getDescription()))
+			throw new EventActivityValidationException("Description can't be less than 5 or over 80 characters long.");
     	
     	if (eventActivity.getEvent().getDateOfEvent().isAfter(eventActivity.getStartingTime()) || 
     			eventActivity.getEvent().getEndOfEvent().isBefore(eventActivity.getStartingTime())) 
@@ -164,8 +162,8 @@ public class EventService {
     		throw new EventActivityValidationException("Starting time can't be before"
     				+ " the ending time of an event activity.");
     	
-    	if (!Pattern.matches("^.{0,50}$", eventActivity.getName()))
-			throw new EventActivityValidationException("Location can't be over 50 characters long.");
+    	if (!Pattern.matches("^.{2,50}$", eventActivity.getName()))
+			throw new EventActivityValidationException("Location can't be less than 2 or over 50 characters long.");
     	
     	return true;
     }
