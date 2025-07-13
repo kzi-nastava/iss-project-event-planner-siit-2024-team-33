@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -90,6 +91,9 @@ public class EventTypeService {
 		if (optionalEventType.isEmpty()) {
 			throw new EventTypeValidationException("No event type exists with such id.");
     	}
+		if (optionalEventType.get().getId() == 1) {
+			throw new EventTypeValidationException("You cannot change default event type.");
+    	}
         
         EventType eventType = optionalEventType.get();
         eventType.setDescription(eventTypeDTO.getDescription());
@@ -130,6 +134,9 @@ public class EventTypeService {
 		if (optionalEventType.isEmpty()) {
 			throw new EventTypeValidationException("No event type exists with such id.");
     	}
+		if (optionalEventType.get().getId() == 1) {
+			throw new EventTypeValidationException("You cannot change default event type.");
+    	}
 		
 		EventType eventType = optionalEventType.get();
 		if (eventType.getIsActive() == true) {
@@ -150,6 +157,9 @@ public class EventTypeService {
 		if (optionalEventType.isEmpty()) {
 			throw new EventTypeValidationException("No event type exists with such id.");
     	}
+		if (optionalEventType.get().getId() == 1) {
+			throw new EventTypeValidationException("You cannot change default event type.");
+    	}
 		
 		EventType eventType = optionalEventType.get();
 		if (eventType.getIsActive() == false) {
@@ -164,5 +174,22 @@ public class EventTypeService {
 	
 	public boolean existsByName(String name) {
 		return eventTypeRepository.existsByNameIgnoreCase(name.trim());
+	}
+
+	
+
+	public Set<OfferCategory> getRecommendedByEventType(Integer eventTypeId) 
+			throws EventTypeValidationException {
+		Optional<EventType> optionalEventType = eventTypeRepository.findById(eventTypeId);
+		if (optionalEventType.isEmpty() || optionalEventType.get().getIsActive() == false) {
+			throw new EventTypeValidationException("No event type exists with such id.");
+    	}
+		
+		EventType eventType = optionalEventType.get();
+		Set<OfferCategory> availableCategories = eventType.getRecommendedCategories()
+	    .stream()
+	    .filter(oc -> Boolean.TRUE.equals(oc.getIsEnabled()) && Boolean.TRUE.equals(oc.getIsAccepted()))
+	    .collect(Collectors.toSet());
+		return availableCategories;
 	}
 }

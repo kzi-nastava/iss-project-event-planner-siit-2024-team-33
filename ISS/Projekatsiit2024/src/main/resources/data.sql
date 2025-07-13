@@ -10,11 +10,11 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
 VALUES 
-('organizer@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'John', 'Doe', 'Paris', 'jbl.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
+('organizer@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'John', 'Doe', 'Paris', 'jbl.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Berlin, Germany', '123-456-789', 'Organizer');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE) 
 VALUES 
-('provider@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Provider', 'Company', 'Paris', 'provider.jpg', false, NULL, 3, CURRENT_TIMESTAMP, 'France', '987-654-321', 'TechProvider', 'Provider of tech services', 'Provider');
+('provider@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Provider', 'Company', 'Paris', 'provider.jpg', false, NULL, 3, CURRENT_TIMESTAMP, 'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 'Provider');
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
 VALUES 
@@ -22,7 +22,7 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
 VALUES 
-('organizer2@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Steve', 'Williams', 'Paris', 'organizer2.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Spain', '321-654-987', 'Organizer');
+('organizer2@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Steve', 'Williams', 'Paris', 'organizer2.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Madrid, Spain', '321-654-987', 'Organizer');
 
 
 
@@ -66,6 +66,7 @@ VALUES (
 
 
 INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
+(TRUE, 'A generic type of event.', 'All'),
 (TRUE, 'A formal event typically attended by professionals.', 'Conference'),
 (TRUE, 'A social gathering for celebration or networking.', 'Party'),
 (TRUE, 'A celebration of marriage.', 'Wedding'),
@@ -240,7 +241,7 @@ INSERT INTO EVENT (
 INSERT INTO authentified_user_blocked_users (AUTHENTIFIED_USER_ID, BLOCKED_USERS_ID)
 VALUES (2,1);
 
-INSERT INTO EVENT_TYPE_RECOMMENDED_CATEGORIES(EVENT_TYPE_ID, RECOMMENDED_CATEGORIES_ID) VALUES (1,1), (1,2), (1,3);
+INSERT INTO EVENT_TYPE_RECOMMENDED_CATEGORIES(EVENT_TYPE_ID, RECOMMENDED_CATEGORIES_ID) VALUES (2,1), (2,2), (2,3);
 
 INSERT INTO notification (content, time_of_sending, is_read,is_selected, receiver_id)
 VALUES 
