@@ -1,5 +1,4 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.event;
-
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

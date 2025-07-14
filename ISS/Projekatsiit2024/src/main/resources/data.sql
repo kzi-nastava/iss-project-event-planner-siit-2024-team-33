@@ -41,10 +41,7 @@ INSERT INTO OFFER (
 VALUES
 (1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 1, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'], 'Paris'),
 (2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 1, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', ARRAY['image2.png'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 1, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 4, 79.99, 1, 'PRODUCT', 'Product', 'More sour candies in stock', 'Candy Special', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 5, 79.99, 1, 'PRODUCT', 'Product', 'Delicious candy in Paris', 'Candy Box', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 6, 79.99, 1, 'PRODUCT', 'Product', 'Colorful sweet candy packs', 'Candy Delight', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
+(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 1, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
 
 INSERT INTO OFFER (
     CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, 
@@ -52,22 +49,20 @@ INSERT INTO OFFER (
     RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME, 
     AVAILABILITY, PICTURES, TYPE, CITY
 )
-VALUES 
-(
+VALUES (
     24, 1, 10.0, TRUE, FALSE, FALSE, 
-    120, 5, 7, 99.99, 1, 
+    120, 5, 4, 99.99, 1, 
     48, '2024-12-01', 'Service', 
-    'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991.',
+    'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal''s history.',
     'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
-),
-(
-    24, 1, 10.0, TRUE, FALSE, FALSE, 
-    120, 5, 8, 9.99, 1, 
-    48, '2024-12-01', 'Service', 
-    'Norwegian black metal again. For the fans.', 
-    'BURZUM Lite', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
 );
-
+VALUES (
+    24, 1, 10.0, TRUE, FALSE, FALSE, 
+    120, 5, 4, 9.99, 1, 
+    48, '2024-12-01', 'Service', 
+    'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal''s history.',
+    'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
+);
 
 
 INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
@@ -123,244 +118,6 @@ INSERT INTO EVENT (
     1,
     'Neam pojma nesto kenjam kao neka jaka deskripcija',
     'Alo najjaca zureza ikadas dfdskfdsk',
-    CAST('2025-07-13 07:00:00' AS TIMESTAMP), 
-    CAST('2025-07-13 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija sdjfksdjfksdjkfjsdkj
-sdfklsdfklsdlfkslkfklslkdfklsdf', 
-    'Winter Wonderlandsdafasdfasdfsdafdsa', 
-    '5b7ae507-975d-4de8-ad5e-dea8173c8dad.png', 
-    'Paris'
-),
-(
-    CAST('2025-07-13 07:00:00' AS TIMESTAMP), 
-    CAST('2025-07-13 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    '7752c6aa-a0cc-475c-8c75-18ee110d3d3b.png', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-	CAST('2025-07-13 07:00:00' AS TIMESTAMP), 
-    CAST('2025-07-13 19:00:00' AS TIMESTAMP),
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
     'New York City'
 ),
 (
@@ -529,12 +286,3 @@ INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
 ('Feedback on the event organization.', '2024-12-07', 1, 3),
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
-('Report concerning the new project updates.', '2024-12-09', 3, 1);
-
-INSERT INTO invitation (text, date, status, inviter_id, event_id, invited_user_id) VALUES 
-('Please join our Winter Gala event!', '2024-12-01', 'PENDING', 1, 1, 2),
-('You are invited to the Annual Winter Gala!', '2024-12-01', 'PENDING', 1, 1, 3),
-('Don''t miss the upcoming Conference event!', '2025-12-01', 'PENDING', 2, 2, 3),
-('Invitation to the Festival - Join us!', '2024-11-20', 'PENDING', 3, 3, 2),
-('You have a special invitation to our Workshop.', '2024-10-10', 'PENDING', 2, 4, 1);
-
