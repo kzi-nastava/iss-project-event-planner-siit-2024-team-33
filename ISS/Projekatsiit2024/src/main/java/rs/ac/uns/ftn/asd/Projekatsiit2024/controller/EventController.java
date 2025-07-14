@@ -229,6 +229,18 @@ public class EventController {
 
         return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
     }
+    
+    @GetMapping(value = "/service/{serviceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalEventDTO>> getEventsByService(@PathVariable int serviceId) {
+        List<Event> events = eventService.getEventByEventType(serviceId);
+
+        List<MinimalEventDTO> eventsDTO = events.stream()
+                .map(MinimalEventDTO::new)
+                .toList();
+
+        return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
+    }
+
 
     
     		//Will do if needed.

@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
@@ -24,8 +23,12 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.Role;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
+
+import org.springframework.stereotype.Service;
+
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventTypeRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ServiceRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.OrganizerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
@@ -47,7 +50,8 @@ public class EventService {
     private OrganizerRepository organRepo;
     @Autowired
     private EventTypeRepository eventTypeRepository;
-    
+    @Autowired
+    private ServiceRepository serviceRepo;
     
     private void validateEventArguments(
             String name,
@@ -466,5 +470,24 @@ public class EventService {
     	}
     	return false;
     }
-
+    
+    public List<Event> getEventByEventType(int serviceId){
+    	List<Event> events = new ArrayList<Event>();
+    	Optional<rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service> serviceOptional = serviceRepo.findById(serviceId);
+    	List<Event> allEvents = eventRepository.findAll();
+    	if(serviceOptional.isEmpty()) {
+        	throw new IllegalArgumentException("No service selected");
+    	}
+    	rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service service = serviceOptional.get();
+    	
+    	for(Event event:allEvents) {
+    		for(EventType eventType: event.getEventTypes()) {
+    			if(service.getValidEvents().contains(eventType)) {
+    				events.add(event);
+    			}
+    		}
+    	}
+    	
+    	return events;
+    }
 }
