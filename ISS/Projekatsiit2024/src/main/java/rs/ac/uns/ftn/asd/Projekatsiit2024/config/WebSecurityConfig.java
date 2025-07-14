@@ -17,8 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -46,14 +44,9 @@ public class WebSecurityConfig {
 		return new AuthenticationService();
 	}
 	
-	/*@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}*/
-	
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-	    return NoOpPasswordEncoder.getInstance(); // Not for production!
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(12);
 	}
 	
 	@Bean
@@ -84,11 +77,34 @@ public class WebSecurityConfig {
 //                   .requestMatchers(new AntPathRequestMatcher("/api/offers/**")).permitAll()
                    //.requestMatchers(new AntPathRequestMatcher("/api/services/**")).permitAll()
                    //.requestMatchers(new AntPathRequestMatcher("/api/whoami")).hasRole("USER")
-		        .requestMatchers("/api/auth/login").permitAll()
-		        .requestMatchers("/api/auth/check-email").permitAll()
+            
+            	//authentication
+		        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/auth/check-email").permitAll()
+		        
+		        //event types
+		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()
+		        .requestMatchers(HttpMethod.GET, "api/eventTypes").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.POST, "/api/eventTypes").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/activation").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/deactivation").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "api/eventTypes/exists").hasAuthority("ADMIN_ROLE")
+		        
+		        //events
+		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
+		        
+		        //offer categories
+		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
+		        
 		        .requestMatchers("/api/images/**").permitAll()
 		        .requestMatchers("/api/providers/**").permitAll()
 		        .requestMatchers("/api/users/signup").permitAll()
+		        .requestMatchers("/api/users/me").authenticated()
+		        .requestMatchers("/api/users/update/profile").authenticated()
+		        .requestMatchers("/api/users/update/password").authenticated()
+		        .requestMatchers("/api/users/terminate/profile").authenticated()
 		        .requestMatchers("/h2-console/**").permitAll()
 		        .requestMatchers("/api/events/*/budget/**").permitAll()
 		        .requestMatchers("/api/chat/*/**").permitAll()
@@ -98,7 +114,7 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/events/types/**").permitAll()
 		        .requestMatchers("/api/events/*/invitations/**").permitAll()
 		        .requestMatchers("/api/notifications/**").permitAll()
-		        .requestMatchers("/api/offers/categories/**").permitAll()
+		        .requestMatchers("/api/offerCategories/**").permitAll()
 		        .requestMatchers("/api/offers/**").permitAll()
 		        .requestMatchers("/api/user/*/offer-prices/**").permitAll()
 		        .requestMatchers("/api/products/**").permitAll()

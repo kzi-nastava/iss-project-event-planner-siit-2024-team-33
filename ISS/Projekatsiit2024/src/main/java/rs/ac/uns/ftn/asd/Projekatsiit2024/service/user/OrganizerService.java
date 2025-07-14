@@ -3,12 +3,14 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
@@ -27,6 +29,8 @@ public class OrganizerService {
 	@Autowired
 	private RoleRepository roleRepository;
 	
+	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+	
 	@Transactional(propagation = Propagation.REQUIRED)
     public Organizer createOrganizer(RegisterUser registerUser) 
     		throws OrganizerValidationException {
@@ -40,7 +44,6 @@ public class OrganizerService {
         organizer.setSurname(registerUser.getSurname());
         organizer.setPicture(registerUser.getPicture());
         organizer.setResidency(registerUser.getResidency());
-        organizer.setCity(registerUser.getResidency().split(" ")[0]);
         organizer.setPhoneNumber(registerUser.getPhoneNumber());
         organizer.setIsDeleted(false);
         organizer.setSuspensionEndDate(null);
@@ -48,6 +51,9 @@ public class OrganizerService {
         organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
 
         isDataCorrect(organizer, false);
+        
+        //encoding password before storing it
+        organizer.setPassword(this.encoder.encode(organizer.getPassword()));
         
         return organizerRepository.save(organizer);
     }
@@ -63,7 +69,6 @@ public class OrganizerService {
         organizer.setSurname(updateUser.getSurname());
         organizer.setPicture(updateUser.getPicture());
         organizer.setResidency(updateUser.getResidency());
-        organizer.setCity(updateUser.getResidency().split(" ")[0]);
         organizer.setPhoneNumber(updateUser.getPhoneNumber());
 		
 		isDataCorrect(organizer, true);
@@ -76,12 +81,13 @@ public class OrganizerService {
 		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", organizer.getEmail())) {
 			throw new OrganizerValidationException("Email is not of valid format.");
 		}
-		if(!isUpdate)
+		if(!isUpdate) {
 			if (userRepository.findByEmail(organizer.getEmail()) != null) {
 	            throw new OrganizerValidationException("That email is already taken.");
 	        }
-		if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", organizer.getPassword())) {
-			throw new OrganizerValidationException("Password is not of valid format.");
+			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", organizer.getPassword())) {
+				throw new OrganizerValidationException("Password is not of valid format.");
+			}
 		}
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getName())) {
 			throw new OrganizerValidationException("Name is not of valid format.");
@@ -89,9 +95,10 @@ public class OrganizerService {
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getSurname())) {
 			throw new OrganizerValidationException("Surname is not of valid format.");
 		}
-		if (!Pattern.matches("^[A-Za-z\\s,]{1,50}$", organizer.getResidency())) {
-			throw new OrganizerValidationException("Residency is not of valid format.");
-		}
+		if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", organizer.getResidency()) || organizer.getResidency().length() > 150)
+    	    throw new EventValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
+		
+		
 		if (!Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", organizer.getPhoneNumber())) {
 			throw new OrganizerValidationException("Phone number is not of valid format.");
 		}

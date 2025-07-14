@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,17 +20,18 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.HandleSuggestionDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.PostOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.PutOfferCategoryDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferCategoryService;
 
 @RestController
-@RequestMapping("/api/offers/categories")
+@RequestMapping("/api/offerCategories")
 public class OfferCategoryController {
 	@Autowired
 	private OfferCategoryService offerCategoryService;
 	
 	@GetMapping
-	public ResponseEntity getCategories(
+	public ResponseEntity<List<MinimalOfferCategoryDTO>> getCategories(
 			@RequestParam(name = "isAccepted", required = false) Boolean isAccepted,
 			@RequestParam(name = "isEnabled", required = false) Boolean isEnabled
 			) {
@@ -37,6 +39,15 @@ public class OfferCategoryController {
 		List<MinimalOfferCategoryDTO> miniOcs = ocs.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
 		return ResponseEntity.ok(miniOcs);
 	}
+	
+	
+	@GetMapping("/available")
+	public ResponseEntity<List<MinimalOfferCategoryDTO>> getCategories() {
+		List<OfferCategory> ocs = offerCategoryService.getOffers(true, true);
+		List<MinimalOfferCategoryDTO> miniOcs = ocs.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
+		return ResponseEntity.ok(miniOcs);
+	}
+	
 	
 	@GetMapping("/pending")
 	public ResponseEntity getPendingCategories() {

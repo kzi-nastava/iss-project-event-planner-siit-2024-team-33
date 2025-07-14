@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user;
 
+import java.sql.Timestamp;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,5 +12,6 @@ public interface AuthentifiedUserRepository extends JpaRepository<AuthentifiedUs
 	@Query("SELECT u FROM AuthentifiedUser u WHERE u.email = :email")
     AuthentifiedUser findByEmail(@Param("email") String email);
 	
-	
+	@Query("SELECT u.lastPasswordResetDate FROM AuthentifiedUser u WHERE u.email = :email")
+	Timestamp findLastPasswordResetDateByEmail(@Param("email") String email);
 }

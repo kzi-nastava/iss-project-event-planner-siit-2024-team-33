@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.BudgetItem;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.BudgetItem;
 
 @Repository
 public interface BudgetItemRepository extends JpaRepository<BudgetItem,Integer>{

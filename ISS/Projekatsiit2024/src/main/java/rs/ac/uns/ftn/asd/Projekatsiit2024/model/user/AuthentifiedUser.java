@@ -6,10 +6,10 @@ import java.util.List;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Notification;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.Role;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 
 @Entity
 @Getter
@@ -31,13 +31,14 @@ public class AuthentifiedUser {
     private Date suspensionEndDate; //added for reports
     @ManyToOne
     private Role role;
-    @Column(name = "last_password_reset_date")
+    @Column(name = "last_password_reset_date", columnDefinition = "TIMESTAMP(0)")
     private Timestamp lastPasswordResetDate;
 
     @ManyToMany
     private List<Offer> favoriteOffers;
     @ManyToMany
     private List<Event> favoriteEvents;
+    
     @ManyToMany
     private List<AuthentifiedUser> blockedUsers;
     @OneToMany(mappedBy = "receiver")

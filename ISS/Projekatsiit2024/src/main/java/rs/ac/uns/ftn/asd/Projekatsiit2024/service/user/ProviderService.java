@@ -4,14 +4,15 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
@@ -31,6 +32,8 @@ public class ProviderService {
 	@Autowired
 	private RoleRepository roleRepository;
 	
+	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+	
 	public Provider get(Integer id) {
 		Optional<Provider> p = providerRepository.findById(id);
 		if(p.isEmpty())
@@ -49,7 +52,6 @@ public class ProviderService {
         provider.setPassword(registerUser.getPassword());
         provider.setName(registerUser.getName());
         provider.setSurname(registerUser.getSurname());
-        provider.setCity(registerUser.getResidency().split(" ")[0]);
         provider.setPicture(registerUser.getPicture());
         provider.setPictures(registerUser.getPictures());
         provider.setDescription(registerUser.getDescription());
@@ -63,6 +65,9 @@ public class ProviderService {
         
         isDataCorrect(provider, false);
         
+        //encoding password before storing it
+        provider.setPassword(this.encoder.encode(provider.getPassword()));
+        
         return providerRepository.save(provider);
 	}
 	
@@ -75,7 +80,6 @@ public class ProviderService {
 		//updating provider
         provider.setName(updateUser.getName());
         provider.setSurname(updateUser.getSurname());
-        provider.setCity(updateUser.getResidency().split(" ")[0]);
         provider.setPicture(updateUser.getPicture());
         provider.setPictures(updateUser.getPictures());
         provider.setDescription(updateUser.getDescription());
@@ -92,12 +96,13 @@ public class ProviderService {
 		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", provider.getEmail())) {
 			throw new ProviderValidationException("Email is not of valid format.");
 		}
-		if(!isUpdate)
+		if(!isUpdate) {
 			if (userRepository.findByEmail(provider.getEmail()) != null) {
 	            throw new ProviderValidationException("That email is already taken.");
 	        }
-		if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", provider.getPassword())) {
-			throw new ProviderValidationException("Password is not of valid format.");
+			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", provider.getPassword())) {
+				throw new ProviderValidationException("Password is not of valid format.");
+			}
 		}
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", provider.getName())) {
 			throw new ProviderValidationException("Name is not of valid format.");
@@ -105,9 +110,9 @@ public class ProviderService {
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", provider.getSurname())) {
 			throw new ProviderValidationException("Surname is not of valid format.");
 		}
-		if (!Pattern.matches("^[A-Za-z\\s,]{1,50}$", provider.getResidency())) {
-			throw new ProviderValidationException("Residency is not of valid format.");
-		}
+		if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", provider.getResidency()) || provider.getResidency().length() > 150)
+    	    throw new EventValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
+		
 		if (!Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", provider.getPhoneNumber())) {
 			throw new ProviderValidationException("Phone number is not of valid format.");
 		}

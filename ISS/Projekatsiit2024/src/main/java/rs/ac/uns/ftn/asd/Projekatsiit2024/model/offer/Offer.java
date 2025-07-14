@@ -1,7 +1,5 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.model;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer;
 
-import java.security.Timestamp;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +18,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 
 @Entity
@@ -83,7 +84,7 @@ public class Offer
 		this.provider = provider;
 		this.creationDate = LocalDateTime.now();
 		this.validEvents = validEvents;
-		this.availability = availability.AVAILABLE;
+		this.availability = Availability.AVAILABLE;
 		this.isPending = false;
 		this.isDeleted =false;
 	}

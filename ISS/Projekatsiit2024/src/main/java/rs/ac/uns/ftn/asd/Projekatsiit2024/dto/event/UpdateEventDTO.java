@@ -1,13 +1,11 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 
 @Setter
 @Getter
