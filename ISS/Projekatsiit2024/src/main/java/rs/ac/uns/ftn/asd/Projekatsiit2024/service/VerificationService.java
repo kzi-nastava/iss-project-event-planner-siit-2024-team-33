@@ -12,11 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Invitation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.VerificationToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.VerificationTokenRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;

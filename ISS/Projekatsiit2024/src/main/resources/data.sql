@@ -4,24 +4,25 @@ INSERT INTO Role (id, name) VALUES (2, 'ORGANIZER_ROLE');
 INSERT INTO Role (id, name) VALUES (3, 'PROVIDER_ROLE');
 
 INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
 VALUES 
-('admin@example.com', 'pass123', 'Admin', 'User', 'Paris', 'milion.jpg', false,true, NULL, 0, NULL, 'Admin');
+('admin@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Admin', 'User', 'Paris', 'milion.jpg', false, NULL, 0, NULL, 'Admin');
 INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
 VALUES 
-('organizer@example.com', 'hashedpassword6', 'John', 'Doe', 'Paris', 'jbl.jpg', false,true, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE) 
-VALUES 
-('provider@example.com', 'hashedpassword7', 'Provider', 'Company', 'Paris', 'provider.jpg', false,true, NULL, 3, CURRENT_TIMESTAMP, 'France', '987-654-321', 'TechProvider', 'Provider of tech services', 'Provider');
+('organizer@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'John', 'Doe', 'Paris', 'jbl.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Berlin, Germany', '123-456-789', 'Organizer');
 INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE) 
 VALUES 
-('admin2@example.com', 'hashedpassword8', 'Alice', 'Johnson', 'Paris', 'admin2.jpg', false,true, NULL, 0, CURRENT_TIMESTAMP, 'Admin');
+('provider@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Provider', 'Company', 'Paris', 'provider.jpg', false, NULL, 3, CURRENT_TIMESTAMP, 'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 'Provider');
 INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
 VALUES 
-('organizer2@example.com', 'hashedpassword9', 'Steve', 'Williams', 'Paris', 'organizer2.jpg', false,true, NULL, 2, CURRENT_TIMESTAMP, 'Spain', '321-654-987', 'Organizer');
+('admin2@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Alice', 'Johnson', 'Paris', 'admin2.jpg', false, NULL, 0, CURRENT_TIMESTAMP, 'Admin');
+INSERT INTO authentified_user 
+(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
+VALUES 
+('organizer2@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Steve', 'Williams', 'Paris', 'organizer2.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Madrid, Spain', '321-654-987', 'Organizer');
 
 
 
@@ -285,4 +286,3 @@ INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
 ('Feedback on the event organization.', '2024-12-07', 1, 3),
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
-
