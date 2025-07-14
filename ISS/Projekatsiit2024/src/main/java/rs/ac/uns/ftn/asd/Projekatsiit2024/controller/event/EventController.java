@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,8 +61,16 @@ public class EventController {
     @GetMapping(value = "/top5/authentified", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MinimalEventDTO>> GetTop5EventsAuthorized() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
+		String email;
+		
+		Object principal = auth.getPrincipal();
+		if (principal instanceof UserDetails) {
+		    email = ((UserDetails) principal).getUsername();
+		} else if (principal instanceof String) {
+		    email = (String) principal;
+		} else {
+		    throw new IllegalStateException("Unexpected principal type: " + principal.getClass());
+		}
 	
 		AuthentifiedUser user = userRepo.findByEmail(email);
 		
@@ -195,28 +204,17 @@ public class EventController {
     }*/
     
     
-    
-    
-    
-    
-    //TODO: change this
-    /*@GetMapping(value = "/organizer", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> getEventsForOrganizer() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
-	
-		AuthentifiedUser user = userRepo.findByEmail(email);
-		
-		int userId= user.getId();
-    	List<MinimalEventDTO> eventsDTO = new ArrayList<>();
-        List<Event> events = eventService.geteventsByOrganizerID(userId);
-        
-        for (Event ev : events) {
-            MinimalEventDTO minEve = new MinimalEventDTO(ev);
-            eventsDTO.add(minEve);
-        }
+   
+//    @GetMapping(value = "/service/{serviceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<List<MinimalEventDTO>> getEventsByService(@PathVariable int serviceId) {
+//        List<Event> events = eventService.getEventByEventType(serviceId);
+//
+//        List<MinimalEventDTO> eventsDTO = events.stream()
+//                .map(MinimalEventDTO::new)
+//                .toList();
+//
+//        return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
+//    }
 
-        return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
-    }*/
+    
 }

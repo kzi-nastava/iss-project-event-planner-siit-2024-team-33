@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.utils;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -50,8 +52,8 @@ public class TokenUtils {
 				.map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toList()))
 				.setExpiration(expiresAt)
-				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
-	}
+				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();	}
+
 	
 	private String generateAudience() {
 		
@@ -73,6 +75,12 @@ public class TokenUtils {
 	public String getToken(HttpServletRequest request) {
 		String authHeader = getAuthHeaderFromHeader(request);
 		
+		System.out.println(authHeader);
+		// JWT se prosledjuje kroz header 'Authorization' u formatu:
+		// Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+		System.out.println("Authorization header: " + request.getHeader("Authorization"));
+		System.out.println("Authorization: " + request);
+
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 			return authHeader.substring(7);
 		}
@@ -82,7 +90,6 @@ public class TokenUtils {
 	
 	public String getUsernameFromToken(String token) {
 		String username;
-		
 		try {
 			final Claims claims = this.getAllClaimsFromToken(token);
 			username = claims.getSubject();
@@ -114,19 +121,25 @@ public class TokenUtils {
 	}
 	
 	private Claims getAllClaimsFromToken(String token) {
-		Claims claims;
-		try {
-			claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
-		}
-		catch(ExpiredJwtException ex) {
-			throw ex;
-		}
-		catch(Exception e) {
-			claims = null;
-		}
-		
-		return claims;
+	    try {
+	        System.out.println("SECRET: " + SECRET);
+	        System.out.println("TOKEN: " + token);
+
+	        return Jwts.parser()
+	                .setSigningKey(SECRET)
+	                .setAllowedClockSkewSeconds(10000)
+	                .parseClaimsJws(token)
+	                .getBody();
+	    } catch (ExpiredJwtException ex) {
+	        System.err.println("Token expired at: " + ex.getClaims().getExpiration());
+	        throw ex;
+	    } catch (Exception e) {
+	        System.err.println("JWT parsing failed:");
+	        e.printStackTrace(); // <- ADD THIS
+	        throw new RuntimeException("Token parsing failed", e); // Optional: propagate real cause
+	    }
 	}
+
 	
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		UserPrincipal user = (UserPrincipal) userDetails;
