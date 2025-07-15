@@ -188,5 +188,33 @@ public class EventController {
         return new ResponseEntity<>(eventDTOs, HttpStatus.OK);
     }
     
-    
+    @GetMapping(value = "/organizer", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalEventDTO>> GetEventsForOrganizer() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email;
+
+        Object principal = auth.getPrincipal();
+        if (principal instanceof UserDetails) {
+            email = ((UserDetails) principal).getUsername();
+        } else if (principal instanceof String) {
+            if ("anonymousUser".equals(principal)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            email = (String) principal;
+        } else {
+            throw new IllegalStateException("Unexpected principal type: " + principal.getClass());
+        }
+
+        AuthentifiedUser user = userRepo.findByEmail(email);
+        int userId = user.getId();
+
+        List<Event> events = eventService.geteventsByOrganizerID(userId);
+
+        List<MinimalEventDTO> eventsDTO = events.stream()
+                .map(MinimalEventDTO::new)
+                .toList();
+
+        return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
+    }
+
 }

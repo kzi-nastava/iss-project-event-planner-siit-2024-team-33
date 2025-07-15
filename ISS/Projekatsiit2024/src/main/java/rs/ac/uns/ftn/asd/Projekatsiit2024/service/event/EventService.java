@@ -1,4 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.event;
+
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -384,6 +385,12 @@ public class EventService {
               .filter(event -> !top5Events.contains(event))
               .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
               .toList(); 
+    	
+    	return events;
+    }
+    
+    public List<Event> geteventsByOrganizerID(Integer id){
+    	List<Event> events = eventRepository.findByOrganizerId(id);
     	
     	return events;
     }
