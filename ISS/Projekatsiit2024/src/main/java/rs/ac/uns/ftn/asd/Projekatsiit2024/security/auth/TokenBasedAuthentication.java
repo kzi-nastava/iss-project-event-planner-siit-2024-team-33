@@ -38,6 +38,6 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken implem
 	
 	@Override
 	public String getName() {
-	    return principle.getUsername();
+	    return principal.getUsername();
 	}
 }

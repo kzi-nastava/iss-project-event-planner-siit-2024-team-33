@@ -93,16 +93,14 @@ public class WebSecurityConfig {
 		        
 		        //events
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
-<<<<<<< HEAD
+
 		        
 		        //offer categories
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
 		        
-=======
 		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
 		        		        
->>>>>>> feature/chat
 		        .requestMatchers("/api/images/**").permitAll()
 		        .requestMatchers("/api/providers/**").permitAll()
 		        .requestMatchers("/api/users/signup").permitAll()
