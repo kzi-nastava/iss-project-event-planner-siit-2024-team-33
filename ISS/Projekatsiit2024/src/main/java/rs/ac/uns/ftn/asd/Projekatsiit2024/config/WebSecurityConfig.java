@@ -93,7 +93,7 @@ public class WebSecurityConfig {
 		        
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
-		        
+		        		        
 		        .requestMatchers("/api/images/**").permitAll()
 		        .requestMatchers("/api/providers/**").permitAll()
 		        .requestMatchers("/api/users/signup").permitAll()
