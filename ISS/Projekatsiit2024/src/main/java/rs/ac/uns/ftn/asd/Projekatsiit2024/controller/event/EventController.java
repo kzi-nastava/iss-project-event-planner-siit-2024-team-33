@@ -189,32 +189,4 @@ public class EventController {
     }
     
     
-
-    /*@PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GetEventDTO> putEvent(@PathVariable Integer id, @RequestBody UpdateEventDTO data) {
-    	Event updatedEvent = eventService.editEvent(
-                id,
-                data.getName(),data.getDescription(),data.getPlace(),data.getLatitude(),
-                data.getLongitude(),data.getDateOfEvent(),data.getEndOfEvent(),data.getNumOfAttendees(),
-                data.getIsPrivate(),data.getPrice(),data.getPicture(),data.getEventTypes()
-        );
-
-        GetEventDTO updatedEventDTO = new GetEventDTO(updatedEvent);
-        return new ResponseEntity<>(updatedEventDTO, HttpStatus.OK);
-    }*/
-    
-    
-   
-//    @GetMapping(value = "/service/{serviceId}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<List<MinimalEventDTO>> getEventsByService(@PathVariable int serviceId) {
-//        List<Event> events = eventService.getEventByEventType(serviceId);
-//
-//        List<MinimalEventDTO> eventsDTO = events.stream()
-//                .map(MinimalEventDTO::new)
-//                .toList();
-//
-//        return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
-//    }
-
-    
 }

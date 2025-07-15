@@ -286,3 +286,15 @@ INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
 ('Feedback on the event organization.', '2024-12-07', 1, 3),
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
+
+INSERT INTO invitation (text, date, status, inviter_id, event_id, invited_user_id) VALUES
+('You are invited to join the Winter Wonderland event!', '2024-12-10', 'PENDING', 5, 1, 2),
+('Please attend our exclusive Conference on 2025-12-15.', '2024-12-11', 'PENDING', 2, 2, 3),
+('Invitation to the Annual Winter Gala.', '2024-12-12', 'PENDING', 5, 3, 1),
+('You have been selected for the VIP Party!', '2024-12-13', 'PENDING', 2, 4, 3),
+('Don’t miss out on this amazing Festival event!', '2024-12-14', 'PENDING', 5, 5, 4),
+('Reminder: You are invited to the Workshop event.', '2024-12-15', 'PENDING', 2, 6, 3),
+('Join us for an incredible Exhibition evening.', '2024-12-16', 'PENDING', 5, 7, 1),
+('Private invitation to the Business Meeting.', '2024-12-17', 'PENDING', 2, 8, 4),
+('Sports Event invitation for top players only!', '2024-12-18', 'PENDING', 5, 9, 1),
+('You are invited to a special Picnic gathering.', '2024-12-19', 'PENDING', 2, 10, 3);
