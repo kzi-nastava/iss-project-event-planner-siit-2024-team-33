@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -17,7 +18,7 @@ public class Provider extends AuthentifiedUser {
     private String phoneNumber;
     private String providerName;
     private String description;
-    private List<String> pictures;
+    private List<String> pictures = new ArrayList<>();
 
     @OneToMany(mappedBy = "provider")
     private List<Offer> offers;

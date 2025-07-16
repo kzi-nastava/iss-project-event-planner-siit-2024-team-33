@@ -65,8 +65,6 @@ public class EventService {
         event.setEventActivities(eventActivities);
         
         Event createdEvent = eventRepository.save(event);
-        //adding event to the list of organizers events
-        organizer.addEvent(createdEvent);
         
         return createdEvent;
     }
@@ -100,17 +98,17 @@ public class EventService {
     
     
     private boolean isEventDataCorrect(Event event) throws EventValidationException {
-    	if (!Pattern.matches("^.{0,50}$", event.getName()))
-			throw new EventValidationException("Name can't be over 50 characters long.");
+    	if (!Pattern.matches("^.{5,50}$", event.getName()))
+			throw new EventValidationException("Name can't be less than 5 or over 50 characters long.");
     	
-    	if (!Pattern.matches("^.{0,800}$", event.getDescription()))
-			throw new EventValidationException("Description can't be over 800 characters long.");
+    	if (!Pattern.matches("^.{5,800}$", event.getDescription()))
+			throw new EventValidationException("Description can't be less than 5 or over 800 characters long.");
     	
     	if (event.getNumOfAttendees() < 0)
     		throw new EventValidationException("Number of attendees can't be less than 0.");
     	
-    	if (!Pattern.matches("^[A-Za-z\\s,]{1,50}$", event.getPlace()))
-			throw new EventValidationException("Place is not of valid format.");
+    	if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", event.getPlace()) || event.getPlace().length() > 150)
+    	    throw new EventValidationException("Place must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
     	
     	if (event.getDateOfEvent().isBefore(LocalDateTime.now()) && 
     			event.getEndOfEvent().isBefore(LocalDateTime.now()))
@@ -144,11 +142,11 @@ public class EventService {
     
     
     private boolean isEventActivityDataCorrect(EventActivity eventActivity) throws EventActivityValidationException {
-    	if (!Pattern.matches("^.{0,50}$", eventActivity.getName()))
-			throw new EventActivityValidationException("Name can't be over 50 characters long.");
+    	if (!Pattern.matches("^.{5,50}$", eventActivity.getName()))
+			throw new EventActivityValidationException("Name can't be less than 5 or over 50 characters long.");
     	
-    	if (!Pattern.matches("^.{0,300}$", eventActivity.getName()))
-			throw new EventActivityValidationException("Description can't be over 300 characters long.");
+    	if (!Pattern.matches("^.{5,80}$", eventActivity.getDescription()))
+			throw new EventActivityValidationException("Description can't be less than 5 or over 80 characters long.");
     	
     	if (eventActivity.getEvent().getDateOfEvent().isAfter(eventActivity.getStartingTime()) || 
     			eventActivity.getEvent().getEndOfEvent().isBefore(eventActivity.getStartingTime())) 
@@ -164,8 +162,55 @@ public class EventService {
     		throw new EventActivityValidationException("Starting time can't be before"
     				+ " the ending time of an event activity.");
     	
-    	if (!Pattern.matches("^.{0,50}$", eventActivity.getName()))
-			throw new EventActivityValidationException("Location can't be over 50 characters long.");
+    	if (!Pattern.matches("^.{2,50}$", eventActivity.getName()))
+			throw new EventActivityValidationException("Location can't be less than 2 or over 50 characters long.");
+    	
+    	return true;
+    }
+    
+    
+    
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Event joinEvent(Integer eventId, UserPrincipal userPrincipal) 
+    		throws EventValidationException {
+    	Optional<Event> optionalEvent = eventRepository.findById(eventId);
+    	
+    	if (optionalEvent.isEmpty())
+    		throw new EventValidationException("No event exists with such id.");
+    	
+    	Event event = optionalEvent.get();
+    	AuthentifiedUser user = userPrincipal.getUser();
+    	
+    	isJoiningEventPossible(user, event);
+    	
+    	event.getListOfAttendees().add(user);
+    	
+    	return eventRepository.save(event);
+	}
+    
+    private boolean isJoiningEventPossible(AuthentifiedUser user, Event event) 
+    		throws EventValidationException {
+    	if (event.getNumOfAttendees() == event.getListOfAttendees().size())
+    		throw new EventValidationException("There is no more place left to join event.");
+    	
+    	if (user.getId().equals(event.getOrganizer().getId()))
+    		throw new EventValidationException("Organizer can't join it's own event.");
+    	
+    	if (event.getListOfAttendees().contains(user))
+    		throw new EventValidationException("You have already joined this event.");
+    	
+    	if (event.getDateOfEvent().isBefore(LocalDateTime.now()))
+    		throw new EventValidationException("Can't join event after it already started.");
+    	
+    	//private event
+    	if (event.getIsPrivate()) {
+    		boolean isInvited = event.getPrivateInvitations()
+    		        .stream()
+    		        .anyMatch(inv -> inv.getInvitedUser().getId().equals(user.getId()));	
+    		if (!isInvited)
+    			throw new EventValidationException("You are not on the list of invitations for this event.");
+    	}
     	
     	return true;
     }
@@ -174,6 +219,39 @@ public class EventService {
     
     
     
+    @Transactional(propagation = Propagation.REQUIRED)
+	public Event getEventDetails(Integer eventId, UserPrincipal userPrincipal) throws EventValidationException {
+		Optional<Event> optionalEvent = eventRepository.findById(eventId);
+    	
+    	if (optionalEvent.isEmpty())
+    		throw new EventValidationException("No event exists with such id.");
+    	
+    	Event event = optionalEvent.get();
+		
+		isUserAllowedToGetData(userPrincipal, event);
+		
+		return event;
+	}
+    
+	private boolean isUserAllowedToGetData(UserPrincipal userPrincipal, Event event) throws EventValidationException {
+    	if (event.getIsPrivate()) {
+    		//if event is private and user is logged out
+    		if (userPrincipal == null)
+    			throw new EventValidationException("You have to be logged in into account which has"
+    					+ " permition to view this private event.");
+    		
+    		AuthentifiedUser user = userPrincipal.getUser();
+    		
+    		//if event is private and user is not one of the attendees of this event
+    		boolean isAttendee = event.getListOfAttendees()
+    		        .stream()
+    		        .anyMatch(attend -> attend.getId().equals(user.getId()));
+    		if (!isAttendee)
+    			throw new EventValidationException("You are not on the list of attendees for this private event.");
+    	}
+    	
+    	return true;
+	}
     
     
     
@@ -390,5 +468,10 @@ public class EventService {
     	
     	return events;
     }
-
+    
+    public List<Event> geteventsByOrganizerID(Integer id){
+    	List<Event> events = eventRepository.findByOrganizerId(id);
+    	
+    	return events;
+    }
 }

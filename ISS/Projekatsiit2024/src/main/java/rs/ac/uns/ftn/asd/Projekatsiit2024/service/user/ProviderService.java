@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
@@ -51,7 +52,6 @@ public class ProviderService {
         provider.setPassword(registerUser.getPassword());
         provider.setName(registerUser.getName());
         provider.setSurname(registerUser.getSurname());
-        provider.setCity(registerUser.getResidency().split(" ")[0]);
         provider.setPicture(registerUser.getPicture());
         provider.setPictures(registerUser.getPictures());
         provider.setDescription(registerUser.getDescription());
@@ -80,7 +80,6 @@ public class ProviderService {
 		//updating provider
         provider.setName(updateUser.getName());
         provider.setSurname(updateUser.getSurname());
-        provider.setCity(updateUser.getResidency().split(" ")[0]);
         provider.setPicture(updateUser.getPicture());
         provider.setPictures(updateUser.getPictures());
         provider.setDescription(updateUser.getDescription());
@@ -111,9 +110,9 @@ public class ProviderService {
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", provider.getSurname())) {
 			throw new ProviderValidationException("Surname is not of valid format.");
 		}
-		if (!Pattern.matches("^[A-Za-z\\s,]{1,50}$", provider.getResidency())) {
-			throw new ProviderValidationException("Residency is not of valid format.");
-		}
+		if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", provider.getResidency()) || provider.getResidency().length() > 150)
+    	    throw new EventValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
+		
 		if (!Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", provider.getPhoneNumber())) {
 			throw new ProviderValidationException("Phone number is not of valid format.");
 		}

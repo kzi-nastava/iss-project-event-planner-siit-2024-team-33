@@ -81,7 +81,7 @@ public class WebSecurityConfig {
             	//authentication
 		        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/auth/check-email").permitAll()
-		        
+
 		        //event types
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes").hasAuthority("ADMIN_ROLE")
@@ -91,9 +91,26 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/deactivation").hasAuthority("ADMIN_ROLE")
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes/exists").hasAuthority("ADMIN_ROLE")
 		        
+		        //events
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
+		        .requestMatchers(HttpMethod.POST, "/api/events/*/join").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/*").permitAll()
+		        
+		        //favorites
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/events").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/events/*/exists").authenticated()
+		        .requestMatchers(HttpMethod.POST, "/api/favorites/events/*").authenticated()
+		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
+		        
+		        //offer categories
+		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
+		        
 		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
-		        		        
+		        
+		        .requestMatchers("/api/events/invitations/pending").authenticated()
+		        .requestMatchers("/api/events/top5/authentified").authenticated()
+		        .requestMatchers("/api/events/filter/authentified").authenticated()
 		        .requestMatchers("/api/images/**").permitAll()
 		        .requestMatchers("/api/providers/**").permitAll()
 		        .requestMatchers("/api/users/signup").permitAll()

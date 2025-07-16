@@ -1,7 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
-import java.util.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -38,7 +36,7 @@ public class offerReservationService {
             Integer eventId,
             LocalTime startTime,
             LocalTime endTime) {
-
+    
         if (dateOfReservation == null) 
             throw new IllegalArgumentException("Invalid argument: Date of reservation cannot be null.");
 
@@ -56,6 +54,9 @@ public class offerReservationService {
 
         if (endTime.isBefore(startTime)) 
             throw new IllegalArgumentException("Invalid argument: End time cannot be earlier than start time.");
+        
+    	if (dateOfReservation.isBefore(LocalDate.now()))
+    		throw new IllegalArgumentException("Invalid argument: Given date cannot be before current date.");
     }
 
     public OfferReservation createProductReservation(Product product, Event event) {
@@ -86,10 +87,10 @@ public class offerReservationService {
         validateArguments(dateOfReservation, offerId, eventId, startTime, endTime);
 
         Offer offer = offerRepo.findById(offerId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid argument: No offer with the given ID exists."));
+                .orElseThrow(() -> new IllegalArgumentException("No offer with the given ID exists."));
 
         Event event = eventRepo.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid argument: No event with the given ID exists."));
+                .orElseThrow(() -> new IllegalArgumentException("No event with the given ID exists."));
 
         OfferReservation offerReservation = new OfferReservation();
         offerReservation.setDateOfReservation(dateOfReservation);
@@ -102,7 +103,7 @@ public class offerReservationService {
 
         return offerReservation;
     }
-
+    	//No use as of now
     public OfferReservation createAndFlushOfferReservation(
             LocalDate dateOfReservation,
             Integer offerId,
@@ -157,7 +158,7 @@ public class offerReservationService {
     public void cancelService(OfferReservation reservation) {
         rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service service = (rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service) reservation.getOffer();
 //        long timeUntilCancellation = reservation.getDateOfReservation().minus(LocalDate.now());
-        long timeUntilCancellation = ChronoUnit.MILLIS.between(reservation.getDateOfReservation(), LocalDate.now());
+        long timeUntilCancellation = ChronoUnit.MILLIS.between(LocalDate.now().atStartOfDay(), reservation.getDateOfReservation().atStartOfDay());
         long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000;
 
         if (timeUntilCancellation < cancellationDeadline) {
@@ -166,6 +167,8 @@ public class offerReservationService {
 
         offerReservationRepo.delete(reservation);
     }
+    
+    
     
 	public OfferReservation findReservationByIdAndService(Integer serviceId, int reservationId) {
 	    return offerReservationRepo.findById(reservationId)
@@ -199,7 +202,7 @@ public class offerReservationService {
 	private Event getEventByID(Integer id) {
 		Optional<Event> optEvent = eventRepo.findById(id);
 		if(optEvent.isEmpty()) {
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("No event for that id");
 		}
 		Event event = optEvent.get();
 		return event;
@@ -207,7 +210,7 @@ public class offerReservationService {
 	private Offer getOfferByID(Integer id) {
 		Optional<Offer> optOffer=offerRepo.findById(id);
 		if(optOffer.isEmpty()) {
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("No offer for that id");
 		}
 		Offer off = optOffer.get();
 		return off;

@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,8 +37,11 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.UserService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.TokenUtils;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.VerificationService;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -43,6 +49,10 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private VerificationService verificationService;
+	@Autowired
+	private AuthentifiedUserRepository userRepo;
 	
 	@Autowired
 	private TokenUtils tokenUtils;
@@ -56,13 +66,15 @@ public class UserController {
 		AuthentifiedUser user = userService.registerUser(registerUser);
 		RegisteredUser registeredUser = new RegisteredUser(user);
 		
+		verificationService.sendVerificationEmail(user);
 		return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
 	}
 	
 	
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/me",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetUserDTO> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+
 		return ResponseEntity.ok(GetUserDTO.from(userPrincipal.getUser()));
     }
 	
@@ -109,7 +121,14 @@ public class UserController {
 	
 	
     @PostMapping(value = "/{blockerId}/block/{blockedId}")
-    public ResponseEntity<String> blockUser(@PathVariable Integer blockerId, @PathVariable Integer blockedId) {
+    public ResponseEntity<String> blockUser(@PathVariable Integer blockedId) {
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int blockerId = user.getId();
         try {
             userService.blockAUser(blockerId, blockedId);
             return ResponseEntity.ok("");
@@ -122,7 +141,14 @@ public class UserController {
 
     
     @DeleteMapping(value = "/{blockerId}/block/{blockedId}")
-    public ResponseEntity<String> unblockUser(@PathVariable Integer blockerId, @PathVariable Integer blockedId) {
+    public ResponseEntity<String> unblockUser(@PathVariable Integer blockedId) {
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails principal = (UserDetails) auth.getPrincipal();
+		String email = principal.getUsername();
+	
+		AuthentifiedUser user = userRepo.findByEmail(email);
+		
+		int blockerId = user.getId();
         try {
             userService.unblockAUser(blockerId, blockedId);
             return ResponseEntity.ok("");

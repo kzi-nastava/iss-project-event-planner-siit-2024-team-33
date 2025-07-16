@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.event;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,8 +25,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.GetEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.UpdateEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.UpdatedEventTypeDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.event.EventTypeService;
 
@@ -92,5 +95,14 @@ public class EventTypeController {
 	public ResponseEntity<Boolean> checkIfExists(@RequestParam String name) {
 		boolean exists = eventTypeService.existsByName(name);
 		return ResponseEntity.ok(exists);
+	}
+	
+	
+	@GetMapping("/{eventTypeId}/offerCategories")
+	public ResponseEntity<List<MinimalOfferCategoryDTO>> getRecommendedCategories(@PathVariable Integer eventTypeId) 
+			throws EventTypeValidationException {
+	    Set<OfferCategory> categories = eventTypeService.getRecommendedByEventType(eventTypeId);
+	    List<MinimalOfferCategoryDTO> dtos = categories.stream().map(MinimalOfferCategoryDTO::new).toList();
+	    return ResponseEntity.ok(dtos);
 	}
 }

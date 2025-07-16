@@ -10,11 +10,11 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken implem
 	private static final long serialVersionUID = 1L;
 	
 	private String token;
-	private final UserDetails principle;
+	private final UserDetails principal;
 	
-	public TokenBasedAuthentication(UserDetails principle) {
-		super(principle.getAuthorities());
-		this.principle = principle;
+	public TokenBasedAuthentication(UserDetails principal) {
+		super(principal.getAuthorities());
+		this.principal = principal;
 		super.setAuthenticated(true);
 	}
 	
@@ -33,11 +33,11 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken implem
 	
 	@Override
 	public UserDetails getPrincipal() {
-		return principle;
+		return principal;
 	}
 	
 	@Override
 	public String getName() {
-	    return principle.getUsername();
+	    return principal.getUsername();
 	}
 }

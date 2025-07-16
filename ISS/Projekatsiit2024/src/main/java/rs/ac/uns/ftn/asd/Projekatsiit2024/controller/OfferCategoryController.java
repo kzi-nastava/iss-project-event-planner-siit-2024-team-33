@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +20,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.HandleSuggestionDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.PostOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.PutOfferCategoryDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferCategoryService;
 

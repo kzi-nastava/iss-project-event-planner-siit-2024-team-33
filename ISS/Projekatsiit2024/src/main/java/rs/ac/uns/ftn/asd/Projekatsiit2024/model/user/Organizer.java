@@ -17,12 +17,5 @@ public class Organizer extends AuthentifiedUser {
 	private String phoneNumber;
     
     @OneToMany(mappedBy = "organizer")
-    private Set<Event> organizedEvents;
-    
-    public void addEvent(Event event) {
-    	if (this.organizedEvents == null) {
-    		this.organizedEvents = new HashSet<>();
-    	}
-        this.organizedEvents.add(event);
-    }
+    private Set<Event> organizedEvents = new HashSet<>();
 }

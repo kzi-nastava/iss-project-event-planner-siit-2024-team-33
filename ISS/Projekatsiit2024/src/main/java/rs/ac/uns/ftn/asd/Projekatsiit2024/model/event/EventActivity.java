@@ -1,8 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.event;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,17 +24,4 @@ public class EventActivity {
 	
 	@ManyToOne
 	private Event event;
-	
-	@Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof EventActivity)) return false;
-        EventActivity eventActivity = (EventActivity) o;
-        return this.getId() == eventActivity.getId();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.getId());
-    }
 }

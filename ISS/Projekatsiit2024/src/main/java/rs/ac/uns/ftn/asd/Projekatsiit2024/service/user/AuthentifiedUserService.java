@@ -1,5 +1,4 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
-
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;

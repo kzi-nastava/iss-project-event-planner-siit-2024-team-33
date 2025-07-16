@@ -12,5 +12,4 @@ public class PostInvitationDTO {
     private List<String> emailAddresses;
     private String message;
     private Integer eventId;
-    
 }

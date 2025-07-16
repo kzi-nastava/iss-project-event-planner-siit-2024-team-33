@@ -27,7 +27,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ProductService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerReservationService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.GetEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreateProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.CreatedProductDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product.GetProductDTO;

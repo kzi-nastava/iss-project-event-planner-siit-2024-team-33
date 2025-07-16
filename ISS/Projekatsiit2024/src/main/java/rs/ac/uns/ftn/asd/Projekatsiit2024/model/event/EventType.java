@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.event;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class EventType
 	private Boolean isActive;
     
     @ManyToMany
-    private Set<OfferCategory> recommendedCategories;
+    private Set<OfferCategory> recommendedCategories = new HashSet<>();
     
     @Override
     public boolean equals(Object o) {

@@ -55,22 +55,36 @@ public class OfferController {
 	private AuthentifiedUserRepository userRepo;
 	
 	@GetMapping(value = "/top5/authentified", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<MinimalOfferDTO>> GetTop5Offers() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
-	
-		AuthentifiedUser user = userRepo.findByEmail(email);
-		
-		int id = user.getId();
-	    List<MinimalOfferDTO> offers = new ArrayList<>();
-	    List<Offer> offerz = offerService.getTop5Offers(id);
-	    
-	    for(Offer off:offerz) {
-	    	MinimalOfferDTO offr = new MinimalOfferDTO(off);
-	    	offers.add(offr);
+	public ResponseEntity<?> GetTop5Offers() {
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+	    if (auth == null || !auth.isAuthenticated()) {
+	        // Not authenticated at all
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
 	    }
-	    
+
+	    Object principal = auth.getPrincipal();
+
+	    if (!(principal instanceof UserDetails)) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user principal");
+	    }
+
+	    UserDetails userDetails = (UserDetails) principal;
+	    String email = userDetails.getUsername();
+
+	    AuthentifiedUser user = userRepo.findByEmail(email);
+	    if (user == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+	    }
+
+	    List<MinimalOfferDTO> offers = new ArrayList<>();
+	    List<Offer> offerz = offerService.getTop5Offers(user.getId());
+
+	    for (Offer off : offerz) {
+	        MinimalOfferDTO offr = new MinimalOfferDTO(off);
+	        offers.add(offr);
+	    }
+
 	    return ResponseEntity.ok(offers);
 	}
 	

@@ -1,14 +1,13 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventActivity.CreatedEventActivityDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 
 @Getter
 @Setter
@@ -19,13 +18,14 @@ public class CreatedEventDTO {
     private int numOfAttendees;
     private Boolean isPrivate;
     private String place;
-    private Double latitude;
-    private Double longitude;
     private LocalDateTime dateOfEvent;
     private LocalDateTime endOfEvent;
-    private EventType eventType;
+    private Integer eventTypeId;
     
-    private List<CreatedEventActivityDTO> eventActivities;
+    private Double latitude;
+    private Double longitude;
+    
+    private Set<CreatedEventActivityDTO> eventActivities;
     
     
     //TODO: add for private list of people in event if needed
@@ -42,8 +42,8 @@ public class CreatedEventDTO {
     	this.setLongitude(event.getLongitude());
     	this.setDateOfEvent(event.getDateOfEvent());
     	this.setEndOfEvent(event.getEndOfEvent());
-    	this.setEventType(event.getEventType());
+    	this.setEventTypeId(event.getEventType().getId());
     	this.setEventActivities(event.getEventActivities().stream()
-    			.map(CreatedEventActivityDTO::new).collect(Collectors.toList()));
+    			.map(CreatedEventActivityDTO::new).collect(Collectors.toSet()));
     }
 }

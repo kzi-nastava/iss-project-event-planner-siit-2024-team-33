@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
@@ -43,7 +44,6 @@ public class OrganizerService {
         organizer.setSurname(registerUser.getSurname());
         organizer.setPicture(registerUser.getPicture());
         organizer.setResidency(registerUser.getResidency());
-        organizer.setCity(registerUser.getResidency().split(" ")[0]);
         organizer.setPhoneNumber(registerUser.getPhoneNumber());
         organizer.setIsDeleted(false);
         organizer.setSuspensionEndDate(null);
@@ -69,7 +69,6 @@ public class OrganizerService {
         organizer.setSurname(updateUser.getSurname());
         organizer.setPicture(updateUser.getPicture());
         organizer.setResidency(updateUser.getResidency());
-        organizer.setCity(updateUser.getResidency().split(" ")[0]);
         organizer.setPhoneNumber(updateUser.getPhoneNumber());
 		
 		isDataCorrect(organizer, true);
@@ -96,9 +95,10 @@ public class OrganizerService {
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getSurname())) {
 			throw new OrganizerValidationException("Surname is not of valid format.");
 		}
-		if (!Pattern.matches("^[A-Za-z\\s,]{1,50}$", organizer.getResidency())) {
-			throw new OrganizerValidationException("Residency is not of valid format.");
-		}
+		if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", organizer.getResidency()) || organizer.getResidency().length() > 150)
+    	    throw new EventValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
+		
+		
 		if (!Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", organizer.getPhoneNumber())) {
 			throw new OrganizerValidationException("Phone number is not of valid format.");
 		}

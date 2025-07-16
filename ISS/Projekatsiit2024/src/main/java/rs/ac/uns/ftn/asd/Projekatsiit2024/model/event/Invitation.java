@@ -1,14 +1,22 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.event;
 
 import java.sql.Date;
+import java.util.Objects;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
 @Entity
+@Getter
+@Setter
 public class Invitation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,51 +24,28 @@ public class Invitation {
 
     private String text;
     private Date date;
-
+    
+    @Enumerated(EnumType.STRING)
+    private InvitationStatus status = InvitationStatus.PENDING;
+    
     @ManyToOne
     private AuthentifiedUser inviter;
     @ManyToOne
     private Event event;
-
+    @ManyToOne
+    private AuthentifiedUser invitedUser;
     
-    public Integer getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Invitation)) return false;
+        Invitation invitation = (Invitation) o;
+        return this.getId() == invitation.getId();
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
     }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public AuthentifiedUser getInviter() {
-        return inviter;
-    }
-
-    public void setInviter(AuthentifiedUser inviter) {
-        this.inviter = inviter;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
+    
 }
