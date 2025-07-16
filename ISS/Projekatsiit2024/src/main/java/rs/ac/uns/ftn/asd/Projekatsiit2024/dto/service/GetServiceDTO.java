@@ -27,6 +27,9 @@ public class GetServiceDTO {
 	public Boolean isAutomatic;
 	public int minLengthInMins;
 	public int maxLengthInMins;
+
+	public String providerName;
+	public String providerEmail;
 	
 	public GetServiceDTO(Service s) {
 		this.versionId = s.getId();
@@ -49,5 +52,8 @@ public class GetServiceDTO {
 		this.isAutomatic = s.getIsAutomatic();
 		this.minLengthInMins = s.getMinLengthInMins();
 		this.maxLengthInMins = s.getMaxLengthInMins();
+		
+		this.providerEmail = s.getProvider().getEmail();
+		this.providerName = s.getProvider().getName();
 	}
 }

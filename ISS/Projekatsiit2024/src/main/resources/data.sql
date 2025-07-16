@@ -108,14 +108,14 @@ INSERT INTO OFFER (
 )
 VALUES (
     24, 1, 10.0, TRUE, FALSE, FALSE, 
-    120, 5, 4, 99.99, 1, 
+    120, 5, 4, 99.99, 3, 
     48, '2024-12-01', 'Service', 
     'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal''s history.',
     'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
 );
 VALUES (
     24, 1, 10.0, TRUE, FALSE, FALSE, 
-    120, 5, 4, 9.99, 1, 
+    120, 5, 4, 9.99, 3, 
     48, '2024-12-01', 'Service', 
     'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal''s history.',
     'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'

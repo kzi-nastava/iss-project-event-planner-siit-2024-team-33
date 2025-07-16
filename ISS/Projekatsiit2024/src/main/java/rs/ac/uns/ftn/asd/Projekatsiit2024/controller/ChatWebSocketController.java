@@ -33,10 +33,7 @@ public class ChatWebSocketController {
 	private MessageRepository messageRepository;
 	
 	@MessageMapping("/chat.send")
-	public void sendMessage(PostMessageDTO message, Message<?> messageObj) {
-	    Principal principal = SimpMessageHeaderAccessor.getUser(messageObj.getHeaders());
-
-		
+	public void sendMessage(PostMessageDTO message, Principal principal) {
 		AuthentifiedUser sender = userRepository.findByEmailOptional(principal.getName()).orElseThrow();
 		AuthentifiedUser recipient = userRepository.findByEmailOptional(message.recipientEmail).orElseThrow();
 		
