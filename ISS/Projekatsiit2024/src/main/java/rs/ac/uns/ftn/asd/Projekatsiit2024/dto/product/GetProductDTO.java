@@ -26,6 +26,7 @@ public class GetProductDTO {
     public MinimalOfferCategoryDTO category;
     
     public Integer providerId;
+    public String providerEmail;
     public String providerName;
     
     public List<MinimalEventTypeDTO> validEvents;
@@ -41,6 +42,7 @@ public class GetProductDTO {
     	this.availability = p.getAvailability();
     	this.category = new MinimalOfferCategoryDTO(p.getCategory());
     	this.providerId = p.getProvider().getId();
+    	this.providerEmail = p.getProvider().getEmail();
     	this.providerName = p.getProvider().getProviderName();
     	this.validEvents = p.getValidEvents().stream().map(et -> new MinimalEventTypeDTO(et)).toList();
     }
