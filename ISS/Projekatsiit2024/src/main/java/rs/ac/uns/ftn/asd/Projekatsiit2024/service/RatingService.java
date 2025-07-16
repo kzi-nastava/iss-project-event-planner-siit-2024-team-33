@@ -9,6 +9,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.RatingRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 
 import java.util.List;
 import java.util.Optional;
@@ -78,4 +81,8 @@ public class RatingService {
         return ratingRepository.findById(ratingId)
                 .orElseThrow(() -> new IllegalArgumentException(""));
     }
+    public Page<Rating> getAllRatings(Pageable pageable) {
+        return ratingRepository.findAll(pageable);
+    }
+
 }
