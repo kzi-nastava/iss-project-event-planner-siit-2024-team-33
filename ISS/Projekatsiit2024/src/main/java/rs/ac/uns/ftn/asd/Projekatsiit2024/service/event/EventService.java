@@ -1,4 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.event;
+
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -170,7 +171,87 @@ public class EventService {
     
     
     
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Event joinEvent(Integer eventId, UserPrincipal userPrincipal) 
+    		throws EventValidationException {
+    	Optional<Event> optionalEvent = eventRepository.findById(eventId);
+    	
+    	if (optionalEvent.isEmpty())
+    		throw new EventValidationException("No event exists with such id.");
+    	
+    	Event event = optionalEvent.get();
+    	AuthentifiedUser user = userPrincipal.getUser();
+    	
+    	isJoiningEventPossible(user, event);
+    	
+    	event.getListOfAttendees().add(user);
+    	
+    	return eventRepository.save(event);
+	}
     
+    private boolean isJoiningEventPossible(AuthentifiedUser user, Event event) 
+    		throws EventValidationException {
+    	if (event.getNumOfAttendees() == event.getListOfAttendees().size())
+    		throw new EventValidationException("There is no more place left to join event.");
+    	
+    	if (user.getId().equals(event.getOrganizer().getId()))
+    		throw new EventValidationException("Organizer can't join it's own event.");
+    	
+    	if (event.getListOfAttendees().contains(user))
+    		throw new EventValidationException("You have already joined this event.");
+    	
+    	if (event.getDateOfEvent().isBefore(LocalDateTime.now()))
+    		throw new EventValidationException("Can't join event after it already started.");
+    	
+    	//private event
+    	if (event.getIsPrivate()) {
+    		boolean isInvited = event.getPrivateInvitations()
+    		        .stream()
+    		        .anyMatch(inv -> inv.getInvitedUser().getId().equals(user.getId()));	
+    		if (!isInvited)
+    			throw new EventValidationException("You are not on the list of invitations for this event.");
+    	}
+    	
+    	return true;
+    }
+    
+    
+    
+    
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+	public Event getEventDetails(Integer eventId, UserPrincipal userPrincipal) throws EventValidationException {
+		Optional<Event> optionalEvent = eventRepository.findById(eventId);
+    	
+    	if (optionalEvent.isEmpty())
+    		throw new EventValidationException("No event exists with such id.");
+    	
+    	Event event = optionalEvent.get();
+		
+		isUserAllowedToGetData(userPrincipal, event);
+		
+		return event;
+	}
+    
+	private boolean isUserAllowedToGetData(UserPrincipal userPrincipal, Event event) throws EventValidationException {
+    	if (event.getIsPrivate()) {
+    		//if event is private and user is logged out
+    		if (userPrincipal == null)
+    			throw new EventValidationException("You have to be logged in into account which has"
+    					+ " permition to view this private event.");
+    		
+    		AuthentifiedUser user = userPrincipal.getUser();
+    		
+    		//if event is private and user is not one of the attendees of this event
+    		boolean isAttendee = event.getListOfAttendees()
+    		        .stream()
+    		        .anyMatch(attend -> attend.getId().equals(user.getId()));
+    		if (!isAttendee)
+    			throw new EventValidationException("You are not on the list of attendees for this private event.");
+    	}
+    	
+    	return true;
+	}
     
     
     
@@ -387,5 +468,4 @@ public class EventService {
     	
     	return events;
     }
-
 }

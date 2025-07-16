@@ -2,7 +2,11 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.model.user;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,12 +39,29 @@ public class AuthentifiedUser {
     private Timestamp lastPasswordResetDate;
 
     @ManyToMany
-    private List<Offer> favoriteOffers;
+    private Set<Offer> favoriteOffers = new HashSet<>();
     @ManyToMany
-    private List<Event> favoriteEvents;
+    private Set<Event> favoriteEvents = new HashSet<>();
+    
+    @ManyToMany(mappedBy = "listOfAttendees")
+    private Set<Event> joinedEvents = new HashSet<>();
+    
     
     @ManyToMany
     private List<AuthentifiedUser> blockedUsers;
     @OneToMany(mappedBy = "receiver")
     private List<Notification> notifications;
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AuthentifiedUser)) return false;
+        AuthentifiedUser aUser = (AuthentifiedUser) o;
+        return this.getId() == aUser.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
+    }
 }

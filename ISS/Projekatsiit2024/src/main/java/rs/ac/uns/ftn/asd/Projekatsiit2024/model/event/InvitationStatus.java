@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.model;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.model.event;
 
 public enum InvitationStatus {
     PENDING,

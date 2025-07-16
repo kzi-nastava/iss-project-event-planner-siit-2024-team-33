@@ -3,21 +3,16 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.event;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.event.EventService;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,11 +20,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreatedEventDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.DetailedEventDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.JoinedEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.event.EventService;
 
 
 @RestController
@@ -50,6 +53,24 @@ public class EventController {
 		return ResponseEntity.ok(new CreatedEventDTO(createdEvent));
 	}
 	
+	
+	@PostMapping(value = "/{eventId}/join", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<JoinedEventDTO> joinEvent(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+			@PathVariable Integer eventId) throws EventValidationException {
+		Event updatedEvent = eventService.joinEvent(eventId, userPrincipal);
+		
+		return ResponseEntity.ok(new JoinedEventDTO(updatedEvent));
+	}
+	
+	
+	@GetMapping(value = "/{eventId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getEventDetails(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+			@PathVariable Integer eventId) throws EventValidationException {
+		
+		Event event = eventService.getEventDetails(eventId, userPrincipal);
+		
+		return ResponseEntity.ok(new DetailedEventDTO(event));
+	}
 	
 	
 	
@@ -186,35 +207,5 @@ public class EventController {
         Page<MinimalEventDTO> eventDTOs = filteredEvents.map(MinimalEventDTO::new);
 
         return new ResponseEntity<>(eventDTOs, HttpStatus.OK);
-    }
-    
-    
-
-    /*@PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GetEventDTO> putEvent(@PathVariable Integer id, @RequestBody UpdateEventDTO data) {
-    	Event updatedEvent = eventService.editEvent(
-                id,
-                data.getName(),data.getDescription(),data.getPlace(),data.getLatitude(),
-                data.getLongitude(),data.getDateOfEvent(),data.getEndOfEvent(),data.getNumOfAttendees(),
-                data.getIsPrivate(),data.getPrice(),data.getPicture(),data.getEventTypes()
-        );
-
-        GetEventDTO updatedEventDTO = new GetEventDTO(updatedEvent);
-        return new ResponseEntity<>(updatedEventDTO, HttpStatus.OK);
-    }*/
-    
-    
-   
-//    @GetMapping(value = "/service/{serviceId}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<List<MinimalEventDTO>> getEventsByService(@PathVariable int serviceId) {
-//        List<Event> events = eventService.getEventByEventType(serviceId);
-//
-//        List<MinimalEventDTO> eventsDTO = events.stream()
-//                .map(MinimalEventDTO::new)
-//                .toList();
-//
-//        return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
-//    }
-
-    
+    } 
 }
