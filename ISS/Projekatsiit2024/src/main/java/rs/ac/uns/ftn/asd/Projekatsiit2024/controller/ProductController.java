@@ -50,8 +50,8 @@ public class ProductController {
 
 	
 	
-	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity getProduct(@PathVariable("id") Integer id) {
+	@GetMapping("/{id}")
+	public ResponseEntity getProduct(@PathVariable Integer id) {
 		try {
 			Product p = productService.get(id);
 			return ResponseEntity.ok(new GetProductDTO(p));

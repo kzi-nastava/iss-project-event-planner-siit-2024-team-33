@@ -1,8 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model;
 
-import java.sql.Date;
 
-import ch.qos.logback.core.util.Duration;
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +21,7 @@ public class Message
     public Date TimeOfSending;
 
     @ManyToOne
-    public Chat Chat;
-    @ManyToOne
     public AuthentifiedUser Sender;
+    @ManyToOne
+    public AuthentifiedUser Recipient;
 }

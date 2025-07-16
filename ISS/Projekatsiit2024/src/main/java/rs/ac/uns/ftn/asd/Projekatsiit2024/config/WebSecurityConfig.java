@@ -81,7 +81,7 @@ public class WebSecurityConfig {
             	//authentication
 		        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/auth/check-email").permitAll()
-		        
+
 		        //event types
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes").hasAuthority("ADMIN_ROLE")
@@ -106,6 +106,11 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
 		        
+		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
+		        
+		        .requestMatchers("/api/events/invitations/pending").authenticated()
+		        .requestMatchers("/api/events/top5/authentified").authenticated()
+		        .requestMatchers("/api/events/filter/authentified").authenticated()
 		        .requestMatchers("/api/images/**").permitAll()
 		        .requestMatchers("/api/providers/**").permitAll()
 		        .requestMatchers("/api/users/signup").permitAll()

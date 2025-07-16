@@ -39,6 +39,63 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
+(1, '2024-12-05', 5.0, FALSE, FALSE, 5, 59.99, 1, 'PRODUCT', 'Product', 
+ 'High-quality noise-canceling headphones with 30-hour battery life.', 
+ 'Sony WH-1000XM4', 'AVAILABLE', ARRAY['sony1.jpg', 'sony2.jpg'], 'Paris');
+
+INSERT INTO OFFER (
+    CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, 
+    OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, CITY
+)
+VALUES
+(2, '2024-12-07', 12.0, FALSE, FALSE, 6, 19.99, 1, 'PRODUCT', 'Product', 
+ 'Elegant ceramic coffee mugs, set of 4.', 
+ 'Ceramic Coffee Mugs', 'AVAILABLE', ARRAY['mugs1.jpg'], 'Berlin');
+
+INSERT INTO OFFER (
+    CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, 
+    OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, CITY
+)
+VALUES
+(3, '2024-12-10', 18.0, FALSE, FALSE, 7, 39.50, 1, 'PRODUCT', 'Product', 
+ 'Assorted gourmet chocolates, perfect for gifts.', 
+ 'Gourmet Chocolate Box', 'AVAILABLE', ARRAY['choco1.jpg'], 'Paris');
+
+INSERT INTO OFFER (
+    CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, 
+    MAX_LENGTH_IN_MINS, MIN_LENGTH_IN_MINS, OFFERID, PRICE, PROVIDER_ID, 
+    RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, TYPE, CITY
+)
+VALUES (
+    12, 1, 8.0, TRUE, FALSE, FALSE, 
+    90, 15, 8, 149.99, 1, 
+    24, '2024-12-12', 'Service', 
+    'Live acoustic guitar performance for private parties and small gatherings.', 
+    'Acoustic Live Performance', 'AVAILABLE', ARRAY['guitar1.jpg'], 'SERVICE', 'London'
+);
+
+INSERT INTO OFFER (
+    CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, 
+    MAX_LENGTH_IN_MINS, MIN_LENGTH_IN_MINS, OFFERID, PRICE, PROVIDER_ID, 
+    RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, TYPE, CITY
+)
+VALUES (
+    48, 2, 15.0, TRUE, FALSE, FALSE, 
+    180, 30, 9, 299.99, 1, 
+    72, '2024-12-13', 'Service', 
+    'Full wedding catering service including drinks, desserts, and staff.', 
+    'Wedding Catering Package', 'AVAILABLE', ARRAY['catering1.jpg', 'catering2.jpg'], 'SERVICE', 'Rome'
+);
+INSERT INTO OFFER (
+    CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, 
+    OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, CITY
+)
+VALUES
 (1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 1, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'], 'Paris'),
 (2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 1, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', ARRAY['image2.png'], 'Paris'),
 (3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 1, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
@@ -160,8 +217,8 @@ INSERT INTO EVENT (
     'New York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP),
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
     FALSE,
     40.712776,
     -74.005974,
@@ -173,8 +230,8 @@ INSERT INTO EVENT (
     'New York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP),
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
     FALSE,
     40.712776,
     -74.005974,
@@ -186,8 +243,8 @@ INSERT INTO EVENT (
     'New York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP),
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
     FALSE,
     40.712776,
     -74.005974,
@@ -238,9 +295,6 @@ INSERT INTO EVENT (
     'New York City'
 );
 
-INSERT INTO authentified_user_blocked_users (AUTHENTIFIED_USER_ID, BLOCKED_USERS_ID)
-VALUES (2,1);
-
 INSERT INTO EVENT_TYPE_RECOMMENDED_CATEGORIES(EVENT_TYPE_ID, RECOMMENDED_CATEGORIES_ID) VALUES (2,1), (2,2), (2,3);
 
 INSERT INTO notification (content, time_of_sending, is_read,is_selected, receiver_id)
@@ -286,3 +340,11 @@ INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
 ('Feedback on the event organization.', '2024-12-07', 1, 3),
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
+
+
+INSERT INTO invitation (text, date, status, inviter_id, event_id, invited_user_id) VALUES 
+('Please join our Winter Gala event!', '2024-12-01', 'PENDING', 1, 1, 2),
+('You are invited to the Annual Winter Gala!', '2024-12-01', 'PENDING', 1, 1, 3),
+('Don''t miss the upcoming Conference event!', '2025-12-01', 'PENDING', 2, 2, 3),
+('Invitation to the Festival - Join us!', '2024-11-20', 'PENDING', 3, 3, 2),
+('You have a special invitation to our Workshop.', '2024-10-10', 'PENDING', 2, 4, 1);

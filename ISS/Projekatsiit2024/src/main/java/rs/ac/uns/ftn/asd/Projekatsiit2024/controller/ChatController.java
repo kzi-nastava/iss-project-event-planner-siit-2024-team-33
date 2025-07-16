@@ -1,45 +1,49 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.chat.GetChatDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.chat.PostMessageDTO;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.chat.ChatContactDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.chat.GetChatDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.chat.MessageDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.chat.PostMessageDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Message;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.MessageRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/chat/{receiverID}")
+@RequestMapping("/api/chat")
 public class ChatController {
+	@Autowired
+	private AuthentifiedUserRepository userRepo;
+	
+	@Autowired
+	private MessageRepository messageRepo;
 
-    @GetMapping
-    public ResponseEntity<GetChatDTO> GetChatMessages(@PathVariable Integer receiverID) {
-        if (receiverID == null || receiverID <= 0) {
-            return ResponseEntity.status(403).build();
-        }
+	@GetMapping("/{id}")
+	public List<MessageDTO> getMessagesWithUser(@PathVariable Integer id, @AuthenticationPrincipal Principal principal) {
+	    AuthentifiedUser currentUser = userRepo.findByEmailOptional(principal.getName()).orElseThrow();
+	    AuthentifiedUser otherUser = userRepo.findById(id).orElseThrow();
 
-        // Mock chat data
-        List<String> messages = new ArrayList<>();
-        messages.add("Hello, how are you?");
-        messages.add("I'm good, thank you!");
-
-        GetChatDTO chat = new GetChatDTO();
-
-        return ResponseEntity.ok(chat);
-    }
-
-    @PostMapping
-    public ResponseEntity<GetChatDTO> PostMessage(@PathVariable Integer receiverID, @RequestBody PostMessageDTO message) {
-        if (receiverID == null || receiverID <= 0) {
-            return ResponseEntity.status(403).build();
-        }
-
-        List<String> updatedMessages = new ArrayList<>();
-        updatedMessages.add("Hello, how are you?");
-        updatedMessages.add("I'm good, thank you!");
-        //Make sure to update this 
-        GetChatDTO updatedChat = new GetChatDTO();
-
-        return ResponseEntity.ok(updatedChat);
-    }
+	    List<Message> messages = messageRepo.findConversation(currentUser, otherUser);
+	    return messages.stream().map(m -> new MessageDTO(
+	        m.Content,
+	        m.Sender.getEmail(),
+	        m.TimeOfSending
+	    )).toList();
+	}
+	
+	@GetMapping("/all")
+	public List<ChatContactDTO> getContacts(@AuthenticationPrincipal Principal principal){
+	    AuthentifiedUser currentUser = userRepo.findByEmailOptional(principal.getName()).orElseThrow();
+		List<AuthentifiedUser> contacts = messageRepo.findAllContacts(currentUser);
+		return contacts.stream().map( user -> new ChatContactDTO(user.getEmail(), user.getName())).toList();
+	}
 }

@@ -468,4 +468,10 @@ public class EventService {
     	
     	return events;
     }
+    
+    public List<Event> geteventsByOrganizerID(Integer id){
+    	List<Event> events = eventRepository.findByOrganizerId(id);
+    	
+    	return events;
+    }
 }
