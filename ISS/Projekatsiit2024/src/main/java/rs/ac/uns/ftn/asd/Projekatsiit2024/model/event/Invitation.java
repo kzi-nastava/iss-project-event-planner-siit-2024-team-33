@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.event;
 
 import java.sql.Date;
+import java.util.Objects;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.InvitationStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
 @Entity
@@ -33,5 +34,18 @@ public class Invitation {
     private Event event;
     @ManyToOne
     private AuthentifiedUser invitedUser;
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Invitation)) return false;
+        Invitation invitation = (Invitation) o;
+        return this.getId() == invitation.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
+    }
     
 }

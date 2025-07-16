@@ -93,7 +93,14 @@ public class WebSecurityConfig {
 		        
 		        //events
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
-
+		        .requestMatchers(HttpMethod.POST, "/api/events/*/join").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/*").permitAll()
+		        
+		        //favorites
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/events").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/events/*/exists").authenticated()
+		        .requestMatchers(HttpMethod.POST, "/api/favorites/events/*").authenticated()
+		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
 		        
 		        //offer categories
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()

@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.event;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -10,11 +11,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 
 
@@ -44,9 +47,12 @@ public class Event {
     @ManyToOne
     private EventType eventType;
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private Set<EventActivity> eventActivities;
+    private Set<EventActivity> eventActivities = new HashSet<>();
     
-    //TODO: lists of people invited if private event
+    @ManyToMany
+    private Set<AuthentifiedUser> listOfAttendees = new HashSet<>();
+    @OneToMany(mappedBy = "event")
+    private Set<Invitation> privateInvitations = new HashSet<>();
 
     //event reservations
     @OneToMany(mappedBy = "event")
