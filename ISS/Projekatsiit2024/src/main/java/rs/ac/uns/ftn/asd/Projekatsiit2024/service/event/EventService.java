@@ -192,16 +192,20 @@ public class EventService {
     private boolean isJoiningEventPossible(AuthentifiedUser user, Event event) 
     		throws EventValidationException {
     	if (event.getNumOfAttendees() == event.getListOfAttendees().size())
-    		throw new EventValidationException("There is no more place left to join event.");
+    		throw new EventValidationException("There is no more place left to join event.", 
+    				"NO_PLACE");
     	
     	if (user.getId().equals(event.getOrganizer().getId()))
-    		throw new EventValidationException("Organizer can't join it's own event.");
+    		throw new EventValidationException("Organizer can't join it's own event.", 
+    				"SELF_JOIN");
     	
     	if (event.getListOfAttendees().contains(user))
-    		throw new EventValidationException("You have already joined this event.");
+    		throw new EventValidationException("You have already joined this event.", 
+    				"ALREADY_JOINED");
     	
     	if (event.getDateOfEvent().isBefore(LocalDateTime.now()))
-    		throw new EventValidationException("Can't join event after it already started.");
+    		throw new EventValidationException("Can't join event after it already started.", 
+    				"EVENT_STARTED");
     	
     	//private event
     	if (event.getIsPrivate()) {
@@ -209,7 +213,8 @@ public class EventService {
     		        .stream()
     		        .anyMatch(inv -> inv.getInvitedUser().getId().equals(user.getId()));	
     		if (!isInvited)
-    			throw new EventValidationException("You are not on the list of invitations for this event.");
+    			throw new EventValidationException("You are not on the list of invitations for this event.", 
+    					"EVENT_PRIVATE");
     	}
     	
     	return true;

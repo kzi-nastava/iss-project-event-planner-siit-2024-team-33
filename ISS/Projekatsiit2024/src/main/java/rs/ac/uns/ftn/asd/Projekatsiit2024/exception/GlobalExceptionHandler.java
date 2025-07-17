@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(EventValidationException.class)
 	public ResponseEntity<ErrorMessages> handleException(EventValidationException ex) {
-	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage(), ex.getErrorCode()));
 	}
 	
 	@ExceptionHandler(EventActivityValidationException.class)

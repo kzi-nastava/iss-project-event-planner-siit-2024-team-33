@@ -98,7 +98,7 @@ public class WebSecurityConfig {
 		        
 		        //favorites
 		        .requestMatchers(HttpMethod.GET, "/api/favorites/events").authenticated()
-		        .requestMatchers(HttpMethod.GET, "/api/favorites/events/*/exists").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/events/*/exists").permitAll()
 		        .requestMatchers(HttpMethod.POST, "/api/favorites/events/*").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
 		        

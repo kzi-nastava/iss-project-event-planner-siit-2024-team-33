@@ -64,7 +64,7 @@ public class EventController {
 	
 	
 	@GetMapping(value = "/{eventId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getEventDetails(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+	public ResponseEntity<DetailedEventDTO> getEventDetails(@AuthenticationPrincipal UserPrincipal userPrincipal, 
 			@PathVariable Integer eventId) throws EventValidationException {
 		
 		Event event = eventService.getEventDetails(eventId, userPrincipal);
