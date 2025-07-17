@@ -25,10 +25,10 @@ public class ReportController {
                 postReportDTO.getContent(),
                 postReportDTO.getReporterId(),
                 postReportDTO.getReportedUserId());
-        return ResponseEntity.ok("");
+        return ResponseEntity.status(HttpStatus.CREATED).body(new GetReportDTO(savedReport));
     }
 
-    @GetMapping("/reports")
+    @GetMapping()
     public ResponseEntity<List<GetReportDTO>> getReports() {
         List<Report> reports = reportService.getAllReports();
         List<GetReportDTO> reportDTOs = reports.stream()

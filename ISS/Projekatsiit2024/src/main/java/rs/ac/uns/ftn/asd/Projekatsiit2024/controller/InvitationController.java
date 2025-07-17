@@ -16,6 +16,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.invitationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.AuthentifiedUserService;
+import java.util.Map;
 
 import java.net.http.HttpRequest;
 import java.sql.Date;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/events/invitations")
+@RequestMapping("/api/events")
 public class InvitationController {
 
 	@Autowired
@@ -36,7 +37,7 @@ public class InvitationController {
 	@Autowired
 	EventRepository eventRepo;
     
-	@PostMapping()
+	@PostMapping("/invitations")
 	public ResponseEntity<HttpStatus> createInvitations( @RequestBody PostInvitationDTO postInvitationDTO) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails userDetails = (UserDetails) auth.getPrincipal();
@@ -58,35 +59,28 @@ public class InvitationController {
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 	
-	@PostMapping("/accept/{id}")
-    public ResponseEntity<HttpStatus> acceptInvitation(@PathVariable Integer id) {
-        String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        AuthentifiedUser user = userRepo.findByEmail(email);
+	@PatchMapping("/invitations/{id}")
+	public ResponseEntity<Void> updateInvitationStatus(@PathVariable Integer id,
+	                                                   @RequestBody Map<String, String> body) {
+	    String status = body.get("status");
+	    String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+	    AuthentifiedUser user = userRepo.findByEmail(email);
 
-        try {
-            invitationService.acceptInvitation(id, user);
-            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+	    try {
+	        switch (status.toUpperCase()) {
+	            case "ACCEPTED" -> invitationService.acceptInvitation(id, user);
+	            case "DENIED" -> invitationService.denyInvitation(id, user);
+	            default -> throw new IllegalArgumentException("Invalid status");
+	        }
+	        return ResponseEntity.noContent().build();
+	    } catch (IllegalArgumentException | IllegalStateException e) {
+	        return ResponseEntity.badRequest().build();
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
 
-    @PostMapping("/deny/{id}")
-    public ResponseEntity<HttpStatus> denyInvitation(@PathVariable Integer id) {
-        String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        AuthentifiedUser user = userRepo.findByEmail(email);
-
-        try {
-            invitationService.denyInvitation(id, user);
-            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-	@GetMapping("/pending")
+    @GetMapping("/invitations/pending")
 	public ResponseEntity<List<SimpleInvitation>> getMyPendingInvitations() {
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	    UserDetails userDetails = (UserDetails) auth.getPrincipal();
@@ -103,7 +97,7 @@ public class InvitationController {
 	}
 
 
-    @GetMapping
+    @GetMapping("/{eventId}/invitations")
     public ResponseEntity<List<GetInvitationDTO>> getInvitationsForEvent(@PathVariable Integer eventID) {
         if (eventID == null || eventID <= 0) {
             return ResponseEntity.status(403).build();
@@ -117,7 +111,7 @@ public class InvitationController {
         return ResponseEntity.ok(invitationDTOs);
     }
 
-    @GetMapping("/{invitationId}")
+    @GetMapping("/invitations/{invitationId}")
     public ResponseEntity<GetInvitationDTO> getInvitationById(@PathVariable Integer invitationId) {
     	Invitation invitation = invitationService.getInvitationById(invitationId);
     	
@@ -126,7 +120,7 @@ public class InvitationController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/{invitationId}")
+    @DeleteMapping("/invitations/{invitationId}")
     public ResponseEntity<HttpStatus> deleteInvitation(@PathVariable Integer invitationId) {
     	invitationService.deleteInvitationById(invitationId);
     	return ResponseEntity.ok(HttpStatus.NO_CONTENT);

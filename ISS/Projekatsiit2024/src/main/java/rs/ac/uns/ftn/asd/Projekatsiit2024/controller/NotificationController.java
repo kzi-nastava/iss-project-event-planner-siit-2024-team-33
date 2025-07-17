@@ -30,6 +30,7 @@ public class NotificationController {
     NotificationService notificationService;
     @Autowired
     AuthentifiedUserRepository userRepo;
+    
     @PostMapping
     public ResponseEntity<String> sendNotification(@RequestBody PostNotificationDTO postNotificationDTO) {
         try {
@@ -40,7 +41,7 @@ public class NotificationController {
         }
     }
 
-    @GetMapping("/xdd")
+    @GetMapping
     public ResponseEntity<List<GetNotificationDTO>> getNotifications() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails principal = (UserDetails) auth.getPrincipal();
@@ -77,7 +78,7 @@ public class NotificationController {
         return ResponseEntity.ok("Notification deleted successfully.");
     }
     
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateNotification(
             @PathVariable Integer id,
             @RequestBody PutNotificationDTO putNotificationDTO) {
