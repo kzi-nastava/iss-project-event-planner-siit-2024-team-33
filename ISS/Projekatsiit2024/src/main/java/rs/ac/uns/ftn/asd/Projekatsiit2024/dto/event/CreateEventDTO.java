@@ -2,11 +2,13 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventActivity.CreateEventActivityDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
 
 @Getter
 @Setter
@@ -24,7 +26,6 @@ public class CreateEventDTO {
     private Double longitude;
     
     private Set<CreateEventActivityDTO> eventActivities = new HashSet<>(); 
-    
-    //TODO: add list of users if private
+    private Set<Invitation> privateInvitations;
     //TODO: add everything needed for the budget
 }

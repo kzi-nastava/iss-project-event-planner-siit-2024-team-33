@@ -84,6 +84,9 @@ public class EventService {
         event.setDateOfEvent(eventDTO.getDateOfEvent());
         event.setEndOfEvent(eventDTO.getEndOfEvent());
 		event.setOrganizer(organizer);
+		if(event.getIsPrivate()) {
+			event.setPrivateInvitations(eventDTO.getPrivateInvitations());
+		}
         //event type for event
         Optional<EventType> eventType = eventTypeRepository.findById(eventDTO.getEventTypeId());
         if (eventType.isEmpty() && !eventType.get().getIsActive())
