@@ -1,0 +1,65 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="Blank_A4_1" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8d15f25f-6073-4fea-bf8d-d7c7c1f138a3">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<dataset name="eventAttendanceDataSet" uuid="fc9d8fe4-52f4-45b3-952e-5a89049c0d59">
+		<query language="sql"><![CDATA[]]></query>
+		<field name="attendanceState" class="java.lang.String"/>
+		<field name="numOfAttendees" class="java.lang.Integer"/>
+	</dataset>
+	<dataset name="eventRatingsDataSet" uuid="21838004-46be-4cfc-8afd-ab8af4b1e989">
+		<query language="sql"><![CDATA[]]></query>
+		<field name="grade" class="java.lang.String"/>
+		<field name="numOfAuthors" class="java.lang.Integer"/>
+	</dataset>
+	<parameter name="eventAttendanceDataSet" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="eventRatingsDataSet" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<query language="sql"><![CDATA[]]></query>
+	<background splitType="Stretch"/>
+	<title height="79" splitType="Stretch"/>
+	<detail>
+		<band height="290" splitType="Stretch">
+			<element kind="chart" chartType="pie" uuid="6411ffcd-cc52-4272-b75e-646c3f5164c5" x="310" y="30" width="200" height="200" evaluationTime="Report">
+				<dataset kind="pie">
+					<datasetRun uuid="05331d2c-352f-4e54-9d1b-cb7a216ff2bb" subDataset="eventRatingsDataSet">
+						<dataSourceExpression><![CDATA[$P{eventRatingsDataSet}]]></dataSourceExpression>
+					</datasetRun>
+					<otherSectionHyperlink linkType="None" linkTarget="Self"/>
+					<series>
+						<keyExpression><![CDATA[$F{grade}]]></keyExpression>
+						<valueExpression><![CDATA[$F{numOfAuthors}]]></valueExpression>
+						<labelExpression><![CDATA[$F{numOfAuthors} + ""]]></labelExpression>
+					</series>
+				</dataset>
+				<plot>
+					<itemLabel/>
+				</plot>
+			</element>
+			<element kind="chart" chartType="pie" uuid="488a1713-89fa-4eff-9b8c-e7980730e61e" x="30" y="30" width="200" height="200" evaluationTime="Report">
+				<dataset kind="pie">
+					<datasetRun uuid="bba4427f-9d59-4c77-a1af-b40201337ac0" subDataset="eventAttendanceDataSet">
+						<dataSourceExpression><![CDATA[$P{eventAttendanceDataSet}]]></dataSourceExpression>
+					</datasetRun>
+					<otherSectionHyperlink linkType="None" linkTarget="Self"/>
+					<series>
+						<keyExpression><![CDATA[$F{attendanceState}]]></keyExpression>
+						<valueExpression><![CDATA[$F{numOfAttendees}]]></valueExpression>
+						<labelExpression><![CDATA[$F{numOfAttendees} + ""]]></labelExpression>
+					</series>
+				</dataset>
+				<plot>
+					<itemLabel/>
+				</plot>
+			</element>
+			<element kind="staticText" uuid="d9f6f1cc-3f3f-4e7f-95d3-ab143b648129" x="20" y="0" width="100" height="20">
+				<text><![CDATA[Event Attendance:]]></text>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<element kind="staticText" uuid="30be9c6e-d4b1-4f1e-98f1-41ef32228328" x="290" y="0" width="100" height="30">
+				<text><![CDATA[Event Ratings:]]></text>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>
