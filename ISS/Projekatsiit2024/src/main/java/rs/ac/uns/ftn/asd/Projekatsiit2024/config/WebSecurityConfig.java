@@ -95,6 +95,9 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.POST, "/api/events/*/join").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events/*").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/details").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/statistics").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
 		        
 		        //favorites
 		        .requestMatchers(HttpMethod.GET, "/api/favorites/events").authenticated()

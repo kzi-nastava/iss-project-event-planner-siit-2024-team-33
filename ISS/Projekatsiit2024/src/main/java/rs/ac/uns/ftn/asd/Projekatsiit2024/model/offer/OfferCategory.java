@@ -30,6 +30,16 @@ public class OfferCategory
     @Enumerated(EnumType.STRING)
     private OfferType offerType;
     
+    @OneToMany(mappedBy = "category")
+    private List<Offer> offers;
+    
+    
+    
+    
+    
+    
+    
+    
     public OfferCategory(String name, String description, Boolean isAccepted, Boolean isEnabled) {
 		this.name = name;
 		this.description = description;
@@ -38,9 +48,6 @@ public class OfferCategory
 	}
     
     public OfferCategory() {}
-
-    @OneToMany(mappedBy = "category")
-    private List<Offer> offers;
     
     @Override
     public boolean equals(Object o) {

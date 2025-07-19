@@ -334,13 +334,19 @@ VALUES
 (1, 'Terrible experience.', FALSE, FALSE, 1, 1),
 (5, 'Best deal I have ever found!', FALSE, FALSE, 2, 3);
 
+INSERT INTO event_rating (rating_value, comment, accepted, is_deleted, author_id, event_id) VALUES
+(5, 'Amazing event, had a great time!', TRUE, FALSE, 2, 1),
+(4, 'Really good overall.', TRUE, FALSE, 3, 1),
+(3, 'It was okay, some things could improve.', FALSE, FALSE, 4, 1),
+(2, 'Not what I expected.', FALSE, FALSE, 1, 1),
+(1, 'Very disappointing experience.', FALSE, FALSE, 5, 1);
+
 INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
 ('This is a report about the annual meeting.', '2024-12-05', 1, 2),
 ('Report on the recent marketing strategy review.', '2024-12-06', 2, 1),
 ('Feedback on the event organization.', '2024-12-07', 1, 3),
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
-
 
 INSERT INTO invitation (text, date, status, inviter_id, event_id, invited_user_id) VALUES 
 ('Please join our Winter Gala event!', '2024-12-01', 'PENDING', 1, 1, 2),

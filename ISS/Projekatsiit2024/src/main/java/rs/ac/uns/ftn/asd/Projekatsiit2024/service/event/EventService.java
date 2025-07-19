@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventActivity.CreateEventActivityDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 
 @Service
@@ -101,8 +104,8 @@ public class EventService {
     	if (!Pattern.matches("^.{5,50}$", event.getName()))
 			throw new EventValidationException("Name can't be less than 5 or over 50 characters long.");
     	
-    	if (!Pattern.matches("^.{5,800}$", event.getDescription()))
-			throw new EventValidationException("Description can't be less than 5 or over 800 characters long.");
+    	if (!Pattern.matches("^.{5,250}$", event.getDescription()))
+			throw new EventValidationException("Description can't be less than 5 or over 250 characters long.");
     	
     	if (event.getNumOfAttendees() < 0)
     		throw new EventValidationException("Number of attendees can't be less than 0.");
@@ -251,8 +254,14 @@ public class EventService {
     		boolean isAttendee = event.getListOfAttendees()
     		        .stream()
     		        .anyMatch(attend -> attend.getId().equals(user.getId()));
-    		if (!isAttendee)
-    			throw new EventValidationException("You are not on the list of attendees for this private event.");
+    		//if event is private and user is not organizer of this event
+    		boolean isOrganizer = event.getOrganizer().getId().equals(user.getId());
+    		//if event is private and user is not admin
+    		boolean isAdmin = user.getRole().getName().equals("ADMIN_ROLE");
+    		
+    		if (!isAttendee && !isOrganizer && !isAdmin)
+    			throw new EventValidationException("You are not on the list of attendees for this private event nor you are "
+    					+ "organizer of this event.");
     	}
     	
     	return true;
@@ -261,11 +270,33 @@ public class EventService {
     
     
     
+	public Page<MinimalEventDTO> readEvents(Pageable pageable, UserPrincipal userPrincipal) 
+		throws EventUserValidationException {
+		AuthentifiedUser user = userPrincipal.getUser();
+		
+		//if user is admin give him all events
+		if (user.getRole().getName().equals("ADMIN_ROLE"))
+			return eventRepository.findAll(pageable).map(MinimalEventDTO::new);
+		
+		//if user is organizer give him just his events
+		if (user.getRole().getName().equals("ORGANIZER_ROLE")) {
+			Organizer organizer = (Organizer) user;
+	        return eventRepository.findByOrganizer(organizer, pageable).map(MinimalEventDTO::new);
+		}
+		
+		//if anything else throw error
+		throw new EventUserValidationException("You can't see events if you are not admin or organizer.");
+			
+	}
     
     
     
     
-    
+	
+	
+	
+	
+	
     public List<Event> getTop5OpenEvents(Integer id) {
 	    Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
 	    if (optionalUser.isEmpty()) {

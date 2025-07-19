@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +29,15 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.DetailedEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.JoinedEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.reportPDF.PdfGenerationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.event.EventService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.reportPDF.ReportPDFService;
 
 
 @RestController
@@ -43,6 +48,8 @@ public class EventController {
 	EventService eventService;
 	@Autowired
 	AuthentifiedUserRepository userRepo;
+	@Autowired
+	ReportPDFService reportPDFService;
 	
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -63,7 +70,18 @@ public class EventController {
 	}
 	
 	
-	@GetMapping(value = "/{eventId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping
+	public ResponseEntity<Page<MinimalEventDTO>> readEventTypes(
+			@PageableDefault(size = 10, sort = "id") Pageable pageable, 
+			@AuthenticationPrincipal UserPrincipal userPrincipal) 
+					throws EventUserValidationException {
+		Page<MinimalEventDTO> events = eventService.readEvents(pageable, userPrincipal);
+
+		return new ResponseEntity<Page<MinimalEventDTO>>(events, HttpStatus.OK);
+	}
+	
+	
+	@GetMapping(value = "/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<DetailedEventDTO> getEventDetails(@AuthenticationPrincipal UserPrincipal userPrincipal, 
 			@PathVariable Integer eventId) throws EventValidationException {
 		
@@ -73,7 +91,30 @@ public class EventController {
 	}
 	
 	
+	@GetMapping(value = "/{eventId}/reports/details", produces = MediaType.APPLICATION_PDF_VALUE)
+	public ResponseEntity<byte[]> getEventDetailsPDF(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+			@PathVariable Integer eventId) throws EventValidationException, PdfGenerationException {
+		
+		 byte[] pdfBytes = reportPDFService.createEventDetailsReport(eventId, userPrincipal);
+
+		    return ResponseEntity.ok()
+		            .header("Content-Disposition", "attachment; filename=event-details.pdf")
+		            .contentType(MediaType.APPLICATION_PDF)
+		            .body(pdfBytes);
+	}
 	
+	
+	@GetMapping(value = "/{eventId}/reports/statistics", produces = MediaType.APPLICATION_PDF_VALUE)
+	public ResponseEntity<byte[]> getEventStatisticsPDF(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+			@PathVariable Integer eventId) throws EventValidationException, PdfGenerationException {
+		
+		 byte[] pdfBytes = reportPDFService.createEventStatisticsReport(eventId, userPrincipal);
+
+		    return ResponseEntity.ok()
+		            .header("Content-Disposition", "attachment; filename=event-details.pdf")
+		            .contentType(MediaType.APPLICATION_PDF)
+		            .body(pdfBytes);
+	}
 	
 	
 	
