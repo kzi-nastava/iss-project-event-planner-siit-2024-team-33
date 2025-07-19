@@ -41,8 +41,6 @@ public class EventTypeController {
 	@Autowired 
 	EventTypeService eventTypeService;
 	
-	//TODO: change to not work with repository from controller and maybe make it a pagination
-	//TODO: or DTO projection in database
 	@GetMapping("/active")
 	public ResponseEntity<List<MinimalEventTypeDTO>> getEventTypes() {
 		List<EventType> types = eventTypeRepo.getActiveEventTypes();

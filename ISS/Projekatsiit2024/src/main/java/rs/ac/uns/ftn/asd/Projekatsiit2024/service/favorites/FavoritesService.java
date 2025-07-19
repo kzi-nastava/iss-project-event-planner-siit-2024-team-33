@@ -42,6 +42,9 @@ public class FavoritesService {
 		    throw new EventValidationException("No such event exists.");
 		}
 		
+		if (userPrincipal == null)
+			return false;
+		
 	    Integer userId = userPrincipal.getUser().getId();
 	    return userRepository.existsEventInFavorites(userId, eventId);
 	}

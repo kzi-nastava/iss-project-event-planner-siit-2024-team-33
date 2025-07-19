@@ -1,11 +1,14 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 
 import java.util.List;
 
@@ -21,4 +24,6 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
 	
     @Query("SELECT e FROM Event e WHERE e.organizer.id = :organizerId")
     List<Event> findByOrganizerId(@Param("organizerId") Integer organizerId);
+    
+    Page<Event> findByOrganizer(Organizer organizer, Pageable pageable);
 }

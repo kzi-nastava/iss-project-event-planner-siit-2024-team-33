@@ -48,10 +48,10 @@ public class PriceService {
 			.forEach(o -> {
 				table.addCell(new Paragraph(o.getOfferID().toString()));
 				table.addCell(new Paragraph(o.getName()));
-				table.addCell(new Paragraph(o.getPrice().toString()));
-				table.addCell(new Paragraph(o.getDiscount().toString()));
+				table.addCell(new Paragraph(o.getPrice().toString() + " €"));
+				table.addCell(new Paragraph(o.getDiscount().toString() + " €"));
 				Double cost = o.getPrice() - o.getDiscount();
-				table.addCell(new Paragraph(cost.toString()));
+				table.addCell(new Paragraph(cost.toString() + " €"));
 			});
 		
 		doc.add(table);

@@ -3,6 +3,8 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 import java.time.LocalDateTime;
 
 import lombok.Getter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.organizer.MinimalOrganizerDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 
 @Getter
@@ -17,8 +19,8 @@ public class DetailedEventDTO {
     private LocalDateTime endOfEvent;
     private Double latitude;
     private Double longitude;
-    private String organizerEmail;
-    private String eventTypeName;
+    private MinimalOrganizerDTO minimalOrganizer;
+    private MinimalEventTypeDTO minimalEventType;
     
     public DetailedEventDTO(Event event) {
     	this.id = event.getId();
@@ -31,7 +33,7 @@ public class DetailedEventDTO {
     	this.endOfEvent = event.getEndOfEvent();
     	this.latitude = event.getLatitude();
     	this.longitude = event.getLongitude();
-    	this.organizerEmail = event.getOrganizer().getEmail();
-    	this.eventTypeName = event.getEventType().getName();
+    	this.minimalOrganizer = new MinimalOrganizerDTO(event.getOrganizer());
+    	this.minimalEventType = new MinimalEventTypeDTO(event.getEventType());
     }
 }
