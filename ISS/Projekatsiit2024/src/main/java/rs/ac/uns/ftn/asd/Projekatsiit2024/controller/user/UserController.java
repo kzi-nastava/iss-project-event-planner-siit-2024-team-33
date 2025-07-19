@@ -120,42 +120,37 @@ public class UserController {
 	}
 	
 	
-    @PostMapping(value = "/{blockerId}/block/{blockedId}")
-    public ResponseEntity<String> blockUser(@PathVariable Integer blockedId) {
-    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
-	
-		AuthentifiedUser user = userRepo.findByEmail(email);
-		
-		int blockerId = user.getId();
-        try {
-            userService.blockAUser(blockerId, blockedId);
-            return ResponseEntity.ok("");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
-        }
-    }
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping(value = "/block/{blockedEmail}")
+	public ResponseEntity<String> blockUser(@AuthenticationPrincipal UserPrincipal userPrincipal,
+	                                        @PathVariable String blockedEmail) {
+	    int blockerId = userPrincipal.getUser().getId();
+	    try {
+	        userService.blockAUser(blockerId, blockedEmail);
+	        return ResponseEntity.ok("User blocked successfully.");
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.badRequest().body(e.getMessage());
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("An error occurred while blocking the user.");
+	    }
+	}
+
 
     
-    @DeleteMapping(value = "/{blockerId}/block/{blockedId}")
-    public ResponseEntity<String> unblockUser(@PathVariable Integer blockedId) {
-    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
-	
-		AuthentifiedUser user = userRepo.findByEmail(email);
-		
-		int blockerId = user.getId();
-        try {
-            userService.unblockAUser(blockerId, blockedId);
-            return ResponseEntity.ok("");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
-        }
-    }
+	@PreAuthorize("isAuthenticated()")
+	@DeleteMapping(value = "/block/{blockedEmail}")
+	public ResponseEntity<String> unblockUser(@AuthenticationPrincipal UserPrincipal userPrincipal,
+	                                          @PathVariable String blockedEmail) {
+	    int blockerId = userPrincipal.getUser().getId();
+	    try {
+	        userService.unblockAUser(blockerId, blockedEmail);
+	        return ResponseEntity.ok("User unblocked successfully.");
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.badRequest().body(e.getMessage());
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("An error occurred while unblocking the user.");
+	    }
+	}
 }

@@ -27,7 +27,8 @@ import java.util.regex.Pattern;
 
 @Service
 public class offerService {
-
+	private static final int ALL_EVENT_TYPE_ID = 1;
+	
     @Autowired
     private OfferRepository offerRepo;
 
@@ -56,7 +57,7 @@ public class offerService {
         String city = user.getCity();
         List<Offer> filteredOffers = offers.stream()
         		.filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
-                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
+                .filter(offer -> isOfferVisibleForUser(user, offer))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
                 .limit(5)
                 .toList();
@@ -240,13 +241,20 @@ public class offerService {
 					.filter(offer -> offer.getPrice() != null && offer.getPrice() > lowestPrice)
 					.toList();
 			}
-			
 			if (eventTypes != null && !eventTypes.isEmpty()) {
-					offers = offers.stream()
-					.filter(offer -> offer.getValidEvents() != null &&
-					offer.getValidEvents().stream().anyMatch(eventTypes::contains))
-					.toList();
-			}
+		        if (eventTypes.contains(ALL_EVENT_TYPE_ID)) {
+		            offers = offers.stream()
+		                    .filter(offer -> offer.getValidEvents() != null && !offer.getValidEvents().isEmpty())
+		                    .toList();
+		        } else {
+		            offers = offers.stream()
+		                    .filter(offer -> offer.getValidEvents() != null &&
+		                            offer.getValidEvents().stream()
+		                                    .map(EventType::getId)
+		                                    .anyMatch(eventTypes::contains))
+		                    .toList();
+		        }
+		    }
 			
 			
 			int start = page * size;
@@ -303,11 +311,19 @@ public class offerService {
 			}
 			
 			if (eventTypes != null && !eventTypes.isEmpty()) {
-					offers = offers.stream()
-					.filter(offer -> offer.getValidEvents() != null &&
-					offer.getValidEvents().stream().anyMatch(eventTypes::contains))
-					.toList();
-			}
+		        if (eventTypes.contains(ALL_EVENT_TYPE_ID)) {
+		            offers = offers.stream()
+		                    .filter(offer -> offer.getValidEvents() != null && !offer.getValidEvents().isEmpty())
+		                    .toList();
+		        } else {
+		            offers = offers.stream()
+		                    .filter(offer -> offer.getValidEvents() != null &&
+		                            offer.getValidEvents().stream()
+		                                    .map(EventType::getId)
+		                                    .anyMatch(eventTypes::contains))
+		                    .toList();
+		        }
+		    }
 			
 			
 			int start = page * size;
@@ -322,7 +338,7 @@ public class offerService {
     	
         Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException(""); 
         }
         
         AuthentifiedUser user = optionalUser.get();
@@ -335,7 +351,7 @@ public class offerService {
         
         List<Offer> offers = allOffers.stream()
         		//.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
-                .filter(offer -> offer.getProvider() == null || !blockedUsers.contains(offer.getProvider()))
+                .filter(offer -> isOfferVisibleForUser(user, offer))
                 .filter(offer -> !top5Offers.contains(offer))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(), o2.getDiscount()))
                 .toList();
@@ -356,5 +372,15 @@ public class offerService {
     	
     	
     	return offers;
+    }
+    
+    private boolean isOfferVisibleForUser(AuthentifiedUser user, Offer offer) {
+        AuthentifiedUser provider = offer.getProvider();
+        if (provider == null) {
+            return true; // Safety measures.
+        }
+
+        //if logged in user is blocked, can't see.
+        return !user.getBlockedUsers().contains(provider);
     }
 }

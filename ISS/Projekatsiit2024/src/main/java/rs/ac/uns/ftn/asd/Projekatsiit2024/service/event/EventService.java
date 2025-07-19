@@ -34,7 +34,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationExcepti
 
 @Service
 public class EventService {
-	
+	private static final int ALL_EVENT_TYPE_ID = 1;
+
 	@Autowired
     private EventRepository eventRepository;
 	@Autowired
@@ -184,7 +185,6 @@ public class EventService {
     	
     	Event event = optionalEvent.get();
     	AuthentifiedUser user = userPrincipal.getUser();
-    	
     	isJoiningEventPossible(user, event);
     	
     	event.getListOfAttendees().add(user);
@@ -271,14 +271,14 @@ public class EventService {
 	    }
 	    
 	    AuthentifiedUser user = optionalUser.get();
-	    List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 	
+	    user.getRole();
 	    List<Event> allEvents = eventRepository.findAll();
 	    String city = user.getCity();
 	    List<Event> filteredEvents = allEvents.stream()
 	            .filter(event -> city.equalsIgnoreCase(event.getPlace()))
 	            .filter(event -> !Boolean.TRUE.equals(event.isOver()))
-	            .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
+	            .filter(event -> isEventVisibleForUser(user, event))
 	            .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
 	            .limit(5)
 	            .toList();
@@ -365,10 +365,16 @@ public class EventService {
 		}
 		
 		if (eventTypes != null && !eventTypes.isEmpty()) {
-		events = events.stream()
-		.filter(event -> event.getEventType() != null && 
-				eventTypes.contains(event.getEventType().getId()))
-		.toList();
+		    if (eventTypes.contains(ALL_EVENT_TYPE_ID)) {
+		        events = events.stream()
+		                .filter(event -> event.getEventType() != null)
+		                .toList();
+		    } else {
+		        events = events.stream()
+		                .filter(event -> event.getEventType() != null &&
+		                        eventTypes.contains(event.getEventType().getId()))
+		                .toList();
+		    }
 		}
 		
 		int start = page * size;
@@ -451,7 +457,7 @@ public class EventService {
         List<Event> events = allEvents.stream()
 //              .filter(event -> city.equalsIgnoreCase(event.getPlace()))
               .filter(event -> !Boolean.TRUE.equals(event.isOver()))
-              .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
+	           .filter(event -> isEventVisibleForUser(user, event))
               .filter(event -> !top5Events.contains(event))
               .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
               .toList();
@@ -477,4 +483,40 @@ public class EventService {
     	
     	return events;
     }
+    
+    private boolean isEventVisibleForUser(AuthentifiedUser user, Event event) {
+        AuthentifiedUser organizer = event.getOrganizer();
+
+        if (organizer == null) {
+            return true; // no organizer, always visible
+        }
+
+        String role = user.getRole().getName();
+
+        switch (role) {
+            case "AUSER_ROLE":
+                // User blocks organizer, can't see his stuff
+                if (user.getBlockedUsers().contains(organizer)) return false;
+                // Organizer blocked user, can't see.
+                if (organizer.getBlockedUsers().contains(user)) return false;
+                return true;
+
+            case "ORGANIZER_ROLE":
+            	//Organizer can see other organizer's events, despite being blocked/blocking them.
+            	//When he blocks someone they can't see shit
+                return true;
+
+            case "PROVIDER_ROLE":
+                // Provider blocked this organizer? Can't see
+                if (user.getBlockedUsers().contains(organizer)) return false;
+                return true;
+
+            case "ADMIN_ROLE":
+                return true; // Admin sees everything
+
+            default:
+                return true;
+        }
+    }
+    
 }

@@ -121,7 +121,6 @@ VALUES (
     'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
 );
 
-
 INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (TRUE, 'A generic type of event.', 'All'),
 (TRUE, 'A formal event typically attended by professionals.', 'Conference'),
@@ -134,6 +133,11 @@ INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (FALSE, 'A sports-related event such as a game or tournament.', 'Sports Event'),
 (TRUE, 'A community gathering or public fair.', 'Festival'),
 (TRUE, 'A casual outdoor gathering with food and entertainment.', 'Picnic');
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (2, 1);
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (3, 2);
+
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (1, 2);
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (4, 3);
 
 INSERT INTO EVENT (
     date_of_event, end_of_event, is_private, latitude, longitude, num_of_attendees, organizer_id, event_type_id, description, name, place
@@ -211,7 +215,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Neam pojma nesto kenjam kao neka jaka deskripcija',
     'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
@@ -224,7 +228,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Neam pojma nesto kenjam kao neka jaka deskripcija',
     'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
@@ -237,7 +241,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Neam pojma nesto kenjam kao neka jaka deskripcija',
     'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
@@ -250,7 +254,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Neam pojma nesto kenjam kao neka jaka deskripcija',
     'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
@@ -263,7 +267,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Annual Winter Gala',
     'Winter Wonderland',
     'New York City'
