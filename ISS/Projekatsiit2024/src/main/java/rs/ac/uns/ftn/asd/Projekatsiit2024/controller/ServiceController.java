@@ -27,7 +27,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PutServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ServiceService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
 
 
 @RestController
@@ -37,7 +37,7 @@ public class ServiceController {
 	@Autowired
 	private ServiceService serviceService;
 	@Autowired
-	private offerService offerService;
+	private OfferService offerService;
 	
 	
 	@GetMapping("/{id}")

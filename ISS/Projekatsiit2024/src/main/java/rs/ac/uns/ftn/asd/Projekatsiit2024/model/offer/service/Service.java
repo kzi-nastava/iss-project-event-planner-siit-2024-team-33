@@ -39,12 +39,13 @@ public class Service extends Offer
 			OfferCategory category,
 			Provider provider,
 			List<EventType> validEvents,
+			String city,
 			Integer reservationInHours,
 			Integer cancellationInHours,
 			Boolean isAutomatic,
 			Integer minLengthInMins,
 			Integer maxLengthInMins) {
-		super(offerID, name, description, price, discount, pictures, category, provider, validEvents);
+		super(offerID, name, description, price, discount, pictures, category, provider, validEvents, city);
 		this.ReservationInHours = reservationInHours;
 		this.CancellationInHours = cancellationInHours;
 		this.IsAutomatic = isAutomatic;

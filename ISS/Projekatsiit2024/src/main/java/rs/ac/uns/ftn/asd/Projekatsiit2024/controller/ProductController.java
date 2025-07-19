@@ -37,7 +37,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.productPurchase.PostProductPurchas
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.GetServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ProductService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerReservationService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
 
 @RestController
 @RequestMapping("/api/products")
@@ -46,7 +46,7 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 	@Autowired
-	private offerService offerService;
+	private OfferService offerService;
 
 	
 	

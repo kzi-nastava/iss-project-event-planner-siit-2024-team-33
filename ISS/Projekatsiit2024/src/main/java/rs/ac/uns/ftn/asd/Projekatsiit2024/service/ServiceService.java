@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -171,7 +172,7 @@ public class ServiceService {
 
 	    List<String> imagePaths = picturesDataURI.stream().map(imageData -> ImageManager.saveAsFile(imageData)).toList();
 	    
-	    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, category.get(), provider.get(), validEvents, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+	    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, category.get(), provider.get(), validEvents, "", reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 	    service = serviceRepo.saveAndFlush(service);
 	    
 		return service;
@@ -214,11 +215,15 @@ public class ServiceService {
 
 		    List<String> imagePaths = picturesDataURI.stream().map(imageData -> ImageManager.saveAsFile(imageData)).toList();
 		    
-		    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, oc, provider.get(), validEvents, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+		    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, oc, provider.get(), validEvents, "", reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 		    service = serviceRepo.save(service);
 		    
 			return service;
 		}
+	
+	public Service cloneService(Service s) {
+		return new Service(s.getOfferID(), s.getName(), s.getDescription(), s.getPrice(), s.getDiscount(), s.getPictures(), s.getCategory(), s.getProvider(), new ArrayList<>(s.getValidEvents()), s.getCity(), s.getReservationInHours(), s.getCancellationInHours(), s.getIsAutomatic(), s.getMinLengthInMins(), s.getMaxLengthInMins());
+	}
 	
 	public Service editService(
 		Integer offerId,
@@ -248,7 +253,7 @@ public class ServiceService {
 	    
 	    List<String> imagePaths = picturesDataURI.stream().map(imageData -> ImageManager.saveAsFile(imageData)).toList();
 	    
-	    Service newService = new Service(s.getOfferID(),name, description, price, discount, imagePaths, s.getCategory(), s.getProvider(), validEvents, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+	    Service newService = new Service(s.getOfferID(),name, description, price, discount, imagePaths, s.getCategory(), s.getProvider(), validEvents, "", reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 	    newService = serviceRepo.save(newService);
 		
 		return newService;

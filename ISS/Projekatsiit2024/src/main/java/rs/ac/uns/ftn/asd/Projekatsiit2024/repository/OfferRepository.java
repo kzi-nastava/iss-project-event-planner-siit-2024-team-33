@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 
 public interface OfferRepository extends JpaRepository<Offer,Integer>{
 	List<Offer> findTop5ByOrderByDiscount();
@@ -26,4 +27,19 @@ public interface OfferRepository extends JpaRepository<Offer,Integer>{
     
     @Query("SELECT o FROM Offer o WHERE o.id IN (SELECT MAX(o2.id) FROM Offer o2 WHERE o2.offerID IS NOT NULL GROUP BY o2.offerID)")
     List<Offer> findCurrentOffers();
+    
+    @Query("""
+    	    SELECT o FROM Offer o
+    	    WHERE o.creationDate = (
+    	        SELECT MAX(o2.creationDate)
+    	        FROM Offer o2
+    	        WHERE o2.offerID = o.offerID
+    	    )
+    	    ORDER BY o.offerID ASC
+    	""")
+    	List<Offer> findLatestOffersByOfferID();
+    
+	@Query("SELECT o FROM Offer o WHERE o.id=(SELECT max(o2.id) FROM Offer o2 WHERE o2.offerID=:offerId)")
+	public Offer getLatestOfferVersion(@Param("offerId") Integer offerId);
+
 }

@@ -108,6 +108,9 @@ public class WebSecurityConfig {
 		        
 		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
 		        
+		        //offers
+		        .requestMatchers("/api/offers/mine/**").authenticated()
+		        
 		        .requestMatchers("/api/events/invitations/pending").authenticated()
 		        .requestMatchers("/api/events/top5/authentified").authenticated()
 		        .requestMatchers("/api/events/filter/authentified").authenticated()

@@ -16,7 +16,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerReservationService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -31,7 +31,7 @@ import java.util.List;
 public class ServiceReservationController {
 
 	@Autowired
-	private offerService offerService;
+	private OfferService offerService;
 	@Autowired
 	private ServiceService serviceService;
 	@Autowired

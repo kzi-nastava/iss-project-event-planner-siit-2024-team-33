@@ -41,7 +41,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ServiceService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
 
 
 @RestController
@@ -50,7 +50,7 @@ public class OfferController {
 
 	
 	@Autowired
-	private offerService offerService;
+	private OfferService offerService;
 	@Autowired
 	private AuthentifiedUserRepository userRepo;
 	
@@ -167,5 +167,4 @@ public class OfferController {
 
         return new ResponseEntity<>(offersDto, HttpStatus.OK);
     }
-	
 }

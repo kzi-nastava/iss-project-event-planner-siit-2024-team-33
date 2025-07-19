@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,9 @@ public class ProductService {
 		reservationService.cancelProductReservation(product.get(), event.get());
 		
 		return product.get();
-		
+	}
+	
+	public Product cloneProduct(Product p) {
+		return new Product(p.getOfferID(), p.getName(), p.getDescription(), p.getPrice(), p.getDiscount(), p.getPictures(), p.getCategory(), p.getProvider(), new ArrayList<>(p.getValidEvents()), p.getCity());
 	}
 }
