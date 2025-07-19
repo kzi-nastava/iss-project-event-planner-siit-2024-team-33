@@ -51,7 +51,7 @@ public class ProductController {
 	
 	
 	@GetMapping("/{id}")
-	public ResponseEntity getProduct(@PathVariable Integer id) {
+	public ResponseEntity<GetProductDTO> getProductDetails(@PathVariable Integer id) {
 		try {
 			Product p = productService.get(id);
 			return ResponseEntity.ok(new GetProductDTO(p));
@@ -85,13 +85,13 @@ public class ProductController {
 	}
 	
 	@PostMapping("/{id}/reservations")
-	public ResponseEntity buyProduct(@PathVariable Integer id, @RequestBody PostProductPurchaseDTO data){
+	public ResponseEntity<MinimalProductDTO> buyProduct(@PathVariable Integer id, @RequestBody PostProductPurchaseDTO data){
 		try {
 			return ResponseEntity.ok(new MinimalProductDTO(productService.buyProduct(id, data.eventId)));
 		} catch (EntityNotFoundException e) {
-			return ResponseEntity.status(404).body(e.toString());
+			return ResponseEntity.status(404).body(null);
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(e.toString());
+			return ResponseEntity.badRequest().body(null);
 		}
 	}
 	

@@ -61,10 +61,12 @@ public class offerReservationService {
 
     public OfferReservation createProductReservation(Product product, Event event) {
     	OfferReservation reservation = new OfferReservation();
-    	//TODO
+
     	reservation.setDateOfReservation(event.getDateOfEvent().toLocalDate());
     	reservation.setEvent(event);
     	reservation.setOffer(product);
+    	reservation.setStartTime(event.getDateOfEvent());
+    	reservation.setEndTime(event.getDateOfEvent());
     	
     	reservation = offerReservationRepo.save(reservation);
     	return reservation;
