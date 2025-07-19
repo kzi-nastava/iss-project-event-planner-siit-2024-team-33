@@ -39,7 +39,7 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
-(1, '2024-12-05', 5.0, FALSE, FALSE, 5, 59.99, 1, 'PRODUCT', 'Product', 
+(1, '2024-12-05', 5.0, FALSE, FALSE, 5, 59.99, 3, 'PRODUCT', 'Product', 
  'High-quality noise-canceling headphones with 30-hour battery life.', 
  'Sony WH-1000XM4', 'AVAILABLE', ARRAY['sony1.jpg', 'sony2.jpg'], 'Paris');
 
@@ -49,7 +49,7 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
-(2, '2024-12-07', 12.0, FALSE, FALSE, 6, 19.99, 1, 'PRODUCT', 'Product', 
+(2, '2024-12-07', 12.0, FALSE, FALSE, 6, 19.99, 3, 'PRODUCT', 'Product', 
  'Elegant ceramic coffee mugs, set of 4.', 
  'Ceramic Coffee Mugs', 'AVAILABLE', ARRAY['mugs1.jpg'], 'Berlin');
 
@@ -59,7 +59,7 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
-(3, '2024-12-10', 18.0, FALSE, FALSE, 7, 39.50, 1, 'PRODUCT', 'Product', 
+(3, '2024-12-10', 18.0, FALSE, FALSE, 7, 39.50, 3, 'PRODUCT', 'Product', 
  'Assorted gourmet chocolates, perfect for gifts.', 
  'Gourmet Chocolate Box', 'AVAILABLE', ARRAY['choco1.jpg'], 'Paris');
 
@@ -71,7 +71,7 @@ INSERT INTO OFFER (
 )
 VALUES (
     12, 1, 8.0, TRUE, FALSE, FALSE, 
-    90, 15, 8, 149.99, 1, 
+    90, 15, 8, 149.99, 3, 
     24, '2024-12-12', 'Service', 
     'Live acoustic guitar performance for private parties and small gatherings.', 
     'Acoustic Live Performance', 'AVAILABLE', ARRAY['guitar1.jpg'], 'SERVICE', 'London'
@@ -85,7 +85,7 @@ INSERT INTO OFFER (
 )
 VALUES (
     48, 2, 15.0, TRUE, FALSE, FALSE, 
-    180, 30, 9, 299.99, 1, 
+    180, 30, 9, 299.99, 3, 
     72, '2024-12-13', 'Service', 
     'Full wedding catering service including drinks, desserts, and staff.', 
     'Wedding Catering Package', 'AVAILABLE', ARRAY['catering1.jpg', 'catering2.jpg'], 'SERVICE', 'Rome'
@@ -96,9 +96,9 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
-(1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 1, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'], 'Paris'),
-(2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 1, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', ARRAY['image2.png'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 1, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
+(1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 3, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'], 'Paris'),
+(2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 3, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', ARRAY['image2.png'], 'Paris'),
+(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 3, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
 
 INSERT INTO OFFER (
     CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, 
