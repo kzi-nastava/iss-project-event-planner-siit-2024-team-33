@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.chat.ChatContactDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Message;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
@@ -18,6 +19,9 @@ public interface MessageRepository extends JpaRepository<Message,Integer>{
                                @Param("user2") AuthentifiedUser user2);
 	
 	
-	@Query("SELECT :user FROM Message m WHERE m.Sender = :user OR m.Recipient = :user")
-	List<AuthentifiedUser> findAllContacts(@Param("user") AuthentifiedUser user);
+	@Query("SELECT DISTINCT m.Recipient FROM Message m WHERE m.Sender = :user")
+	List<AuthentifiedUser> findRecipients(@Param("user") AuthentifiedUser user);
+
+	@Query("SELECT DISTINCT m.Sender FROM Message m WHERE m.Recipient = :user")
+	List<AuthentifiedUser> findSenders(@Param("user") AuthentifiedUser user);
 }

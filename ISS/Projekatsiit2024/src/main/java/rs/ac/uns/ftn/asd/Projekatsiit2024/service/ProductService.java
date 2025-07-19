@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ProductRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 
@@ -19,6 +20,8 @@ public class ProductService {
 	private ProductRepository productRepo;
 	@Autowired
 	private EventRepository eventRepo;
+	@Autowired
+	private OfferReservationRepository reservationRepo;
 	@Autowired
 	private offerReservationService reservationService;
 	
@@ -42,6 +45,9 @@ public class ProductService {
 		
 		if(product.get().getAvailability() != Availability.AVAILABLE)
 			throw new IllegalArgumentException("Product is currently unavailable");
+		
+		if(reservationRepo.findByEventAndOffer(productId, eventId) != null)
+			throw new IllegalArgumentException("Reservation already exists");
 		
 		product.get().setAvailability(Availability.UNAVAILABLE);
 		productRepo.save(product.get());

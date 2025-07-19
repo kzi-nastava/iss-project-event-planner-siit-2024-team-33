@@ -15,7 +15,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.RatingService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.auth.AuthenticationService;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
 import java.util.List;
 
 @RestController
@@ -26,6 +28,17 @@ public class RatingController {
     private RatingService ratingService;
     @Autowired
     private AuthentifiedUserRepository userRepo;
+    
+    
+
+    @GetMapping
+    public ResponseEntity<Page<GetRatingDTO>> getAllRatings(
+            @PageableDefault(size = 10, sort = "id") Pageable pageable) {
+        Page<Rating> ratings = ratingService.getAllRatings(pageable);
+        Page<GetRatingDTO> ratingDTOs = ratings.map(GetRatingDTO::new);
+        return ResponseEntity.ok(ratingDTOs);
+    }
+    
     @PostMapping
     public ResponseEntity<GetRatingDTO> submitRating(@RequestBody PostRatingDTO postRatingDTO,
                                                      @RequestParam int offerId)  {
@@ -61,14 +74,8 @@ public class RatingController {
         return ResponseEntity.ok(ratingDTOs);
     }
     
-    @GetMapping("/all")
-    public ResponseEntity<List<GetRatingDTO>> getRatings(){
-    	List<Rating> ratings = ratingService.getAllRatings();
-        List<GetRatingDTO> ratingDTOs = ratings.stream()
-                .map(GetRatingDTO::new)
-                .toList();
-    	return ResponseEntity.ok(ratingDTOs);
-    }
+
+
 
     @GetMapping("/{ratingId}")
     public ResponseEntity<GetRatingDTO> getRatingById(@PathVariable int ratingId) {

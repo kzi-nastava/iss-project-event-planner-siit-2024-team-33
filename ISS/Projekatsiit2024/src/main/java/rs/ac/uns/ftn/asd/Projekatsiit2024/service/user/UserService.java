@@ -197,41 +197,42 @@ public class UserService {
 	}
 	
 		
-	public void blockAUser(Integer blockerID, Integer blockedID) {
-	    Optional<AuthentifiedUser> blockerOptional = userRepo.findById(blockerID);
-	    Optional<AuthentifiedUser> blockedOptional = userRepo.findById(blockedID);
+	public void blockAUser(Integer blockerID, String blockedEmail) {
+	    Optional<AuthentifiedUser> blocker = userRepo.findById(blockerID);
+	    AuthentifiedUser blocked = userRepo.findByEmail(blockedEmail);
 
-	    if (blockerOptional.isPresent() && blockedOptional.isPresent()) {
-	        AuthentifiedUser blocker = blockerOptional.get();
-	        AuthentifiedUser blocked = blockedOptional.get();
-	        
-	        List<AuthentifiedUser> blockedUsers = blocker.getBlockedUsers();
-	        if(!blockedUsers.contains(blocked)) {
-	        	blockedUsers.add(blocked);
-	        	blocker.setBlockedUsers(blockedUsers);
-	        	userRepo.save(blocker);
-	        }else {
-	        	throw new IllegalArgumentException("One of two users not found.");
-	        }
+	    if(blocker.isEmpty()) {
+	    	throw new IllegalArgumentException("User doesn't exist");
 	    }
-	}
-	
-	public void unblockAUser(Integer blockerID, Integer blockedID) {
-	    Optional<AuthentifiedUser> blockerOptional = userRepo.findById(blockerID);
-	    Optional<AuthentifiedUser> blockedOptional = userRepo.findById(blockedID);
+	    AuthentifiedUser me = blocker.get();
+	    List<AuthentifiedUser> blockedUsers = me.getBlockedUsers();
 
-	    if (blockerOptional.isPresent() && blockedOptional.isPresent()) {
-	        AuthentifiedUser blocker = blockerOptional.get();
-	        AuthentifiedUser blocked = blockedOptional.get();
-	        
-	        List<AuthentifiedUser> blockedUsers = blocker.getBlockedUsers();
-	        if(blockedUsers.contains(blocked)) {
-	            blockedUsers.remove(blocked);
-	            blocker.setBlockedUsers(blockedUsers);
-	            userRepo.save(blocker);
-	        }else {
-	        	throw new IllegalArgumentException("One of two users not found.");
-	        }
+	    if (blockedUsers.contains(blocked)) {
+	        throw new IllegalArgumentException("User is already blocked.");
 	    }
+
+	    blockedUsers.add(blocked);
+	    me.setBlockedUsers(blockedUsers);
+	    userRepo.save(me);
 	}
+
+	public void unblockAUser(Integer blockerID, String blockedEmail) {
+	    Optional<AuthentifiedUser> blocker = userRepo.findById(blockerID);
+	    AuthentifiedUser blocked = userRepo.findByEmail(blockedEmail);
+
+	    if(blocker.isEmpty()) {
+	    	throw new IllegalArgumentException("User doesn't exist");
+	    }
+	    AuthentifiedUser me = blocker.get();
+	    List<AuthentifiedUser> blockedUsers = me.getBlockedUsers();
+
+	    if (!blockedUsers.contains(blocked)) {
+	        throw new IllegalArgumentException("User is not blocked.");
+	    }
+
+	    blockedUsers.remove(blocked);
+	    me.setBlockedUsers(blockedUsers);
+	    userRepo.save(me);
+	}
+
 }

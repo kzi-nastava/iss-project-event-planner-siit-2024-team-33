@@ -69,7 +69,7 @@ public class EventController {
 		return ResponseEntity.ok(new JoinedEventDTO(updatedEvent));
 	}
 	
-	
+  
 	@GetMapping
 	public ResponseEntity<Page<MinimalEventDTO>> readEventTypes(
 			@PageableDefault(size = 10, sort = "id") Pageable pageable, 

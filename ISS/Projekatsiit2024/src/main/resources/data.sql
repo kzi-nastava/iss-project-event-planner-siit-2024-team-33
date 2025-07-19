@@ -39,7 +39,7 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
-(1, '2024-12-05', 5.0, FALSE, FALSE, 5, 59.99, 1, 'PRODUCT', 'Product', 
+(1, '2024-12-05', 5.0, FALSE, FALSE, 5, 59.99, 3, 'PRODUCT', 'Product', 
  'High-quality noise-canceling headphones with 30-hour battery life.', 
  'Sony WH-1000XM4', 'AVAILABLE', ARRAY['sony1.jpg', 'sony2.jpg'], 'Paris');
 
@@ -49,7 +49,7 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
-(2, '2024-12-07', 12.0, FALSE, FALSE, 6, 19.99, 1, 'PRODUCT', 'Product', 
+(2, '2024-12-07', 12.0, FALSE, FALSE, 6, 19.99, 3, 'PRODUCT', 'Product', 
  'Elegant ceramic coffee mugs, set of 4.', 
  'Ceramic Coffee Mugs', 'AVAILABLE', ARRAY['mugs1.jpg'], 'Berlin');
 
@@ -59,7 +59,7 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
-(3, '2024-12-10', 18.0, FALSE, FALSE, 7, 39.50, 1, 'PRODUCT', 'Product', 
+(3, '2024-12-10', 18.0, FALSE, FALSE, 7, 39.50, 3, 'PRODUCT', 'Product', 
  'Assorted gourmet chocolates, perfect for gifts.', 
  'Gourmet Chocolate Box', 'AVAILABLE', ARRAY['choco1.jpg'], 'Paris');
 
@@ -71,7 +71,7 @@ INSERT INTO OFFER (
 )
 VALUES (
     12, 1, 8.0, TRUE, FALSE, FALSE, 
-    90, 15, 8, 149.99, 1, 
+    90, 15, 8, 149.99, 3, 
     24, '2024-12-12', 'Service', 
     'Live acoustic guitar performance for private parties and small gatherings.', 
     'Acoustic Live Performance', 'AVAILABLE', ARRAY['guitar1.jpg'], 'SERVICE', 'London'
@@ -85,7 +85,7 @@ INSERT INTO OFFER (
 )
 VALUES (
     48, 2, 15.0, TRUE, FALSE, FALSE, 
-    180, 30, 9, 299.99, 1, 
+    180, 30, 9, 299.99, 3, 
     72, '2024-12-13', 'Service', 
     'Full wedding catering service including drinks, desserts, and staff.', 
     'Wedding Catering Package', 'AVAILABLE', ARRAY['catering1.jpg', 'catering2.jpg'], 'SERVICE', 'Rome'
@@ -96,9 +96,9 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
-(1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 1, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'], 'Paris'),
-(2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 1, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', ARRAY['image2.png'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 1, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
+(1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 3, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'], 'Paris'),
+(2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 3, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', ARRAY['image2.png'], 'Paris'),
+(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 3, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
 
 INSERT INTO OFFER (
     CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, 
@@ -108,19 +108,18 @@ INSERT INTO OFFER (
 )
 VALUES (
     24, 1, 10.0, TRUE, FALSE, FALSE, 
-    120, 5, 4, 99.99, 1, 
+    120, 5, 4, 99.99, 3, 
     48, '2024-12-01', 'Service', 
     'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal''s history.',
     'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
 );
 VALUES (
     24, 1, 10.0, TRUE, FALSE, FALSE, 
-    120, 5, 4, 9.99, 1, 
+    120, 5, 4, 9.99, 3, 
     48, '2024-12-01', 'Service', 
     'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal''s history.',
     'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
 );
-
 
 INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (TRUE, 'A generic type of event.', 'All'),
@@ -134,6 +133,11 @@ INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (FALSE, 'A sports-related event such as a game or tournament.', 'Sports Event'),
 (TRUE, 'A community gathering or public fair.', 'Festival'),
 (TRUE, 'A casual outdoor gathering with food and entertainment.', 'Picnic');
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (2, 1);
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (3, 2);
+
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (1, 2);
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (4, 3);
 
 INSERT INTO EVENT (
     date_of_event, end_of_event, is_private, latitude, longitude, num_of_attendees, organizer_id, event_type_id, description, name, place
@@ -211,7 +215,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Neam pojma nesto kenjam kao neka jaka deskripcija',
     'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
@@ -224,7 +228,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Neam pojma nesto kenjam kao neka jaka deskripcija',
     'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
@@ -237,7 +241,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Neam pojma nesto kenjam kao neka jaka deskripcija',
     'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
@@ -250,7 +254,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Neam pojma nesto kenjam kao neka jaka deskripcija',
     'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
@@ -263,7 +267,7 @@ INSERT INTO EVENT (
     -74.005974,
     150,
     5,
-    1,
+    2,
     'Annual Winter Gala',
     'Winter Wonderland',
     'New York City'
