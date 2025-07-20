@@ -108,7 +108,7 @@ public class invitationService {
 
 
     private void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
-        JavaMailSender mailSender = DynamicMailSender.createMailSender("senjare2@gmail.com", "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");
+        JavaMailSender mailSender = DynamicMailSender.createMailSender("milosmilicfaks@gmail.com", "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");
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(senderEmail);
