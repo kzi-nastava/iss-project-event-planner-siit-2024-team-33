@@ -66,7 +66,7 @@ public class UserController {
 		AuthentifiedUser user = userService.registerUser(registerUser);
 		RegisteredUser registeredUser = new RegisteredUser(user);
 		
-		verificationService.sendVerificationEmail(user);
+		verificationService.sendVerificationEmail(user.getId());
 		return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
 	}
 	

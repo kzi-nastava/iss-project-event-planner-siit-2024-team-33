@@ -112,6 +112,15 @@ public class WebSecurityConfig {
 		        
 		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
 		        
+		        //Reviews
+		        .requestMatchers(HttpMethod.GET, "/api/ratings/**").permitAll() // anyone can read ratings
+		        .requestMatchers(HttpMethod.POST, "/api/ratings").hasAnyAuthority("ORGANIZER_ROLE") //Organizer can comment on offers
+		        .requestMatchers(HttpMethod.POST, "/api/ratings/events").hasAnyAuthority("PROVIDER_ROLE") //Provider can comment on events.
+		        .requestMatchers(HttpMethod.PUT, "/api/ratings/events/approve/**").hasAnyAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/ratings/approve/**").hasAnyAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/ratings/events/**").hasAnyAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/ratings/**").hasAnyAuthority("ADMIN_ROLE")
+		        
 		        //offers
 		        .requestMatchers("/api/offers/mine/**").authenticated()
 		        

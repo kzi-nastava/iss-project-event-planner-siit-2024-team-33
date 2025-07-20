@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.event;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
@@ -32,8 +32,7 @@ public class Invitation {
     private AuthentifiedUser inviter;
     @ManyToOne
     private Event event;
-    @ManyToOne
-    private AuthentifiedUser invitedUser;
+    private String invitedUser;
     
     @Override
     public boolean equals(Object o) {

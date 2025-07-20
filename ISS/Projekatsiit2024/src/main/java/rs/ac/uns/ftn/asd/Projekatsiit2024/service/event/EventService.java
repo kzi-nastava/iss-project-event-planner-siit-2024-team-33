@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -23,14 +24,18 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventActivity;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.invitationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventActivity.CreateEventActivityDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
@@ -45,7 +50,8 @@ public class EventService {
 	private AuthentifiedUserRepository userRepo;
     @Autowired
     private EventTypeRepository eventTypeRepository;
-    
+    @Autowired
+    private invitationService invitationService;
     
     @Transactional(propagation = Propagation.REQUIRED)
     public Event createEvent(UserPrincipal userPrincipal, CreateEventDTO eventDTO) throws 
@@ -70,6 +76,19 @@ public class EventService {
         
         Event createdEvent = eventRepository.save(event);
         
+        if(event.getIsPrivate()) {
+			Set<Invitation> invitations = new HashSet<>();
+		    PostInvitationDTO invData = new PostInvitationDTO();
+		    
+		    invData.setEventId(event.getId());
+		    invData.setEmailAddresses(eventDTO.getPrivateInvitations().stream().toList());
+		    invData.setMessage(event.getDescription());
+		    
+		    invitationService.createInvitations(invData, organizer, new Date() );
+		    
+			event.setPrivateInvitations(invitations);
+		}
+        
         return createdEvent;
     }
     
@@ -88,9 +107,7 @@ public class EventService {
         event.setDateOfEvent(eventDTO.getDateOfEvent());
         event.setEndOfEvent(eventDTO.getEndOfEvent());
 		event.setOrganizer(organizer);
-		if(event.getIsPrivate()) {
-			event.setPrivateInvitations(eventDTO.getPrivateInvitations());
-		}
+		
         //event type for event
         Optional<EventType> eventType = eventTypeRepository.findById(eventDTO.getEventTypeId());
         if (eventType.isEmpty() && !eventType.get().getIsActive())
@@ -217,7 +234,7 @@ public class EventService {
     	if (event.getIsPrivate()) {
     		boolean isInvited = event.getPrivateInvitations()
     		        .stream()
-    		        .anyMatch(inv -> inv.getInvitedUser().getId().equals(user.getId()));	
+    		        .anyMatch(inv -> inv.getInvitedUser().equals(user.getEmail()));	
     		if (!isInvited)
     			throw new EventValidationException("You are not on the list of invitations for this event.", 
     					"EVENT_PRIVATE");

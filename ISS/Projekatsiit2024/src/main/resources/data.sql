@@ -345,16 +345,16 @@ INSERT INTO event_rating (rating_value, comment, accepted, is_deleted, author_id
 (2, 'Not what I expected.', FALSE, FALSE, 1, 1),
 (1, 'Very disappointing experience.', FALSE, FALSE, 5, 1);
 
-INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
+INSERT INTO report (content, date_of_sending, reporter_id, reported_id) VALUES
 ('This is a report about the annual meeting.', '2024-12-05', 1, 2),
 ('Report on the recent marketing strategy review.', '2024-12-06', 2, 1),
 ('Feedback on the event organization.', '2024-12-07', 1, 3),
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
 
-INSERT INTO invitation (text, date, status, inviter_id, event_id, invited_user_id) VALUES 
-('Please join our Winter Gala event!', '2024-12-01', 'PENDING', 1, 1, 2),
-('You are invited to the Annual Winter Gala!', '2024-12-01', 'PENDING', 1, 1, 3),
-('Don''t miss the upcoming Conference event!', '2025-12-01', 'PENDING', 2, 2, 3),
-('Invitation to the Festival - Join us!', '2024-11-20', 'PENDING', 3, 3, 2),
-('You have a special invitation to our Workshop.', '2024-10-10', 'PENDING', 2, 4, 1);
+INSERT INTO invitation (text, date, status, inviter_id, event_id, invited_user) VALUES 
+('Please join our Winter Gala event!', '2024-12-01', 'PENDING', 1, 1, 'organizer@example.com'),
+('You are invited to the Annual Winter Gala!', '2024-12-01', 'PENDING', 1, 1, 'organizer@example.com'),
+('Don''t miss the upcoming Conference event!', '2025-12-01', 'PENDING', 2, 2, 'organizer@example.com'),
+('Invitation to the Festival - Join us!', '2024-11-20', 'PENDING', 3, 3, 'organizer@example.com'),
+('You have a special invitation to our Workshop.', '2024-10-10', 'PENDING', 2, 4, 'organizer@example.com');
