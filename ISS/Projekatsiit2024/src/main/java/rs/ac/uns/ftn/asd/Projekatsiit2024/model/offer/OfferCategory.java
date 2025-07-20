@@ -33,13 +33,6 @@ public class OfferCategory
     @OneToMany(mappedBy = "category")
     private List<Offer> offers;
     
-    
-    
-    
-    
-    
-    
-    
     public OfferCategory(String name, String description, Boolean isAccepted, Boolean isEnabled) {
 		this.name = name;
 		this.description = description;

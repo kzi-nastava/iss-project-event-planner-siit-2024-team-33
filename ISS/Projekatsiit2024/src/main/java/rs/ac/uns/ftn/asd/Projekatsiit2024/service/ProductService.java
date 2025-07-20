@@ -75,6 +75,6 @@ public class ProductService {
 	}
 	
 	public Product cloneProduct(Product p) {
-		return new Product(p.getOfferID(), p.getName(), p.getDescription(), p.getPrice(), p.getDiscount(), p.getPictures(), p.getCategory(), p.getProvider(), new ArrayList<>(p.getValidEvents()), p.getCity());
+		return new Product(p.getOfferID(), p.getName(), p.getDescription(), p.getPrice(), p.getDiscount(), p.getPictures(), p.getCategory(), p.getProvider(), new ArrayList<>(p.getValidEvents()), p.getCity(), p.getAvailability());
 	}
 }

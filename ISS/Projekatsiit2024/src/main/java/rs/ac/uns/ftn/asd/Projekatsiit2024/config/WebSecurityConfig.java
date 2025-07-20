@@ -106,6 +106,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
 		        
 		        //offer categories
+		        .requestMatchers("/api/offerCategories/**").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
 		        
@@ -113,6 +114,12 @@ public class WebSecurityConfig {
 		        
 		        //offers
 		        .requestMatchers("/api/offers/mine/**").authenticated()
+		        
+		        //service
+		        .requestMatchers(HttpMethod.POST, "/api/services").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/services/**").authenticated()
+		        .requestMatchers(HttpMethod.PUT, "/api/services/**").authenticated()
+		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").authenticated()
 		        
 		        .requestMatchers("/api/events/invitations/pending").authenticated()
 		        .requestMatchers("/api/events/top5/authentified").authenticated()

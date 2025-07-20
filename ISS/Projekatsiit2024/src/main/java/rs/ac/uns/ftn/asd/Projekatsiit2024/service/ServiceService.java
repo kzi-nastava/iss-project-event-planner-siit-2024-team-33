@@ -5,14 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ServiceRepository;
@@ -118,9 +124,17 @@ public class ServiceService {
 		if(s == null)
 			throw new EntityNotFoundException("Service with that id doesn't exist");
 		
-		if(s.getIsDeleted() || s.getAvailability() == Availability.INVISIBLE)
+	    UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    AuthentifiedUser user = null;
+	    if(up != null)
+	    	user = up.getUser();
+		
+		if(user.getId() != s.getProvider().getId() && (s.getIsDeleted() || s.getAvailability() == Availability.INVISIBLE))
 			throw new EntityNotFoundException("Service with that id doesn't exist");
 		
+		if(user.getId() != s.getProvider().getId() && !s.getCategory().getIsAccepted())
+			throw new EntityNotFoundException("Service with that id doesn't exist");
+			
 		return s;
 	}
 	
@@ -139,14 +153,15 @@ public class ServiceService {
 		Double price,
 		Double discount,
 		List<String> picturesDataURI,
-		Integer providerID,
+		String city,
+		Availability availability,
 		Integer reservationInHours,
 		Integer cancellationInHours,
 		Boolean isAutomatic,
 		Integer minLengthInMins,
 		Integer maxLengthInMins,
 		List<Integer> validEventIDs
-		) {
+		) throws AuthenticationCredentialsNotFoundException, AccessDeniedException {
 		
 		validateArguments(name, description, price, discount, picturesDataURI, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins, validEventIDs);
 		
@@ -156,11 +171,10 @@ public class ServiceService {
 	    if(category.get().getIsEnabled() == false)
 	    	throw new IllegalArgumentException("Inavlid argument, no category with that ID exists");
 	    
-	    //TODO: GET PROVIDER THROUGH COOKIE OR SOMETHING
-	    Optional<Provider> provider = providerRepo.findById(providerID);
-	    if(provider.isEmpty())
-	    	throw new IllegalArgumentException("Inavlid argument, no provider with that ID exists");
-
+	    UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    if(up == null)
+	    	throw new AuthenticationCredentialsNotFoundException("");
+	    Provider provider = providerRepo.findById(up.getUser().getId()).orElseThrow();
 	    
 	    List<EventType> validEvents = eventTypeRepo.findAllById(validEventIDs);
 	    //In case some of the event types don't exist
@@ -172,7 +186,7 @@ public class ServiceService {
 
 	    List<String> imagePaths = picturesDataURI.stream().map(imageData -> ImageManager.saveAsFile(imageData)).toList();
 	    
-	    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, category.get(), provider.get(), validEvents, "", reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+	    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, category.get(), provider, validEvents, city, availability, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 	    service = serviceRepo.saveAndFlush(service);
 	    
 		return service;
@@ -187,21 +201,22 @@ public class ServiceService {
 			Double price,
 			Double discount,
 			List<String> picturesDataURI,
-			Integer providerID,
+			String city,
+			Availability availability,
 			Integer reservationInHours,
 			Integer cancellationInHours,
 			Boolean isAutomatic,
 			Integer minLengthInMins,
 			Integer maxLengthInMins,
 			List<Integer> validEventIDs
-			) {
+			) throws AuthenticationCredentialsNotFoundException, AccessDeniedException {
 			
 			validateArguments(name, description, price, discount, picturesDataURI, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins, validEventIDs);
 		    
-		    //TODO: GET PROVIDER THROUGH COOKIE OR SOMETHING
-		    Optional<Provider> provider = providerRepo.findById(providerID);
-		    if(provider.isEmpty())
-		    	throw new IllegalArgumentException("Inavlid argument, no provider with that ID exists");
+			UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		    if(up == null)
+		    	throw new AuthenticationCredentialsNotFoundException("");
+		    Provider provider = providerRepo.findById(up.getUser().getId()).orElseThrow();
 
 		    List<EventType> validEvents = eventTypeRepo.findAllById(validEventIDs);
 		    //In case some of the event types don't exist
@@ -215,14 +230,14 @@ public class ServiceService {
 
 		    List<String> imagePaths = picturesDataURI.stream().map(imageData -> ImageManager.saveAsFile(imageData)).toList();
 		    
-		    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, oc, provider.get(), validEvents, "", reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+		    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, oc, provider, validEvents, city, availability, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 		    service = serviceRepo.save(service);
 		    
 			return service;
 		}
 	
 	public Service cloneService(Service s) {
-		return new Service(s.getOfferID(), s.getName(), s.getDescription(), s.getPrice(), s.getDiscount(), s.getPictures(), s.getCategory(), s.getProvider(), new ArrayList<>(s.getValidEvents()), s.getCity(), s.getReservationInHours(), s.getCancellationInHours(), s.getIsAutomatic(), s.getMinLengthInMins(), s.getMaxLengthInMins());
+		return new Service(s.getOfferID(), s.getName(), s.getDescription(), s.getPrice(), s.getDiscount(), s.getPictures(), s.getCategory(), s.getProvider(), new ArrayList<>(s.getValidEvents()), s.getCity(), s.getAvailability(), s.getReservationInHours(), s.getCancellationInHours(), s.getIsAutomatic(), s.getMinLengthInMins(), s.getMaxLengthInMins());
 	}
 	
 	public Service editService(
@@ -234,11 +249,13 @@ public class ServiceService {
 		List<String> picturesDataURI,
 		Integer reservationInHours,
 		Integer cancellationInHours,
+		String city,
+		Availability availability,
 		Boolean isAutomatic,
 		Integer minLengthInMins,
 		Integer maxLengthInMins,
 		List<Integer> validEventIDs
-		) {
+		) throws AuthenticationCredentialsNotFoundException, AccessDeniedException {
 		validateArguments(name, description, price, discount, picturesDataURI, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins, validEventIDs);
 
 		List<EventType> validEvents = eventTypeRepo.findAllById(validEventIDs);
@@ -251,9 +268,16 @@ public class ServiceService {
 	    
 	    Service s = serviceRepo.getLatestServiceVersion(offerId);
 	    
+	    UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    if(up == null)
+	    	throw new AuthenticationCredentialsNotFoundException("");
+	    Provider provider = providerRepo.findById(up.getUser().getId()).orElseThrow();
+	    if(s.getProvider().getId() != provider.getId())
+	    	throw new AccessDeniedException("");
+	    	
 	    List<String> imagePaths = picturesDataURI.stream().map(imageData -> ImageManager.saveAsFile(imageData)).toList();
 	    
-	    Service newService = new Service(s.getOfferID(),name, description, price, discount, imagePaths, s.getCategory(), s.getProvider(), validEvents, "", reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+	    Service newService = new Service(s.getOfferID(),name, description, price, discount, imagePaths, s.getCategory(), s.getProvider(), validEvents, city, availability, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 	    newService = serviceRepo.save(newService);
 		
 		return newService;
@@ -265,11 +289,18 @@ public class ServiceService {
 	
 	
 	
-	public void deleteService(Integer offerId) throws SQLIntegrityConstraintViolationException {
-		//TODO User validation
+	public void deleteService(Integer offerId) throws SQLIntegrityConstraintViolationException, AuthenticationCredentialsNotFoundException, AccessDeniedException {
+		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    if(up == null)
+	    	throw new AuthenticationCredentialsNotFoundException("");
+	    Provider provider = providerRepo.findById(up.getUser().getId()).orElseThrow();
+		
 	    List<Service> services = serviceRepo.findServicesByOfferID(offerId);
 	    if(services.stream().anyMatch(s -> s.getOfferReservations().size() > 0))
 	    	throw new SQLIntegrityConstraintViolationException("Can't delete service when it has reservations");
+	    
+	    if(services.stream().anyMatch(s -> s.getProvider().getId() != provider.getId()))
+	    	throw new AccessDeniedException("");
 	    
 	    services.forEach(s -> {
 	    	s.setIsDeleted(true);

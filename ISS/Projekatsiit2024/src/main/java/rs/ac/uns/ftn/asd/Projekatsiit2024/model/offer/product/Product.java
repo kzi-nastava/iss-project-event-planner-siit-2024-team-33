@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.persistence.Entity;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferType;
@@ -27,8 +28,9 @@ public class Product extends Offer
 			OfferCategory category,
 			Provider provider,
 			List<EventType> validEvents,
-			String city) {
-		super(offerID, name, description, price, discount, pictures, category, provider, validEvents, city);
+			String city,
+			Availability availability) {
+		super(offerID, name, description, price, discount, pictures, category, provider, validEvents, city, availability);
 		setType(OfferType.PRODUCT);
 	}
 }

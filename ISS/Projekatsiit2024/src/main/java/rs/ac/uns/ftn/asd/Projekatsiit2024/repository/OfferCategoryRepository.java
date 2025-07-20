@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 
 @Repository
 public interface OfferCategoryRepository extends JpaRepository<OfferCategory,Integer>{
@@ -25,4 +26,7 @@ public interface OfferCategoryRepository extends JpaRepository<OfferCategory,Int
 	
 	@Query("SELECT oc FROM OfferCategory oc WHERE oc.id = :id AND oc.isAccepted = true AND oc.isEnabled = true")
 	public Optional<OfferCategory> getAvailableOfferCategory(@Param("id") Integer id);
+	
+	@Query("SELECT DISTINCT o.provider FROM Offer o WHERE o.category.id = :id")
+	public List<Provider> getProvidersWithCategory(@Param("id") Integer id);
 }
