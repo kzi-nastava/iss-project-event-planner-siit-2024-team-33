@@ -31,9 +31,11 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.invitationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventActivity.CreateEventActivityDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
@@ -49,7 +51,7 @@ public class EventService {
     @Autowired
     private EventTypeRepository eventTypeRepository;
     @Autowired
-    private InvitationRepository invitationRepo;
+    private invitationService invitationService;
     
     @Transactional(propagation = Propagation.REQUIRED)
     public Event createEvent(UserPrincipal userPrincipal, CreateEventDTO eventDTO) throws 
@@ -74,6 +76,19 @@ public class EventService {
         
         Event createdEvent = eventRepository.save(event);
         
+        if(event.getIsPrivate()) {
+			Set<Invitation> invitations = new HashSet<>();
+		    PostInvitationDTO invData = new PostInvitationDTO();
+		    
+		    invData.setEventId(event.getId());
+		    invData.setEmailAddresses(eventDTO.getPrivateInvitations().stream().toList());
+		    invData.setMessage(event.getDescription());
+		    
+		    invitationService.createInvitations(invData, organizer, new Date() );
+		    
+			event.setPrivateInvitations(invitations);
+		}
+        
         return createdEvent;
     }
     
@@ -92,19 +107,7 @@ public class EventService {
         event.setDateOfEvent(eventDTO.getDateOfEvent());
         event.setEndOfEvent(eventDTO.getEndOfEvent());
 		event.setOrganizer(organizer);
-		if(event.getIsPrivate()) {
-			Set<Invitation> invitations = new HashSet<>();
-			for (String email : eventDTO.getPrivateInvitations()) {
-			    Invitation invitation = new Invitation();
-			    invitation.setInvitedUser(email);
-			    invitation.setEvent(event);
-			    invitation.setDate(new Date());
-			    invitation.setInviter(organizer);
-			    invitation.setText(eventDTO.getDescription());
-			    invitationRepo.save(invitation);
-			}
-			event.setPrivateInvitations(invitations);
-		}
+		
         //event type for event
         Optional<EventType> eventType = eventTypeRepository.findById(eventDTO.getEventTypeId());
         if (eventType.isEmpty() && !eventType.get().getIsActive())

@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -108,7 +108,7 @@ public class invitationService {
 
 
     private void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
-        JavaMailSender mailSender = DynamicMailSender.createMailSender("senjare2@gmail.com", "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");
+        JavaMailSender mailSender = DynamicMailSender.createMailSender("milicmilosfaks@gmail.com", "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");
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(senderEmail);
