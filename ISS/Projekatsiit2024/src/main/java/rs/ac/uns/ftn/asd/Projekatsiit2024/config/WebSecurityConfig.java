@@ -81,6 +81,9 @@ public class WebSecurityConfig {
             	//authentication
 		        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/auth/check-email").permitAll()
+		        
+		        //users
+		        .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll()
 
 		        //event types
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()

@@ -54,9 +54,9 @@ public class offerService {
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
         
         List<Offer> offers = offerRepo.findAll();
-        String city = user.getCity();
+        //String city = user.getCity();
         List<Offer> filteredOffers = offers.stream()
-        		.filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
+        		//.filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
                 .filter(offer -> isOfferVisibleForUser(user, offer))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
                 .limit(5)
@@ -344,7 +344,7 @@ public class offerService {
         AuthentifiedUser user = optionalUser.get();
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
-        String city = user.getCity();
+        //String city = user.getCity();
         
     	
     	List<Offer> top5Offers = getTop5Offers(id);

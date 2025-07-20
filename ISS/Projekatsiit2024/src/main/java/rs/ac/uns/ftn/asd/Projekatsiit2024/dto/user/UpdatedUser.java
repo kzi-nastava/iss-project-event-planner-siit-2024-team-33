@@ -37,7 +37,6 @@ public class UpdatedUser {
 		this.setName(organizer.getName());
 		this.setSurname(organizer.getSurname());
 		this.setPicture(organizer.getPicture());
-		this.setCity(organizer.getCity());
 		this.setResidency(organizer.getResidency());
 		this.setPhoneNumber(organizer.getPhoneNumber());
 	}
@@ -47,7 +46,6 @@ public class UpdatedUser {
 		this.setName(provider.getName());
 		this.setSurname(provider.getSurname());
 		this.setPicture(provider.getPicture());
-		this.setCity(provider.getCity());
 		this.setResidency(provider.getResidency());
 		this.setPhoneNumber(provider.getPhoneNumber());
 		this.setDescription(provider.getDescription());

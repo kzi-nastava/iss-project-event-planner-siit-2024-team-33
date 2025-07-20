@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -15,6 +16,21 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 public interface AuthentifiedUserRepository extends JpaRepository<AuthentifiedUser, Integer> {
 	@Query("SELECT u FROM AuthentifiedUser u WHERE u.email = :email")
     AuthentifiedUser findByEmail(@Param("email") String email);
+	
+	@Query("""
+		    SELECT u FROM AuthentifiedUser u 
+		    WHERE u.email = :email 
+		      AND (u.isVerified = true OR (u.isVerified = false AND u.dateOfCreation >= :thresholdDate))
+		    """)
+		AuthentifiedUser findIfEmailForRegistrationExists(@Param("email") String email,
+		                                                  @Param("thresholdDate") LocalDateTime thresholdDate);
+	
+	@Query("""
+		    SELECT u FROM AuthentifiedUser u 
+		    WHERE u.email = :email AND u.isVerified = false AND u.dateOfCreation < :thresholdDate
+		    """)
+		AuthentifiedUser findOldUnverifiedUserByEmail(@Param("email") String email,
+		                                              @Param("thresholdDate") LocalDateTime thresholdDate);
 	
 
 	@Query("SELECT u FROM AuthentifiedUser u WHERE u.email = :email")

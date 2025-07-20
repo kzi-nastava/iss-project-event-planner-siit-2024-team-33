@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.model.user;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -28,11 +29,11 @@ public class AuthentifiedUser {
     private String password;
     private String name;
     private String surname;
-    private String city;
     private String picture;
     private Boolean isDeleted;
     private Boolean isVerified;
     private Date suspensionEndDate; //added for reports
+    private LocalDateTime dateOfCreation;
     @ManyToOne
     private Role role;
     @Column(name = "last_password_reset_date", columnDefinition = "TIMESTAMP(0)")

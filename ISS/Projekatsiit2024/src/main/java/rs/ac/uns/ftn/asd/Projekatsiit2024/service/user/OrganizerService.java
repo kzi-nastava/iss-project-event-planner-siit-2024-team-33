@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
 
+import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.OrganizerRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 @Service
 public class OrganizerService {
@@ -42,12 +44,15 @@ public class OrganizerService {
         organizer.setPassword(registerUser.getPassword());
         organizer.setName(registerUser.getName());
         organizer.setSurname(registerUser.getSurname());
-        organizer.setPicture(registerUser.getPicture());
+        //it's either null or uploaded filename
+        organizer.setPicture(ImageManager.saveAsFile(registerUser.getPicture()));
         organizer.setResidency(registerUser.getResidency());
         organizer.setPhoneNumber(registerUser.getPhoneNumber());
         organizer.setIsDeleted(false);
+        organizer.setIsVerified(false);
         organizer.setSuspensionEndDate(null);
         organizer.setLastPasswordResetDate(null);
+        organizer.setDateOfCreation(LocalDateTime.now());
         organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
 
         isDataCorrect(organizer, false);
@@ -67,6 +72,7 @@ public class OrganizerService {
 		//updating organizer
         organizer.setName(updateUser.getName());
         organizer.setSurname(updateUser.getSurname());
+        //see first if they are the same
         organizer.setPicture(updateUser.getPicture());
         organizer.setResidency(updateUser.getResidency());
         organizer.setPhoneNumber(updateUser.getPhoneNumber());
@@ -81,14 +87,27 @@ public class OrganizerService {
 		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", organizer.getEmail())) {
 			throw new OrganizerValidationException("Email is not of valid format.");
 		}
+		
 		if(!isUpdate) {
-			if (userRepository.findByEmail(organizer.getEmail()) != null) {
+			//is there a verified user or one which needs to verify the account
+			//that already uses this email
+			LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
+			if (userRepository.findIfEmailForRegistrationExists(organizer.getEmail(), thresholdDate) != null) {
 	            throw new OrganizerValidationException("That email is already taken.");
 	        }
+			
+			//trying to find an old unverified user and delete if present
+	        AuthentifiedUser oldUnverified = userRepository.findOldUnverifiedUserByEmail(organizer.getEmail(), thresholdDate);
+	        if (oldUnverified != null) {
+	        	userRepository.deleteById(oldUnverified.getId());
+	            userRepository.flush();
+	        }
+
 			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", organizer.getPassword())) {
 				throw new OrganizerValidationException("Password is not of valid format.");
 			}
 		}
+		
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getName())) {
 			throw new OrganizerValidationException("Name is not of valid format.");
 		}

@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +34,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.UserService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.TokenUtils;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.VerificationService;
@@ -51,8 +47,6 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private VerificationService verificationService;
-	@Autowired
-	private AuthentifiedUserRepository userRepo;
 	
 	@Autowired
 	private TokenUtils tokenUtils;
@@ -118,6 +112,10 @@ public class UserController {
 		
 		return ResponseEntity.ok(updatedUser.getIsDeleted());
 	}
+	
+	
+	
+	
 	
 	
 	@PreAuthorize("isAuthenticated()")

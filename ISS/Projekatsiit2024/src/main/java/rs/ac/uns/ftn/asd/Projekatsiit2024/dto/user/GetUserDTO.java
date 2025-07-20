@@ -16,7 +16,6 @@ public class GetUserDTO {
 	private String password;
 	private String name;
 	private String surname;
-	private String city;
 	private String picture;
 	private String residency;
     private String phoneNumber;
@@ -41,7 +40,6 @@ public class GetUserDTO {
 		this.setPassword(au.getPassword());
 		this.setName(au.getName());
 		this.setSurname(au.getSurname());
-		this.setCity(au.getCity());
 		this.setPicture(au.getPicture());
 		this.setRoleName(au.getRole().getName());
 	}
@@ -51,7 +49,6 @@ public class GetUserDTO {
 		this.setPassword(admin.getPassword());
 		this.setName(admin.getName());
 		this.setSurname(admin.getSurname());
-		this.setCity(admin.getCity());
 		this.setPicture(admin.getPicture());
 		this.setRoleName(admin.getRole().getName());
 	}
@@ -61,7 +58,6 @@ public class GetUserDTO {
 		this.setPassword(organizer.getPassword());
 		this.setName(organizer.getName());
 		this.setSurname(organizer.getSurname());
-		this.setCity(organizer.getCity());
 		this.setPicture(organizer.getPicture());
 		this.setResidency(organizer.getResidency());
 		this.setPhoneNumber(organizer.getPhoneNumber());
@@ -73,7 +69,6 @@ public class GetUserDTO {
 		this.setPassword(provider.getPassword());
 		this.setName(provider.getName());
 		this.setSurname(provider.getSurname());
-		this.setCity(provider.getCity());
 		this.setPicture(provider.getPicture());
 		this.setResidency(provider.getResidency());
 		this.setPhoneNumber(provider.getPhoneNumber());

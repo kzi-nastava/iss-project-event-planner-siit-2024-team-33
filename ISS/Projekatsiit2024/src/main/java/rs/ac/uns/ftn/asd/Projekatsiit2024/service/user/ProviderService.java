@@ -1,5 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -19,6 +22,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 @Service
 public class ProviderService {
@@ -52,15 +56,25 @@ public class ProviderService {
         provider.setPassword(registerUser.getPassword());
         provider.setName(registerUser.getName());
         provider.setSurname(registerUser.getSurname());
-        provider.setPicture(registerUser.getPicture());
-        provider.setPictures(registerUser.getPictures());
+        //it's either null or uploaded filename
+        provider.setPicture(ImageManager.saveAsFile(registerUser.getPicture()));
+        //it's either going to be empty list of filenames or some or maybe all filenames
+        List<String> pictures = new ArrayList<>();
+        for (String base64Img: registerUser.getPictures()) {
+        	String fileName = ImageManager.saveAsFile(base64Img);
+        	if (fileName != null)
+        		pictures.add(fileName);
+        }
+        provider.setPictures(pictures);
         provider.setDescription(registerUser.getDescription());
         provider.setPhoneNumber(registerUser.getPhoneNumber());
         provider.setProviderName(registerUser.getProviderName());
         provider.setResidency(registerUser.getResidency());
         provider.setIsDeleted(false);
+        provider.setIsVerified(false);
         provider.setSuspensionEndDate(null);
         provider.setLastPasswordResetDate(null);
+        provider.setDateOfCreation(LocalDateTime.now());
         provider.setRole(roleRepository.findByName("PROVIDER_ROLE"));
         
         isDataCorrect(provider, false);
@@ -80,7 +94,10 @@ public class ProviderService {
 		//updating provider
         provider.setName(updateUser.getName());
         provider.setSurname(updateUser.getSurname());
+        //see first if they are the same
+        //just delete and put this
         provider.setPicture(updateUser.getPicture());
+        //see first if they are the same
         provider.setPictures(updateUser.getPictures());
         provider.setDescription(updateUser.getDescription());
         provider.setPhoneNumber(updateUser.getPhoneNumber());
@@ -96,14 +113,27 @@ public class ProviderService {
 		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", provider.getEmail())) {
 			throw new ProviderValidationException("Email is not of valid format.");
 		}
+		
 		if(!isUpdate) {
-			if (userRepository.findByEmail(provider.getEmail()) != null) {
+			//is there a verified user or one which needs to verify the account
+			//that already uses this email
+			LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
+			if (userRepository.findIfEmailForRegistrationExists(provider.getEmail(), thresholdDate) != null) {
 	            throw new ProviderValidationException("That email is already taken.");
 	        }
+			
+			//trying to find an old unverified user and delete if present
+	        AuthentifiedUser oldUnverified = userRepository.findOldUnverifiedUserByEmail(provider.getEmail(), thresholdDate);
+	        if (oldUnverified != null) {
+	        	userRepository.deleteById(oldUnverified.getId());
+	            userRepository.flush();
+	        }
+
 			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", provider.getPassword())) {
 				throw new ProviderValidationException("Password is not of valid format.");
 			}
 		}
+		
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", provider.getName())) {
 			throw new ProviderValidationException("Name is not of valid format.");
 		}

@@ -27,15 +27,6 @@ public class ImageManager {
 		}
 	}
 	
-	static private String getUnusedFilename(String extension) {
-		String filename;
-		File f;
-		do {
-			filename = UUID.randomUUID().toString() + "." + extension;
-			f = new File(IMAGE_DIR + "/" + filename);
-		} while (f.isFile());
-		return filename;
-	}
 	
 	//Returns the name of the new file
 	static public String saveAsFile(String base64Image) {
@@ -60,6 +51,17 @@ public class ImageManager {
 			return null;
 		}
 	}
+	
+	static private String getUnusedFilename(String extension) {
+		String filename;
+		File f;
+		do {
+			filename = UUID.randomUUID().toString() + "." + extension;
+			f = new File(IMAGE_DIR + "/" + filename);
+		} while (f.isFile());
+		return filename;
+	}
+	
 	
 	public static boolean isValidImage(String base64Image) {
 		try {
@@ -87,6 +89,7 @@ public class ImageManager {
 			return false;
 		}
 	}
+	
 	
 	public static boolean deleteFile(String filename) {
 	    File f = new File(IMAGE_DIR + "/" + filename);
