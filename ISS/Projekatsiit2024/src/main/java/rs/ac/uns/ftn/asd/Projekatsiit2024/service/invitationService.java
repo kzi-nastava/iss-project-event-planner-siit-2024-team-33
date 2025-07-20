@@ -71,12 +71,12 @@ public class invitationService {
             throw new IllegalStateException("Invitation already accepted");
         }
 
-        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().getId().equals(user.getId())) {
+        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().equals(user.getEmail())) {
             throw new IllegalArgumentException("This invitation is not for you.");
         }
 
         invitation.setStatus(InvitationStatus.ACCEPTED);
-        invitation.setInvitedUser(user);
+        invitation.setInvitedUser(user.getEmail());
         invitationRepo.save(invitation);
     }
     
@@ -93,12 +93,12 @@ public class invitationService {
             throw new IllegalStateException("Invitation already denied");
         }
 
-        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().getId().equals(user.getId())) {
+        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().equals(user.getEmail())) {
             throw new IllegalArgumentException("This invitation is not for you.");
         }
 
         invitation.setStatus(InvitationStatus.DENIED);
-        invitation.setInvitedUser(user);
+        invitation.setInvitedUser(user.getEmail());
         invitationRepo.save(invitation);
     }
 
@@ -108,7 +108,7 @@ public class invitationService {
 
 
     private void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
-        JavaMailSender mailSender = DynamicMailSender.createMailSender("mirkodjukic718@gmail.com", "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");
+        JavaMailSender mailSender = DynamicMailSender.createMailSender("senjare2@gmail.com", "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");
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(senderEmail);
@@ -140,7 +140,7 @@ public class invitationService {
     	List<Invitation> allInvitations = invitationRepo.findAll();
     	List<Invitation> ret = new ArrayList<Invitation>(); 
     	for(Invitation invitation:allInvitations) {
-    		if(invitation.getInvitedUser().getId() == user.getId() && invitation.getStatus() == InvitationStatus.PENDING) {
+    		if(invitation.getInvitedUser()== user.getEmail() && invitation.getStatus() == InvitationStatus.PENDING) {
     			ret.add(invitation);
     		}
     	}

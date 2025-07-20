@@ -16,6 +16,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.VerificationToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.VerificationTokenRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.VerificationService;
 
 @RestController
 @RequestMapping("/api")
@@ -26,26 +27,14 @@ public class VerificationController {
 
     @Autowired
     private AuthentifiedUserRepository userRepo;
+    
+    @Autowired
+    private VerificationService verificationService;
 
     @GetMapping("/verify")
     public ResponseEntity<String> verifyUser(@RequestParam("token") String token) {
     	String decodedToken = URLDecoder.decode(token, StandardCharsets.UTF_8);
-    	Optional<VerificationToken> optionalToken = tokenRepo.findByToken(decodedToken);
-
-        if (optionalToken.isEmpty()) {
-            return ResponseEntity.badRequest().body("Invalid token");
-        }
-
-        VerificationToken verificationToken = optionalToken.get();
-
-        if (verificationToken.getExpirationDate().before(new Date())) {
-            return ResponseEntity.badRequest().body("Token expired");
-        }
-
-        AuthentifiedUser user = verificationToken.getUser();
-        user.setIsVerified(true);
-        userRepo.save(user);
-
+    	verificationService.verifyUser(decodedToken);
         return ResponseEntity.ok("User verified successfully!");
     }
 }
