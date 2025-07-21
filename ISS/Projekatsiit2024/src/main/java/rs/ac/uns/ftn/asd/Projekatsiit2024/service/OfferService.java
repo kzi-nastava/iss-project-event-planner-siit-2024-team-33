@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
@@ -31,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @org.springframework.stereotype.Service
 public class OfferService {
@@ -99,179 +103,71 @@ public class OfferService {
         return filteredOffers;
     }
     
+    @Transactional
     public Page<Offer> getFilteredOffers(Boolean isProduct, Boolean isService, String name, String category,
             Integer lowestPrice, Availability isAvailable, List<Integer> eventTypes,
-            Integer userId, int page, int size) {
-			if (Boolean.FALSE.equals(isProduct) && Boolean.FALSE.equals(isService)) {
+            int page, int size) {
+			if (!isProduct && !isService) {
 				isProduct = true;
 				isService = true;
 			}
 			
-			List<Offer> offers = getRestOffers(userId);
+			Stream<Offer> offers = offerRepo.findLatestOffersByOfferID().stream();
 			
+			//Filter by service/product type
 			if (isProduct && !isService) {
-				offers = offers.stream()
-							.filter(offer -> offer.getType() == OfferType.PRODUCT)
-							.toList();
+				offers = offers.filter(offer -> offer.getType() == OfferType.PRODUCT);
 			} else if (!isProduct && isService) {
-					offers = offers.stream()
-					.filter(offer -> offer.getType() == OfferType.SERVICE)
-					.toList();
+					offers = offers.filter(offer -> offer.getType() == OfferType.SERVICE);
 			}
 			
+			//Filter by name
 			if (name != null && !name.isEmpty()) {
-					offers = offers.stream()
-					.filter(offer -> offer.getName() != null && offer.getName().toLowerCase().contains(name.toLowerCase()))
-					.toList();
+					offers.filter(offer -> offer.getName() != null && offer.getName().toLowerCase().contains(name.toLowerCase()));
 			}
 			
+			//Filter by offer category
 			if (category != null && !category.isEmpty()) {
-					offers = offers.stream()
-					.filter(offer -> offer.getCategory() != null &&
-					offer.getCategory().getName().toLowerCase().contains(category.toLowerCase()))
-					.toList();
+					offers = offers.filter(offer -> offer.getCategory() != null &&
+					offer.getCategory().getName().toLowerCase().contains(category.toLowerCase()));
 			}
 			
+			//Filter by Availability
 			if (isAvailable != null) {
-					offers = offers.stream()
-					.filter(offer -> offer.getAvailability() == isAvailable)
-					.toList();
+					offers = offers.filter(offer -> offer.getAvailability() == isAvailable);
 			}
 			
+			//Filter by price
 			if (lowestPrice != null && lowestPrice > 0) {
-					offers = offers.stream()
-					.filter(offer -> offer.getPrice() != null && offer.getPrice() > lowestPrice)
-					.toList();
+					offers = offers.filter(offer -> offer.getPrice() != null && offer.getPrice() > lowestPrice);
 			}
+			
+			//Filter by event types
 			if (eventTypes != null && !eventTypes.isEmpty()) {
 		        if (eventTypes.contains(ALL_EVENT_TYPE_ID)) {
-		            offers = offers.stream()
-		                    .filter(offer -> offer.getValidEvents() != null && !offer.getValidEvents().isEmpty())
-		                    .toList();
+		            offers = offers.filter(offer -> offer.getValidEvents() != null && !offer.getValidEvents().isEmpty());
 		        } else {
-		            offers = offers.stream()
-		                    .filter(offer -> offer.getValidEvents() != null &&
+		            offers = offers.filter(offer -> offer.getValidEvents() != null &&
 		                            offer.getValidEvents().stream()
 		                                    .map(EventType::getId)
-		                                    .anyMatch(eventTypes::contains))
-		                    .toList();
+		                                    .anyMatch(eventTypes::contains));
 		        }
 		    }
 			
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			if(auth.getClass() != AnonymousAuthenticationToken.class) {
+				UserPrincipal up = (UserPrincipal)auth.getPrincipal();
+				AuthentifiedUser user = userRepo.findByEmail(up.getUsername());
+				offers = offers.filter(o -> isOfferVisibleForUser(user, o));
+			}
+			
+			List<Offer> offerList = offers.toList();
 			
 			int start = page * size;
-			int end = Math.min(start + size, offers.size());
-			List<Offer> pageContent = (start >= offers.size()) ? Collections.emptyList() : offers.subList(start, end);
+			int end = Math.min(start + size, offerList.size());
+			List<Offer> pageContent = (start >= offerList.size()) ? Collections.emptyList() : offerList.subList(start, end);
 
-			return new PageImpl<>(pageContent, PageRequest.of(page, size), offers.size());
-    }
-    
-    
-    	
-    public Page<Offer> getFilteredOffersUnauthorized(Boolean isProduct, Boolean isService, String name, String category,
-            Integer lowestPrice, Availability isAvailable, List<Integer> eventTypes, int page, int size) {
-			if (Boolean.FALSE.equals(isProduct) && Boolean.FALSE.equals(isService)) {
-				isProduct = true;
-				isService = true;
-			}
-			
-			List<Offer> offers = getRestOffersUnauthorized();
-			
-			if (isProduct && !isService) {
-				offers = offers.stream()
-							.filter(offer -> offer.getType() == OfferType.PRODUCT)
-							.toList();
-			} else if (!isProduct && isService) {
-					offers = offers.stream()
-					.filter(offer -> offer.getType() == OfferType.SERVICE)
-					.toList();
-			}
-			
-			if (name != null && !name.isEmpty()) {
-					offers = offers.stream()
-					.filter(offer -> offer.getName() != null && offer.getName().toLowerCase().contains(name.toLowerCase()))
-					.toList();
-			}
-			
-			if (category != null && !category.isEmpty()) {
-					offers = offers.stream()
-					.filter(offer -> offer.getCategory() != null &&
-					offer.getCategory().getName().toLowerCase().contains(category.toLowerCase()))
-					.toList();
-			}
-			
-			if (isAvailable != null) {
-					offers = offers.stream()
-					.filter(offer -> offer.getAvailability() == isAvailable)
-					.toList();
-			}
-			
-			if (lowestPrice != null && lowestPrice > 0) {
-					offers = offers.stream()
-					.filter(offer -> offer.getPrice() != null && offer.getPrice() > lowestPrice)
-					.toList();
-			}
-			
-			if (eventTypes != null && !eventTypes.isEmpty()) {
-		        if (eventTypes.contains(ALL_EVENT_TYPE_ID)) {
-		            offers = offers.stream()
-		                    .filter(offer -> offer.getValidEvents() != null && !offer.getValidEvents().isEmpty())
-		                    .toList();
-		        } else {
-		            offers = offers.stream()
-		                    .filter(offer -> offer.getValidEvents() != null &&
-		                            offer.getValidEvents().stream()
-		                                    .map(EventType::getId)
-		                                    .anyMatch(eventTypes::contains))
-		                    .toList();
-		        }
-		    }
-			
-			
-			int start = page * size;
-			int end = Math.min(start + size, offers.size());
-			List<Offer> pageContent = (start >= offers.size()) ? Collections.emptyList() : offers.subList(start, end);
-
-			return new PageImpl<>(pageContent, PageRequest.of(page, size), offers.size());
-    }
-    
-    public List<Offer> getRestOffers(Integer id) {
-    	List<Offer> allOffers = offerRepo.findCurrentOffers();
-    	
-        Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException(""); 
-        }
-        
-        AuthentifiedUser user = optionalUser.get();
-        List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
-
-        String city = user.getCity();
-        
-    	
-    	List<Offer> top5Offers = getTop5Offers(id);
-        
-        List<Offer> offers = allOffers.stream()
-        		//.filter(offer -> city.equalsIgnoreCase(offer.getCity()))
-                .filter(offer -> isOfferVisibleForUser(user, offer))
-                .sorted((o1, o2) -> Double.compare(o1.getDiscount(), o2.getDiscount()))
-                .toList();
-    	
-    	
-    	return offers;
-    }
-    
-    public List<Offer> getRestOffersUnauthorized() {
-    	List<Offer> allOffers = offerRepo.findCurrentOffers();
-    	
-    	List<Offer> top5Offers = getTop5OffersUnauthorized();
-        
-        List<Offer> offers = allOffers.stream()
-                .sorted((o1, o2) -> Double.compare(o1.getDiscount(), o2.getDiscount()))
-                .toList();
-    	
-    	
-    	return offers;
+			return new PageImpl<>(pageContent, PageRequest.of(page, size), offerList.size());
     }
     
     private boolean isOfferVisibleForUser(AuthentifiedUser user, Offer offer) {

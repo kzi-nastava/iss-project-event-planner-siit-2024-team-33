@@ -27,11 +27,11 @@ public class ProductService {
 	private offerReservationService reservationService;
 	
 	public Product get(Integer offerId) {
-		Optional<Product> product = productRepo.findById(offerId);
-		if(product.isEmpty())
+		Product product = productRepo.getLatestProductVersion(offerId);
+		if(product == null)
 			throw new EntityNotFoundException("No product with that id exists");
 		
-		return product.get();
+		return product;
 	}
 	
 	@Transactional
