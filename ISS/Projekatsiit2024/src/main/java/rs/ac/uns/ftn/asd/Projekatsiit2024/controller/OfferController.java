@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PostServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PutServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ServiceService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
@@ -48,9 +50,11 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
 @RequestMapping("/api/offers")
 public class OfferController {
 
-	
+
 	@Autowired
 	private OfferService offerService;
+	@Autowired
+	private OfferRepository offerRepo;
 	@Autowired
 	private AuthentifiedUserRepository userRepo;
 	
@@ -166,5 +170,22 @@ public class OfferController {
         Page<MinimalOfferDTO> offersDto = filteredOffers.map(MinimalOfferDTO::new);
 
         return new ResponseEntity<>(offersDto, HttpStatus.OK);
+    }
+    
+    @GetMapping(value = "/mine")
+    public ResponseEntity<List<MinimalOfferDTO>> getLoggedUsersOffers(@AuthenticationPrincipal UserPrincipal userPrincipal){
+    	if (userPrincipal == null)
+    		return ResponseEntity.status(401).body(null);
+    	
+    	AuthentifiedUser au = userPrincipal.getUser();
+    	
+    	if (!userPrincipal.getUser().getRole().getName().equals("PROVIDER_ROLE"))
+    		return ResponseEntity.status(403).body(null);
+    	
+    	List<MinimalOfferDTO> filtered = offerRepo.findLatestOffersByOfferID().stream()
+    			.filter(o -> {return o.getProvider().getId() == au.getId();})
+    			.map(o -> new MinimalOfferDTO(o)).toList();
+    	
+    	return new ResponseEntity<List<MinimalOfferDTO>>(filtered, HttpStatus.OK);
     }
 }

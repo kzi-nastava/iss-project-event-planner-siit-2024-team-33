@@ -58,7 +58,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !this.user.getIsDeleted();
+        return !this.user.getIsDeleted() && this.user.getIsVerified();
     }
 
 	public Timestamp getLastPasswordResetDate() {

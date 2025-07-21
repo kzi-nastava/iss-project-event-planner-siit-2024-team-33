@@ -45,6 +45,9 @@ public class ChatController {
 	
 	@GetMapping("/all")
 	public List<ChatContactDTO> getContacts(@AuthenticationPrincipal UserPrincipal principal){
+		if(principal == null)
+			return new ArrayList<>();
+		
 	    AuthentifiedUser currentUser = userRepo.findByEmailOptional(principal.getUsername()).orElseThrow();
 	    Set<AuthentifiedUser> contacts = new HashSet<>();
 	    contacts.addAll(messageRepo.findRecipients(currentUser));

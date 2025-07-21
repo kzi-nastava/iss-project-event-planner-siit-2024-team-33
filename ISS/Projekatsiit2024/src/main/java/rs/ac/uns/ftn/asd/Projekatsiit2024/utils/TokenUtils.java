@@ -150,7 +150,6 @@ public class TokenUtils {
 	}
 	
 	private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
-		System.out.println(lastPasswordReset != null && created.getTime() < lastPasswordReset.getTime());
 		
 		return (lastPasswordReset != null && created.getTime() < lastPasswordReset.getTime());
 	}

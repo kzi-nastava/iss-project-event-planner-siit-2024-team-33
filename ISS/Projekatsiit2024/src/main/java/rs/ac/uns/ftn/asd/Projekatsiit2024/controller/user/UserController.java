@@ -1,7 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.user;
 
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +22,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.auth.UserToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.GetUserDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisteredUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.SignupUserDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatePassword;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatedUser;
@@ -39,10 +34,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.UserService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.TokenUtils;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.VerificationService;
 
 
 @RestController
@@ -51,10 +44,6 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private VerificationService verificationService;
-	@Autowired
-	private AuthentifiedUserRepository userRepo;
 	
 	@Autowired
 	private TokenUtils tokenUtils;
@@ -68,40 +57,7 @@ public class UserController {
 		AuthentifiedUser user = userService.registerUser(registerUser);
 		RegisteredUser registeredUser = new RegisteredUser(user);
 		
-		verificationService.sendVerificationEmail(user.getId());
 		return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
-	}
-	
-	@PostMapping(value = "/signup/simple", 
-            consumes = MediaType.APPLICATION_JSON_VALUE, 
-            produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<RegisteredUser> createSimpleUser(@RequestBody SignupUserDTO signupUserDTO) 
-	       throws Exception {
-	
-	   if (!signupUserDTO.getPassword().equals(signupUserDTO.getConfirmPassword())) {
-	       throw new IllegalArgumentException("Passwords do not match");
-	   }
-	
-	   RegisterUser registerUser = new RegisterUser();
-	   registerUser.setEmail(signupUserDTO.getEmail());
-	   registerUser.setPassword(signupUserDTO.getPassword());
-	   registerUser.setName(signupUserDTO.getName());
-	   registerUser.setSurname(signupUserDTO.getSurname());
-	   registerUser.setPicture(signupUserDTO.getPicture());
-	
-	   registerUser.setPictures(Collections.emptyList());
-	   registerUser.setResidency("");
-	   registerUser.setPhoneNumber("");
-	   registerUser.setDescription("");
-	   registerUser.setProviderName("");
-	   registerUser.setRole("AUSER_ROLE");
-	
-	   AuthentifiedUser user = userService.registerUser(registerUser);
-	   RegisteredUser registeredUser = new RegisteredUser(user);
-	
-//	   verificationService.sendVerificationEmail(user.getId());
-	
-	   return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
 	}
 	
 	@PreAuthorize("isAuthenticated()")
@@ -151,6 +107,10 @@ public class UserController {
 		
 		return ResponseEntity.ok(updatedUser.getIsDeleted());
 	}
+	
+	
+	
+	
 	
 	
 	@PreAuthorize("isAuthenticated()")

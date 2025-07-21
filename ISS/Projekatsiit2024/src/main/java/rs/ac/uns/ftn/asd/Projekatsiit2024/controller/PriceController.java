@@ -27,7 +27,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.PriceService;
 
 @RestController
-@RequestMapping("/api/offers/mine")
+@RequestMapping("/api/offers/mine/prices")
 public class PriceController {
 
 	@Autowired 

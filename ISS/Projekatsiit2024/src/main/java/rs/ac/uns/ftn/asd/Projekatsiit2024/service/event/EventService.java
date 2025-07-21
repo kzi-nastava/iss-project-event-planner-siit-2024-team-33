@@ -348,26 +348,18 @@ public class EventService {
 	    List<Invitation> invitations = invitationRepo.findAll();
 	    AuthentifiedUser user = optionalUser.get();
 
-	    String city = user.getCity();
-
+	    user.getRole();
 	    List<Event> allEvents = eventRepository.findAll();
-
+	    //String city = user.getCity();
 	    List<Event> filteredEvents = allEvents.stream()
-	        .filter(event -> {
-	            if (city == null || city.isBlank()) {
-	                return true; 
-	            }
-	            String place = event.getPlace();
-	            return place != null && !place.isBlank() && city.equalsIgnoreCase(place);
-	        })
-	        .filter(event -> !Boolean.TRUE.equals(event.isOver()))
-	        .filter(event -> isEventVisibleForUser(user, event))
-	        .filter(event -> canUserSeeEvent(user, event, invitations))
-	        .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
-	        .limit(5)
-	        .toList();
-
-	    return filteredEvents;
+	            //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
+	            .filter(event -> !Boolean.TRUE.equals(event.isOver()))
+	            .filter(event -> isEventVisibleForUser(user, event))
+	            .filter(event -> canUserSeeEvent(user, event, invitations))
+	            .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
+	            .limit(5)
+	            .toList();
+	    	    return filteredEvents;
 	}
     
     

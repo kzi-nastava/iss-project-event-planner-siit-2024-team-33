@@ -3,9 +3,11 @@ INSERT INTO Role (id, name) VALUES (1, 'AUSER_ROLE');
 INSERT INTO Role (id, name) VALUES (2, 'ORGANIZER_ROLE');
 INSERT INTO Role (id, name) VALUES (3, 'PROVIDER_ROLE');
 
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE, is_verified) 
+-- Admin (no residency, phone number, provider name, or description)
+INSERT INTO authentified_user
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
 VALUES 
+<<<<<<< HEAD
 ('admin@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Admin', 'User', 'Paris', 'milion.jpg', false, NULL, 0, NULL, 'Admin',true);
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE, is_verified) 
@@ -27,7 +29,72 @@ INSERT INTO authentified_user
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE, is_verified) 
 VALUES 
 ('authuser@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Stipe', 'Stipic', 'Paris', 'organizer2.jpg', false, NULL, 1, CURRENT_TIMESTAMP, 'Madrid, Spain', '321-654-987', 'Organizer',true);
+=======
+('admin@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Admin', 'User', 'milion.jpg', 
+ false, true, NULL, 
+ 0, NULL, CURRENT_TIMESTAMP, 
+ 'Admin');
+>>>>>>> refs/remotes/origin/Develop
 
+-- Organizer
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, DTYPE) 
+VALUES 
+('organizer@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'John', 'Doe', 'jbl.jpg', 
+ false, true, NULL, 
+ 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'Berlin, Germany', '123-456-789', 
+ 'Organizer');
+
+-- Provider
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, provider_name, description, DTYPE) 
+VALUES 
+('provider@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Provider', 'Company', 'provider.jpg', 
+ false, true, NULL, 
+ 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
+ 'Provider');
+
+-- Another Admin
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
+VALUES 
+('admin2@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Alice', 'Johnson', 'admin2.jpg', 
+ false, true, NULL, 
+ 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'Admin');
+
+-- Another Organizer
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, DTYPE) 
+VALUES 
+('organizer2@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Steve', 'Williams', 'organizer2.jpg', 
+ false, true, NULL, 
+ 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'Madrid, Spain', '321-654-987', 
+ 'Organizer');
+ 
+ -- Plain AuthentifiedUser (no subtype like Admin, Organizer, or Provider)
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
+VALUES 
+('user@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Basic', 'User', 'default.jpg', 
+ false, true, NULL, 
+ 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'AuthentifiedUser');
 
 
 
