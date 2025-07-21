@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
 
+import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.OrganizerRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 @Service
 public class OrganizerService {
@@ -34,6 +35,19 @@ public class OrganizerService {
 	@Transactional(propagation = Propagation.REQUIRED)
     public Organizer createOrganizer(RegisterUser registerUser) 
     		throws OrganizerValidationException {
+		
+		LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
+
+        // Check for existing email usage (verified or unverified within 24h)
+        if (userRepository.findIfEmailForRegistrationExists(registerUser.getEmail(), thresholdDate) != null) {
+            throw new OrganizerValidationException("That email is already taken.");
+        }
+
+        // Remove old unverified user (any subclass)
+        AuthentifiedUser oldUnverified = userRepository.findOldUnverifiedUserByEmail(registerUser.getEmail(), thresholdDate);
+        if (oldUnverified != null) {
+            userRepository.deleteById(oldUnverified.getId());
+        }
         
 		Organizer organizer = new Organizer();
         
@@ -42,19 +56,22 @@ public class OrganizerService {
         organizer.setPassword(registerUser.getPassword());
         organizer.setName(registerUser.getName());
         organizer.setSurname(registerUser.getSurname());
-        organizer.setPicture(registerUser.getPicture());
         organizer.setResidency(registerUser.getResidency());
         organizer.setPhoneNumber(registerUser.getPhoneNumber());
         organizer.setIsDeleted(false);
         organizer.setIsVerified(false);
         organizer.setSuspensionEndDate(null);
         organizer.setLastPasswordResetDate(null);
+        organizer.setDateOfCreation(LocalDateTime.now());
         organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
 
         isDataCorrect(organizer, false);
         
         //encoding password before storing it
         organizer.setPassword(this.encoder.encode(organizer.getPassword()));
+        
+        //it's either null or uploaded filename
+        organizer.setPicture(ImageManager.saveAsFile(registerUser.getPicture()));
         
         return organizerRepository.save(organizer);
     }
@@ -68,11 +85,12 @@ public class OrganizerService {
 		//updating organizer
         organizer.setName(updateUser.getName());
         organizer.setSurname(updateUser.getSurname());
-        organizer.setPicture(updateUser.getPicture());
         organizer.setResidency(updateUser.getResidency());
         organizer.setPhoneNumber(updateUser.getPhoneNumber());
 		
 		isDataCorrect(organizer, true);
+		
+        organizer.setPicture(ImageManager.saveAsFile(updateUser.getPicture()));
 		
 		return organizerRepository.save(organizer);
 	}
@@ -82,14 +100,13 @@ public class OrganizerService {
 		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", organizer.getEmail())) {
 			throw new OrganizerValidationException("Email is not of valid format.");
 		}
+		
 		if(!isUpdate) {
-			if (userRepository.findByEmail(organizer.getEmail()) != null) {
-	            throw new OrganizerValidationException("That email is already taken.");
-	        }
 			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", organizer.getPassword())) {
 				throw new OrganizerValidationException("Password is not of valid format.");
 			}
 		}
+		
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getName())) {
 			throw new OrganizerValidationException("Name is not of valid format.");
 		}
@@ -97,7 +114,7 @@ public class OrganizerService {
 			throw new OrganizerValidationException("Surname is not of valid format.");
 		}
 		if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", organizer.getResidency()) || organizer.getResidency().length() > 150)
-    	    throw new EventValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
+    	    throw new OrganizerValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
 		
 		
 		if (!Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", organizer.getPhoneNumber())) {

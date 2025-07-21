@@ -1,22 +1,19 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.verification.VerificationTokenException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.VerificationToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.VerificationTokenRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
 @Service
@@ -30,25 +27,18 @@ public class VerificationService {
 
     
     @Transactional
-    public void sendVerificationEmail(Integer userId) {
+    public void sendVerificationEmail(AuthentifiedUser user) {
         String token = UUID.randomUUID().toString();
 
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
-        verificationToken.setUserId(userId);
+        verificationToken.setUserId(user.getId());
         verificationToken.setExpirationDate(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));
         tokenRepo.save(verificationToken);
 
         String verificationUrl = "http://localhost:8080/api/verify?token=" + token;
         
         JavaMailSender mailSender = DynamicMailSender.createMailSender("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");
-        
-        Optional<AuthentifiedUser> userOpt = userRepo.findById(userId);
-        if(userOpt.isEmpty()) {
-        	throw new IllegalArgumentException("You are not logged in");
-        }
-        
-        AuthentifiedUser user = userOpt.get();
         
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
@@ -63,20 +53,20 @@ public class VerificationService {
     	Optional<VerificationToken> optionalToken = tokenRepo.findByToken(decodedToken);
 
         if (optionalToken.isEmpty()) {
-        	throw new IllegalArgumentException("Invalid token");
+        	throw new VerificationTokenException("Invalid token.");
         }
 
         VerificationToken verificationToken = optionalToken.get();
 
         if (verificationToken.getExpirationDate().before(new Date())) {
-        	throw new IllegalArgumentException("Token expired");
+        	throw new VerificationTokenException("Token expired.");
         }
 
         
         Integer userId = verificationToken.getUserId();
         Optional<AuthentifiedUser> userOpt = userRepo.findById(userId);
         if(userOpt.isEmpty()) {
-        	throw new IllegalArgumentException("You are not logged in");
+        	throw new VerificationTokenException("No such user can be verified.");
         }
         
         AuthentifiedUser user = userOpt.get();

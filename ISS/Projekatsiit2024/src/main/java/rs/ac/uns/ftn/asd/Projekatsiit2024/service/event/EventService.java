@@ -349,9 +349,9 @@ public class EventService {
 	
 	    user.getRole();
 	    List<Event> allEvents = eventRepository.findAll();
-	    String city = user.getCity();
+	    //String city = user.getCity();
 	    List<Event> filteredEvents = allEvents.stream()
-	            .filter(event -> city.equalsIgnoreCase(event.getPlace()))
+	            //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
 	            .filter(event -> !Boolean.TRUE.equals(event.isOver()))
 	            .filter(event -> isEventVisibleForUser(user, event))
 	            .filter(event -> canUserSeeEvent(user, event, invitations))
