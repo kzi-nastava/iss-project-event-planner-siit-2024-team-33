@@ -27,6 +27,7 @@ public class VerificationService {
     private VerificationTokenRepository tokenRepo;
     @Autowired
     private AuthentifiedUserRepository userRepo;
+
     
     @Transactional
     public void sendVerificationEmail(Integer userId) {
@@ -40,7 +41,7 @@ public class VerificationService {
 
         String verificationUrl = "http://localhost:8080/api/verify?token=" + token;
         
-        JavaMailSender mailSender = DynamicMailSender.createMailSender("senjare2@gmail.com", "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");
+        JavaMailSender mailSender = DynamicMailSender.createMailSender("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");
         
         Optional<AuthentifiedUser> userOpt = userRepo.findById(userId);
         if(userOpt.isEmpty()) {
@@ -51,7 +52,7 @@ public class VerificationService {
         
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
-        message.setFrom("milosmilic2@gmail.com");
+        message.setFrom("hogridersunited@gmail.com");
         message.setSubject("Account Verification");
         message.setText("Click the link to verify your account:\n\n" + verificationUrl);
 

@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
 import java.util.Date;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,12 +54,13 @@ public class invitationService {
             invitation.setDate(invitationDate);
             invitation.setEvent(event);
             invitation.setInviter(inviter);
+            invitation.setInvitedUser(email);
             invitationRepo.saveAndFlush(invitation);
 
             String subject = "Invitation to " + event.getName();
             String body = invitedUser != null
                 ? "You are invited to join the event. Please log in to accept the invitation. \n\n http://localhost:4200/authentication/signin"
-                : "You are invited to join the event. Click here to register and accept the invitation. \n\n http://localhost:4200/authentication/AK";
+                : "You are invited to join the event. Click here to register and accept the invitation. \n\n http://localhost:4200/authentication/quick-register?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
 
             sendEmail(inviter.getEmail(), inviter.getPassword(), email, subject, body);
         }
@@ -108,10 +111,10 @@ public class invitationService {
 
 
     private void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
-        JavaMailSender mailSender = DynamicMailSender.createMailSender("milicmilosfaks@gmail.com", "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");
+        JavaMailSender mailSender = DynamicMailSender.createMailSender("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");
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(senderEmail);
+        message.setFrom("hogridersunited@gmail.com");
         message.setTo(recipientEmail);
         message.setSubject(subject);
         message.setText(body);

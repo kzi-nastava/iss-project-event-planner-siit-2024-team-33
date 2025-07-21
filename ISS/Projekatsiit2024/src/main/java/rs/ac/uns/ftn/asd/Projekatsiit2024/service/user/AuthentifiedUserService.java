@@ -38,6 +38,7 @@ public class AuthentifiedUserService {
         aUser.setSurname(registerUser.getSurname());
         aUser.setPicture(registerUser.getPicture());
         aUser.setIsDeleted(false);
+        aUser.setIsVerified(false);
         aUser.setSuspensionEndDate(null);
         aUser.setLastPasswordResetDate(null);
         aUser.setRole(roleRepository.findByName("AUSER_ROLE"));
