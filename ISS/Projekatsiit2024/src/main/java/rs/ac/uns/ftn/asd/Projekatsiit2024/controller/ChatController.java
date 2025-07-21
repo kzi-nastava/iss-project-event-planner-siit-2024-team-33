@@ -32,6 +32,8 @@ public class ChatController {
 
 	@GetMapping("/{email}")
 	public List<MessageDTO> getMessagesWithUser(@PathVariable String email, @AuthenticationPrincipal UserPrincipal principal) {
+		if(principal == null)
+			return new ArrayList<>();
 	    AuthentifiedUser currentUser = userRepo.findByEmailOptional(principal.getUsername()).orElseThrow();
 	    AuthentifiedUser otherUser = userRepo.findByEmailOptional(email).orElseThrow();
 
