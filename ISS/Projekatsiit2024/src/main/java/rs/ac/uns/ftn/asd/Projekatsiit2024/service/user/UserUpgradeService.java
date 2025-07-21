@@ -76,7 +76,7 @@ public class UserUpgradeService {
 		uuu.setProviderName(upgradeUser.getProviderName());
 		uuu.setDescription(upgradeUser.getDescription());
 		
-		if (upgradeUser.getRole().equals("ORGANIZER ROLE")) {
+		if (upgradeUser.getRole().equals("ORGANIZER_ROLE")) {
 			uuu.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
 		}
 		else if (upgradeUser.getRole().equals("PROVIDER_ROLE")) {
@@ -120,8 +120,6 @@ public class UserUpgradeService {
 		Set<Event> favoriteEvents = userForUpgrade.getFavoriteEvents();
 		List<AuthentifiedUser> blockedUsers = userForUpgrade.getBlockedUsers();
 		
-		userRepository.delete(userForUpgrade); // marked for deletion
-
         Organizer organizer = new Organizer();
         organizer.setId(userForUpgrade.getId()); // reuse ID
         organizer.setEmail(userForUpgrade.getEmail());
@@ -137,8 +135,14 @@ public class UserUpgradeService {
         organizer.setFavoriteEvents(favoriteEvents);
         organizer.setFavoriteOffers(favoriteOffers);
         organizer.setBlockedUsers(blockedUsers);
+        
+        uuuRepository.delete(uuu);
+        uuuRepository.flush();
 
-        return organizerRepository.save(organizer); // save new version
+        userRepository.delete(userForUpgrade);
+        userRepository.flush();
+
+        return organizerRepository.save(organizer);
 	}
 	
 

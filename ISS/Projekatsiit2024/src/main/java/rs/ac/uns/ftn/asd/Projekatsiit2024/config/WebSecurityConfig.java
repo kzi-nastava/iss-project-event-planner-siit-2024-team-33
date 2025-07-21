@@ -114,7 +114,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
 		        
 		        //verify
-		        .requestMatchers(HttpMethod.GET, "/api/users/verify").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/verify").permitAll()
 		        
 		        //offer categories
 		        .requestMatchers("/api/offerCategories/**").authenticated()
