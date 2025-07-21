@@ -36,5 +36,7 @@ public interface OfferReservationRepository extends JpaRepository<OfferReservati
     
     @Query("SELECT res FROM OfferReservation res WHERE res.offer.id=:offerId AND res.event.id=:eventId")
     OfferReservation findByEventAndOffer(@Param("offerId") Integer offerId, @Param("eventId") Integer eventId);
+    
+    List<OfferReservation> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 
 }

@@ -123,21 +123,8 @@ public class EventController {
 	
 	
     @GetMapping(value = "/top5/authentified", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetTop5EventsAuthorized() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String email;
-		
-		Object principal = auth.getPrincipal();
-		if (principal instanceof UserDetails) {
-		    email = ((UserDetails) principal).getUsername();
-		} else if (principal instanceof String) {
-		    email = (String) principal;
-		} else {
-		    throw new IllegalStateException("Unexpected principal type: " + principal.getClass());
-		}
-	
-		AuthentifiedUser user = userRepo.findByEmail(email);
-		
+    public ResponseEntity<List<MinimalEventDTO>> GetTop5EventsAuthorized(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		AuthentifiedUser user = userPrincipal.getUser();
 		int userId = user.getId();
         List<MinimalEventDTO> eventsDTO = new ArrayList<>();
         List<Event> events = eventService.getTop5OpenEvents(userId);
@@ -166,12 +153,8 @@ public class EventController {
     
     
     @GetMapping(value = "/rest", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetAllEvents() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
-	
-		AuthentifiedUser user = userRepo.findByEmail(email);
+    public ResponseEntity<List<MinimalEventDTO>> GetAllEvents(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    	AuthentifiedUser user = userPrincipal.getUser();
 		
 		int userId= user.getId();
 
@@ -253,26 +236,27 @@ public class EventController {
     }
     
     @GetMapping(value = "/organizer", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MinimalEventDTO>> GetEventsForOrganizer() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email;
+    public ResponseEntity<List<MinimalEventDTO>> GetEventsForOrganizer(@AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        Object principal = auth.getPrincipal();
-        if (principal instanceof UserDetails) {
-            email = ((UserDetails) principal).getUsername();
-        } else if (principal instanceof String) {
-            if ("anonymousUser".equals(principal)) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-            email = (String) principal;
-        } else {
-            throw new IllegalStateException("Unexpected principal type: " + principal.getClass());
-        }
-
-        AuthentifiedUser user = userRepo.findByEmail(email);
+        AuthentifiedUser user = userPrincipal.getUser();
         int userId = user.getId();
 
         List<Event> events = eventService.geteventsByOrganizerID(userId);
+
+        List<MinimalEventDTO> eventsDTO = events.stream()
+                .map(MinimalEventDTO::new)
+                .toList();
+
+        return new ResponseEntity<>(eventsDTO, HttpStatus.OK);
+    }
+    
+    @GetMapping(value = "/organizer/updated", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MinimalEventDTO>> GetEventsForOrganizerUpdated(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+
+        AuthentifiedUser user = userPrincipal.getUser();
+        int userId = user.getId();
+
+        List<Event> events = eventService.geteventsByOrganizerIDUpdated(userId);
 
         List<MinimalEventDTO> eventsDTO = events.stream()
                 .map(MinimalEventDTO::new)

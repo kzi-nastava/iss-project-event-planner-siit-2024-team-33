@@ -76,7 +76,7 @@ public class VerificationService {
         Integer userId = verificationToken.getUserId();
         Optional<AuthentifiedUser> userOpt = userRepo.findById(userId);
         if(userOpt.isEmpty()) {
-        	throw new IllegalArgumentException("You are not logged in");
+        	throw new IllegalArgumentException("User doesn't exist");
         }
         
         AuthentifiedUser user = userOpt.get();

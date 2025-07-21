@@ -10,10 +10,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.offerReservation.ServiceBookingException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
@@ -29,6 +32,9 @@ public class offerReservationService {
 
     @Autowired
     private OfferReservationRepository offerReservationRepo;
+    		
+    @Autowired
+    private invitationService invitationService;
 
     private void validateArguments(
     		LocalDate dateOfReservation,
@@ -100,7 +106,13 @@ public class offerReservationService {
         offerReservation.setEvent(event);
         offerReservation.setStartTime(LocalDateTime.of(dateOfReservation, startTime));
         offerReservation.setEndTime(LocalDateTime.of(dateOfReservation, endTime));
-
+        
+        Provider provider = offer.getProvider();
+        Organizer organizer = event.getOrganizer();
+        String providerStr = "Your offer: " + offer.getName() + ", got reserved for " + dateOfReservation+ ", for an evet: " +event.getName()+ ". by Organizer: " + organizer.getEmail();
+        String organizerStr = "You successfully reserved an offer: " +offer.getName() +", for an event: "+ event.getName() + "\n Offer you reserved is owned by provider: " +provider.getEmail()+".";
+        invitationService.sendEmail(null, null, provider.getEmail(), "Your offer has been reserved", providerStr);
+        invitationService.sendEmail(null, null, organizer.getEmail(), "You have successfully reserved an offer.", organizerStr);
         offerReservationRepo.save(offerReservation);
 
         return offerReservation;
@@ -131,22 +143,21 @@ public class offerReservationService {
 
       
         if (offerStartTime.isBefore(eventStartTime) || offerEndTime.isAfter(eventEndTime) || offerEndTime.isBefore(offerStartTime)) {
-            throw new IllegalArgumentException("This offer's end or starting time exceeds the end or start time of this event.");
+            throw new ServiceBookingException("This offer's end or starting time exceeds the end or start time of this event.", "BAD_TIME_RANGE");
         }
 
       
         for (OfferReservation reserv : reservations) {
             if (reserv.getDateOfReservation().equals(event.getDateOfEvent().toLocalDate())) {
                 if (isTimeColliding(offerStartTime, offerEndTime, reserv.getStartTime(), reserv.getEndTime())) {
-                    throw new IllegalArgumentException("This offer is already booked at that time.");
+                    throw new ServiceBookingException("This offer is already booked at that time.", "TIME_COLLISION_WITH_ANOTHER_EVENT");
                 }
             }
         }
 
-        
         for (OfferReservation eventReserv : event.getReservations()) {
             if (isTimeColliding(offerStartTime, offerEndTime, eventReserv.getStartTime(), eventReserv.getEndTime())) {
-                throw new IllegalArgumentException("This offer's times collide with already existant offers of this event.");
+                throw new ServiceBookingException("This offer's times collide with already existant offers of this event.","TIME_COLLISION_WITH_ANOTHER_OFFER_AT_SAME_EVENT");
             }
         }
 

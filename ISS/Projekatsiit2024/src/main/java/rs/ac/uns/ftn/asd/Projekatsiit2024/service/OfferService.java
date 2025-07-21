@@ -73,8 +73,14 @@ public class OfferService {
         List<Offer> offers = offerRepo.findAll();
         String city = user.getCity();
         List<Offer> filteredOffers = offers.stream()
-        		.filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
-                .filter(offer -> isOfferVisibleForUser(user, offer))
+        		.filter(offer -> {
+    	            if (city == null || city.isBlank()) {
+    	                return true; 
+    	            }
+    	            String place = offer.getCity();
+    	            return place != null && !place.isBlank() && city.equalsIgnoreCase(place);
+    	        })
+        		.filter(offer -> isOfferVisibleForUser(user, offer))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
                 .limit(5)
                 .toList();

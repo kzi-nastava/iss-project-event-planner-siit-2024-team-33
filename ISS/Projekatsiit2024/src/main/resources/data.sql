@@ -14,7 +14,7 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE, is_verified) 
 VALUES 
-('provider@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Provider', 'Company', 'Paris', 'provider.jpg', false, NULL, 3, CURRENT_TIMESTAMP, 'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 'Provider',true);
+('mirkodjukic314@gmail.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Provider', 'Company', 'Paris', 'provider.jpg', false, NULL, 3, CURRENT_TIMESTAMP, 'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 'Provider',true);
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE, is_verified) 
 VALUES 
@@ -22,7 +22,7 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE, is_verified) 
 VALUES 
-('organizer2@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Steve', 'Williams', 'Paris', 'organizer2.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Madrid, Spain', '321-654-987', 'Organizer',true);
+('mirkodjukic23@gmail.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Steve', 'Williams', 'Paris', 'organizer2.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Madrid, Spain', '321-654-987', 'Organizer',true);
 INSERT INTO authentified_user 
 (email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE, is_verified) 
 VALUES 
@@ -147,8 +147,8 @@ INSERT INTO EVENT (
     date_of_event, end_of_event, is_private, latitude, longitude, num_of_attendees, organizer_id, event_type_id, description, name, place
 ) VALUES 
 (
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
+    CAST('2025-07-21 17:35:00' AS TIMESTAMP),
+    CAST('2025-07-21 23:00:00' AS TIMESTAMP),
     FALSE,
     40.712776,
     -74.005974,

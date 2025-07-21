@@ -1,5 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,6 +14,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidatio
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.offerReservation.ServiceBookingException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.reportPDF.PdfGenerationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.InvalidPasswordException;
@@ -38,7 +42,12 @@ public class GlobalExceptionHandler {
 	    		"Invalid email or password."));
 	}
 	
-	
+    @ExceptionHandler(ServiceBookingException.class)
+    public ResponseEntity<Map<String, String>> handleServiceBookingException(ServiceBookingException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 	//user exception
 	
 	@ExceptionHandler(UserCreationException.class)
