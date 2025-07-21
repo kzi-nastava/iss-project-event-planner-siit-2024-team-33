@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.user;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.auth.UserToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.GetUserDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisteredUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.SignupUserDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatePassword;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatedUser;
@@ -66,10 +68,41 @@ public class UserController {
 		AuthentifiedUser user = userService.registerUser(registerUser);
 		RegisteredUser registeredUser = new RegisteredUser(user);
 		
-		verificationService.sendVerificationEmail(user);
+		verificationService.sendVerificationEmail(user.getId());
 		return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
 	}
 	
+	@PostMapping(value = "/signup/simple", 
+            consumes = MediaType.APPLICATION_JSON_VALUE, 
+            produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<RegisteredUser> createSimpleUser(@RequestBody SignupUserDTO signupUserDTO) 
+	       throws Exception {
+	
+	   if (!signupUserDTO.getPassword().equals(signupUserDTO.getConfirmPassword())) {
+	       throw new IllegalArgumentException("Passwords do not match");
+	   }
+	
+	   RegisterUser registerUser = new RegisterUser();
+	   registerUser.setEmail(signupUserDTO.getEmail());
+	   registerUser.setPassword(signupUserDTO.getPassword());
+	   registerUser.setName(signupUserDTO.getName());
+	   registerUser.setSurname(signupUserDTO.getSurname());
+	   registerUser.setPicture(signupUserDTO.getPicture());
+	
+	   registerUser.setPictures(Collections.emptyList());
+	   registerUser.setResidency("");
+	   registerUser.setPhoneNumber("");
+	   registerUser.setDescription("");
+	   registerUser.setProviderName("");
+	   registerUser.setRole("AUSER_ROLE");
+	
+	   AuthentifiedUser user = userService.registerUser(registerUser);
+	   RegisteredUser registeredUser = new RegisteredUser(user);
+	
+	   verificationService.sendVerificationEmail(user.getId());
+	
+	   return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
+	}
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping(value = "/me",produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,11 +1,12 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -24,26 +25,63 @@ public class VerificationService {
     
     @Autowired
     private VerificationTokenRepository tokenRepo;
+    @Autowired
+    private AuthentifiedUserRepository userRepo;
+
+    
     @Transactional
-    public void sendVerificationEmail(AuthentifiedUser user) {
+    public void sendVerificationEmail(Integer userId) {
         String token = UUID.randomUUID().toString();
 
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
-        verificationToken.setUser(user);
+        verificationToken.setUserId(userId);
         verificationToken.setExpirationDate(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));
         tokenRepo.save(verificationToken);
 
         String verificationUrl = "http://localhost:8080/api/verify?token=" + token;
-
-        JavaMailSender mailSender = DynamicMailSender.createMailSender("mirkodjukic718@gmail.com", "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");
-
+        
+        JavaMailSender mailSender = DynamicMailSender.createMailSender("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");
+        
+        Optional<AuthentifiedUser> userOpt = userRepo.findById(userId);
+        if(userOpt.isEmpty()) {
+        	throw new IllegalArgumentException("You are not logged in");
+        }
+        
+        AuthentifiedUser user = userOpt.get();
+        
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
-        message.setFrom("mirkodjukic718@gmail.com");
+        message.setFrom("hogridersunited@gmail.com");
         message.setSubject("Account Verification");
         message.setText("Click the link to verify your account:\n\n" + verificationUrl);
 
         mailSender.send(message);
+    }
+    
+    public void verifyUser(String decodedToken) {
+    	Optional<VerificationToken> optionalToken = tokenRepo.findByToken(decodedToken);
+
+        if (optionalToken.isEmpty()) {
+        	throw new IllegalArgumentException("Invalid token");
+        }
+
+        VerificationToken verificationToken = optionalToken.get();
+
+        if (verificationToken.getExpirationDate().before(new Date())) {
+        	throw new IllegalArgumentException("Token expired");
+        }
+
+        
+        Integer userId = verificationToken.getUserId();
+        Optional<AuthentifiedUser> userOpt = userRepo.findById(userId);
+        if(userOpt.isEmpty()) {
+        	throw new IllegalArgumentException("You are not logged in");
+        }
+        
+        AuthentifiedUser user = userOpt.get();
+        
+        user.setIsVerified(true);
+        userRepo.save(user);
     }
 }

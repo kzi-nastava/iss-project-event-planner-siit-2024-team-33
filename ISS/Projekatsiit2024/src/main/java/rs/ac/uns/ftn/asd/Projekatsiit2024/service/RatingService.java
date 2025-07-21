@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventRating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Notification;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRatingRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.RatingRepository;
@@ -22,6 +25,9 @@ import java.util.Optional;
 
 @Service
 public class RatingService {
+	
+
+	
     @Autowired
     private AuthentifiedUserRepository userRepository;
     
@@ -30,10 +36,15 @@ public class RatingService {
     
     @Autowired
     private RatingRepository ratingRepository;
+    
     @Autowired
     private EventRepository eventRepository;
+    
     @Autowired
     private EventRatingRepository eventRatingRepository;
+    
+    @Autowired
+    private NotificationService notificationervice;
     
     public Rating submitComment(int ratingValue, String comment, int userId, int offerId) {
         Rating rating = new Rating();
@@ -60,6 +71,13 @@ public class RatingService {
         if (ratingOpt.isPresent()) {
             Rating rating = ratingOpt.get();
             rating.setAccepted(true);
+            
+            Offer offer = rating.getOffer();
+            Provider provider = offer.getProvider();
+            
+            notificationervice.createNotification(provider.getId(), "Your offer  " + offer.getName() + " got rated with a: " +rating.getRatingValue()+ "\n"
+        		+ rating.getComment());
+            
             ratingRepository.save(rating);
         } else {
             throw new IllegalArgumentException("");
@@ -114,13 +132,22 @@ public class RatingService {
         return eventRatingRepository.save(eventRating);
     }
 
+    
     public void approveRating(int ratingId) {
         EventRating rating = eventRatingRepository.findById(ratingId)
                 .orElseThrow(() -> new IllegalArgumentException("Rating not found"));
         rating.setAccepted(true);
+        
+        Event event = rating.getEvent();
+        Organizer org = event.getOrganizer();
+        
+        notificationervice.createNotification(org.getId(), "Your event  " + event.getName() + " got rated with a: " +rating.getRatingValue()+ "\n"
+        		+ rating.getComment());
+        
         eventRatingRepository.save(rating);
     }
 
+    
     public void deleteRating(int ratingId) {
         EventRating rating = eventRatingRepository.findById(ratingId)
                 .orElseThrow(() -> new IllegalArgumentException("Rating not found"));
@@ -129,6 +156,7 @@ public class RatingService {
         eventRatingRepository.save(rating);
     }
 
+    
     public List<EventRating> getRatingsByEventId(int eventId) {
         return eventRatingRepository.findByEventIdAndAcceptedTrue(eventId);
     }

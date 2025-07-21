@@ -26,6 +26,6 @@ public class CreateEventDTO {
     private Double longitude;
     
     private Set<CreateEventActivityDTO> eventActivities = new HashSet<>(); 
-    private Set<Invitation> privateInvitations;
+    private Set<String> privateInvitations;
     //TODO: add everything needed for the budget
 }

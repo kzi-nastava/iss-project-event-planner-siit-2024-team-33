@@ -59,6 +59,7 @@ public class ProviderService {
         provider.setProviderName(registerUser.getProviderName());
         provider.setResidency(registerUser.getResidency());
         provider.setIsDeleted(false);
+        provider.setIsVerified(false);
         provider.setSuspensionEndDate(null);
         provider.setLastPasswordResetDate(null);
         provider.setRole(roleRepository.findByName("PROVIDER_ROLE"));

@@ -46,6 +46,7 @@ public class OrganizerService {
         organizer.setResidency(registerUser.getResidency());
         organizer.setPhoneNumber(registerUser.getPhoneNumber());
         organizer.setIsDeleted(false);
+        organizer.setIsVerified(false);
         organizer.setSuspensionEndDate(null);
         organizer.setLastPasswordResetDate(null);
         organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));

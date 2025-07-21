@@ -64,7 +64,9 @@ public class EventController {
 	@PostMapping(value = "/{eventId}/join", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<JoinedEventDTO> joinEvent(@AuthenticationPrincipal UserPrincipal userPrincipal, 
 			@PathVariable Integer eventId) throws EventValidationException {
-		Event updatedEvent = eventService.joinEvent(eventId, userPrincipal);
+    	AuthentifiedUser user = userPrincipal.getUser();
+
+		Event updatedEvent = eventService.joinEvent(eventId, user);
 		
 		return ResponseEntity.ok(new JoinedEventDTO(updatedEvent));
 	}
