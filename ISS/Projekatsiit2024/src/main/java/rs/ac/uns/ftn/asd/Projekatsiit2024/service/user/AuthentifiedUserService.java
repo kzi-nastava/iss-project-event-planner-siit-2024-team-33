@@ -1,4 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
+import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserValidat
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 
 @Service
@@ -29,6 +31,20 @@ public class AuthentifiedUserService {
 	@Transactional(propagation = Propagation.REQUIRED)
     public AuthentifiedUser createAuthentifiedUser(RegisterUser registerUser) throws AuthentifiedUserValidationException {
         
+		//is there a verified user or one which needs to verify the account
+		//that already uses this email
+		LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
+		if (userRepository.findIfEmailForRegistrationExists(registerUser.getEmail(), thresholdDate) != null) {
+            throw new AuthentifiedUserValidationException("That email is already taken.");
+        }
+		
+		//trying to find an old unverified user and delete if present
+        AuthentifiedUser oldUnverified = userRepository.findOldUnverifiedUserByEmail(registerUser.getEmail(), thresholdDate);
+        if (oldUnverified != null) {
+        	userRepository.deleteById(oldUnverified.getId());
+        }
+		
+		
 		AuthentifiedUser aUser = new AuthentifiedUser();
 		
 		//creating authentified user
@@ -36,17 +52,20 @@ public class AuthentifiedUserService {
         aUser.setPassword(registerUser.getPassword());
         aUser.setName(registerUser.getName());
         aUser.setSurname(registerUser.getSurname());
-        aUser.setPicture(registerUser.getPicture());
         aUser.setIsDeleted(false);
-        aUser.setIsVerified(false);
+        aUser.setIsVerified(true);
         aUser.setSuspensionEndDate(null);
         aUser.setLastPasswordResetDate(null);
+        aUser.setDateOfCreation(LocalDateTime.now());
         aUser.setRole(roleRepository.findByName("AUSER_ROLE"));
         
         isDataCorrect(aUser, false);
         
         //encoding password before storing it
         aUser.setPassword(this.encoder.encode(aUser.getPassword()));
+        
+        //it's either null or uploaded filename
+        aUser.setPicture(ImageManager.saveAsFile(registerUser.getPicture()));
         
         return userRepository.save(aUser);
     }
@@ -59,9 +78,10 @@ public class AuthentifiedUserService {
 		//updating organizer
         aUser.setName(updateUser.getName());
         aUser.setSurname(updateUser.getSurname());
-        aUser.setPicture(updateUser.getPicture());
 		
 		isDataCorrect(aUser, true);
+		
+        aUser.setPicture(ImageManager.saveAsFile(updateUser.getPicture()));
 		
 		return userRepository.save(aUser);
 	}
@@ -71,14 +91,13 @@ public class AuthentifiedUserService {
 		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", aUser.getEmail())) {
 			throw new AuthentifiedUserValidationException("Email is not of valid format.");
 		}
+		
 		if(!isUpdate) {
-			if (userRepository.findByEmail(aUser.getEmail()) != null) {
-		        throw new AuthentifiedUserValidationException("That email is already taken.");
-		    }
 			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", aUser.getPassword())) {
 				throw new AuthentifiedUserValidationException("Password is not of valid format.");
 			}
 		}
+		
 		if (!Pattern.matches("^[a-zA-Z]{1,50}$", aUser.getName())) {
 			throw new AuthentifiedUserValidationException("Name is not of valid format.");
 		}

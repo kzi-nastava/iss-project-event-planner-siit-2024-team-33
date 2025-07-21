@@ -125,7 +125,7 @@ public class invitationService {
 
 
 
-    private void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
+    public void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
         JavaMailSender mailSender = DynamicMailSender.createMailSender("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");
 
         SimpleMailMessage message = new SimpleMailMessage();

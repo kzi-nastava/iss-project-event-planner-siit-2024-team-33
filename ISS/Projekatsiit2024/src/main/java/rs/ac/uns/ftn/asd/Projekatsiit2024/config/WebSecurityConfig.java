@@ -81,6 +81,13 @@ public class WebSecurityConfig {
             	//authentication
 		        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/auth/check-email").permitAll()
+		        
+		        //users
+		        .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+		        .requestMatchers(HttpMethod.PUT, "/api/users/update/profile").authenticated()
+		        .requestMatchers(HttpMethod.PUT, "/api/users/update/password").authenticated()
+		        .requestMatchers(HttpMethod.DELETE, "/api/users/terminate/profile").authenticated()
 
 		        //event types
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()
@@ -104,6 +111,9 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.GET, "/api/favorites/events/*/exists").permitAll()
 		        .requestMatchers(HttpMethod.POST, "/api/favorites/events/*").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
+		        
+		        //verify
+		        .requestMatchers(HttpMethod.POST, "/api/users/verify").permitAll()
 		        
 		        //offer categories
 		        .requestMatchers("/api/offerCategories/**").authenticated()
@@ -129,6 +139,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
 		        .requestMatchers(HttpMethod.PUT, "/api/services/**").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").authenticated()
+		        
 		        
 		        .requestMatchers("/api/events/invitations/pending").authenticated()
 		        .requestMatchers("/api/events/top5/authentified").authenticated()

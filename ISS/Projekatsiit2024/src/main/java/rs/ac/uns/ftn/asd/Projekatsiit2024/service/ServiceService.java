@@ -126,6 +126,7 @@ public class ServiceService {
 		if(s == null)
 			throw new EntityNotFoundException("Service with that id doesn't exist");
 		
+
 	    Authentication up = SecurityContextHolder.getContext().getAuthentication();
 	    AuthentifiedUser user = null;
 	    if(up.getClass() != AnonymousAuthenticationToken.class) {

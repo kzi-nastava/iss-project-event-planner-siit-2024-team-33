@@ -11,7 +11,6 @@ public class ProviderDetailsDTO {
 	public String email;
     public String name;
     public String surname;
-    public String city;
     public String description;
     public String phoneNumber;
     public String providerName;
@@ -23,7 +22,6 @@ public class ProviderDetailsDTO {
     	this.email = p.getEmail();
     	this.name = p.getName();
     	this.surname = p.getSurname();
-    	this.city = p.getCity();
     	this.description = p.getDescription();
     	this.phoneNumber = p.getPhoneNumber();
     	this.providerName = p.getProviderName();

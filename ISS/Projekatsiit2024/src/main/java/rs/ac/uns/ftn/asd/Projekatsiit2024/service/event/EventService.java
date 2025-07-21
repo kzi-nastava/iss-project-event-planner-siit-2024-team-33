@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.service.event;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -339,28 +340,27 @@ public class EventService {
 	
 	
 	
-    public List<Event> getTop5OpenEvents(Integer id) {
+	public List<Event> getTop5OpenEvents(Integer id) {
 	    Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
 	    if (optionalUser.isEmpty()) {
-	        throw new IllegalArgumentException("");
+	        throw new IllegalArgumentException("User not found");
 	    }
 	    List<Invitation> invitations = invitationRepo.findAll();
 	    AuthentifiedUser user = optionalUser.get();
-	
+
 	    user.getRole();
 	    List<Event> allEvents = eventRepository.findAll();
-	    String city = user.getCity();
+	    //String city = user.getCity();
 	    List<Event> filteredEvents = allEvents.stream()
-	            .filter(event -> city.equalsIgnoreCase(event.getPlace()))
+	            //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
 	            .filter(event -> !Boolean.TRUE.equals(event.isOver()))
 	            .filter(event -> isEventVisibleForUser(user, event))
 	            .filter(event -> canUserSeeEvent(user, event, invitations))
 	            .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
 	            .limit(5)
 	            .toList();
-	    
-	    return filteredEvents;
-    }
+	    	    return filteredEvents;
+	}
     
     
     
@@ -561,6 +561,18 @@ public class EventService {
     	List<Event> events = eventRepository.findByOrganizerId(id);
     	
     	return events;
+    }
+    
+    public List<Event> geteventsByOrganizerIDUpdated(Integer id){
+    	List<Event> events = eventRepository.findByOrganizerId(id);
+    	List<Event> ret = new ArrayList<Event>();
+    	
+    	for(Event event:events) {
+    		if(!event.getDateOfEvent().isBefore(LocalDateTime.now())) {
+    			ret.add(event);
+    		}
+    	}
+    	return ret;
     }
     
     private boolean isEventVisibleForUser(AuthentifiedUser user, Event event) {
