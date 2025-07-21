@@ -7,36 +7,12 @@ INSERT INTO Role (id, name) VALUES (3, 'PROVIDER_ROLE');
 INSERT INTO authentified_user
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
 VALUES 
-<<<<<<< HEAD
-('admin@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Admin', 'User', 'Paris', 'milion.jpg', false, NULL, 0, NULL, 'Admin',true);
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE, is_verified) 
-VALUES 
-('organizer@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'John', 'Doe', 'Paris', 'jbl.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Berlin, Germany', '123-456-789', 'Organizer',true);
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE, is_verified) 
-VALUES 
-('mirkodjukic314@gmail.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Provider', 'Company', 'Paris', 'provider.jpg', false, NULL, 3, CURRENT_TIMESTAMP, 'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 'Provider',true);
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, DTYPE, is_verified) 
-VALUES 
-('admin2@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Alice', 'Johnson', 'Paris', 'admin2.jpg', false, NULL, 0, CURRENT_TIMESTAMP, 'Admin', true);
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE, is_verified) 
-VALUES 
-('mirkodjukic23@gmail.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Steve', 'Williams', 'Paris', 'organizer2.jpg', false, NULL, 2, CURRENT_TIMESTAMP, 'Madrid, Spain', '321-654-987', 'Organizer',true);
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE, is_verified) 
-VALUES 
-('authuser@example.com', '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 'Stipe', 'Stipic', 'Paris', 'organizer2.jpg', false, NULL, 1, CURRENT_TIMESTAMP, 'Madrid, Spain', '321-654-987', 'Organizer',true);
-=======
 ('admin@example.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Admin', 'User', 'milion.jpg', 
  false, true, NULL, 
  0, NULL, CURRENT_TIMESTAMP, 
  'Admin');
->>>>>>> refs/remotes/origin/Develop
 
 -- Organizer
 INSERT INTO authentified_user 

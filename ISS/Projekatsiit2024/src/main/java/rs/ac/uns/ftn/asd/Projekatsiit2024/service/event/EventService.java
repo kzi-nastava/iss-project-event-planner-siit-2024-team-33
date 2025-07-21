@@ -331,14 +331,6 @@ public class EventService {
 		throw new EventUserValidationException("You can't see events if you are not admin or organizer.");
 			
 	}
-    
-    
-    
-    
-	
-	
-	
-	
 	
 	public List<Event> getTop5OpenEvents(Integer id) {
 	    Optional<AuthentifiedUser> optionalUser = userRepo.findById(id);
