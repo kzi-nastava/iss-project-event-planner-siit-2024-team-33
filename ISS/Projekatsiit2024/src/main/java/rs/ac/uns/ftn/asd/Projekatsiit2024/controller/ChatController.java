@@ -45,10 +45,13 @@ public class ChatController {
 	
 	@GetMapping("/all")
 	public List<ChatContactDTO> getContacts(@AuthenticationPrincipal UserPrincipal principal){
+		if(principal == null)
+			return new ArrayList<>();
+		
 	    AuthentifiedUser currentUser = userRepo.findByEmailOptional(principal.getUsername()).orElseThrow();
 	    Set<AuthentifiedUser> contacts = new HashSet<>();
 	    contacts.addAll(messageRepo.findRecipients(currentUser));
 	    contacts.addAll(messageRepo.findSenders(currentUser));
-		return contacts.stream().map( user -> new ChatContactDTO(user.getEmail(), user.getName())).toList();
+		return contacts.stream().map( user -> new ChatContactDTO(user.getEmail(), user.getName(), currentUser.getBlockedUsers().contains(user))).toList();
 	}
 }

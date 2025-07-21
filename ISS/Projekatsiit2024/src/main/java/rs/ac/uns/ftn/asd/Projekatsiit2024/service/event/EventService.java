@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -23,14 +24,19 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventActivity;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.InvitationStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.invitationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventActivity.CreateEventActivityDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
@@ -45,7 +51,10 @@ public class EventService {
 	private AuthentifiedUserRepository userRepo;
     @Autowired
     private EventTypeRepository eventTypeRepository;
-    
+    @Autowired
+    private invitationService invitationService;
+    @Autowired
+    private InvitationRepository invitationRepo;
     
     @Transactional(propagation = Propagation.REQUIRED)
     public Event createEvent(UserPrincipal userPrincipal, CreateEventDTO eventDTO) throws 
@@ -70,6 +79,19 @@ public class EventService {
         
         Event createdEvent = eventRepository.save(event);
         
+        if(event.getIsPrivate()) {
+			Set<Invitation> invitations = new HashSet<>();
+		    PostInvitationDTO invData = new PostInvitationDTO();
+		    
+		    invData.setEventId(event.getId());
+		    invData.setEmailAddresses(eventDTO.getPrivateInvitations().stream().toList());
+		    invData.setMessage(event.getDescription());
+		    
+		    invitationService.createInvitations(invData, organizer, new Date() );
+		    
+			event.setPrivateInvitations(invitations);
+		}
+        
         return createdEvent;
     }
     
@@ -88,9 +110,7 @@ public class EventService {
         event.setDateOfEvent(eventDTO.getDateOfEvent());
         event.setEndOfEvent(eventDTO.getEndOfEvent());
 		event.setOrganizer(organizer);
-		if(event.getIsPrivate()) {
-			event.setPrivateInvitations(eventDTO.getPrivateInvitations());
-		}
+		
         //event type for event
         Optional<EventType> eventType = eventTypeRepository.findById(eventDTO.getEventTypeId());
         if (eventType.isEmpty() && !eventType.get().getIsActive())
@@ -178,22 +198,41 @@ public class EventService {
     
     
     
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Event joinEvent(Integer eventId, UserPrincipal userPrincipal) 
-    		throws EventValidationException {
-    	Optional<Event> optionalEvent = eventRepository.findById(eventId);
-    	
-    	if (optionalEvent.isEmpty())
-    		throw new EventValidationException("No event exists with such id.");
-    	
-    	Event event = optionalEvent.get();
-    	AuthentifiedUser user = userPrincipal.getUser();
-    	isJoiningEventPossible(user, event);
-    	
-    	event.getListOfAttendees().add(user);
-    	
-    	return eventRepository.save(event);
-	}
+	    @Transactional(propagation = Propagation.REQUIRED)
+	    public Event joinEvent(Integer eventId, AuthentifiedUser user) 
+	    		throws EventValidationException {
+	    	Optional<Event> optionalEvent = eventRepository.findById(eventId);
+	    	
+	    	if (optionalEvent.isEmpty())
+	    		throw new EventValidationException("No event exists with such id.");
+	    	
+	    	Event event = optionalEvent.get();
+	    	isJoiningEventPossible(user, event);
+	    	
+	    	//So if user ignores the invitation on mainpage, he can still join an event, if so, the status of invitation must go to ACCEPTED
+	    	//If he ever denied it, he won't be able to see the event.
+	    	if (Boolean.TRUE.equals(event.getIsPrivate())) {
+	            Optional<Invitation> invitationOpt = invitationRepo
+	                .findByEventAndInvitedUser(event, user.getEmail());
+
+	            if (invitationOpt.isPresent()) {
+	                Invitation invitation = invitationOpt.get();
+	                if (invitation.getStatus() == InvitationStatus.PENDING) {
+	                    invitation.setStatus(InvitationStatus.ACCEPTED);
+	                    invitation.setInvitedUser(user.getEmail());
+	                    invitationRepo.save(invitation);
+	                } else if (invitation.getStatus() == InvitationStatus.DENIED) {
+	                    throw new EventValidationException("You have rejected this invitation.");
+	                }
+	            } else {
+	                throw new EventValidationException("You cannot join a private event without an invitation.");
+	            }
+	        }
+	    	
+	    	event.getListOfAttendees().add(user);
+	    	
+	    	return eventRepository.save(event);
+		}
     
     private boolean isJoiningEventPossible(AuthentifiedUser user, Event event) 
     		throws EventValidationException {
@@ -217,7 +256,7 @@ public class EventService {
     	if (event.getIsPrivate()) {
     		boolean isInvited = event.getPrivateInvitations()
     		        .stream()
-    		        .anyMatch(inv -> inv.getInvitedUser().getId().equals(user.getId()));	
+    		        .anyMatch(inv -> inv.getInvitedUser().equals(user.getEmail()));	
     		if (!isInvited)
     			throw new EventValidationException("You are not on the list of invitations for this event.", 
     					"EVENT_PRIVATE");
@@ -305,7 +344,7 @@ public class EventService {
 	    if (optionalUser.isEmpty()) {
 	        throw new IllegalArgumentException("");
 	    }
-	    
+	    List<Invitation> invitations = invitationRepo.findAll();
 	    AuthentifiedUser user = optionalUser.get();
 	
 	    user.getRole();
@@ -315,6 +354,7 @@ public class EventService {
 	            //.filter(event -> city.equalsIgnoreCase(event.getPlace()))
 	            .filter(event -> !Boolean.TRUE.equals(event.isOver()))
 	            .filter(event -> isEventVisibleForUser(user, event))
+	            .filter(event -> canUserSeeEvent(user, event, invitations))
 	            .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
 	            .limit(5)
 	            .toList();
@@ -333,7 +373,6 @@ public class EventService {
         List<Event> filteredEvents = allEvents.stream()
                 .filter(event -> !Boolean.TRUE.equals(event.isOver()) &&
                 		!Boolean.TRUE.equals(event.getIsPrivate())			&&
-                		!Boolean.TRUE.equals(event.isOver())          &&
                 		event.getDateOfEvent().isAfter(LocalDateTime.now()))
                 .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
                 .limit(5)
@@ -490,11 +529,14 @@ public class EventService {
         List<Event> allEvents = eventRepository.findAll();
     	List<Event> top5Events = getTop5OpenEvents(id);
         
+    	List<Invitation> invitations = invitationRepo.findAll();
+    	
         List<Event> events = allEvents.stream()
 //              .filter(event -> city.equalsIgnoreCase(event.getPlace()))
               .filter(event -> !Boolean.TRUE.equals(event.isOver()))
-	           .filter(event -> isEventVisibleForUser(user, event))
+	          .filter(event -> isEventVisibleForUser(user, event))
               .filter(event -> !top5Events.contains(event))
+              .filter(event -> canUserSeeEvent(user, event, invitations))
               .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
               .toList();
         
@@ -507,6 +549,7 @@ public class EventService {
     	
         List<Event> events = allEvents.stream()
               .filter(event -> !Boolean.TRUE.equals(event.isOver()))
+              .filter(event -> !Boolean.TRUE.equals(event.getIsPrivate()))
               .filter(event -> !top5Events.contains(event))
               .sorted((e1, e2) -> Integer.compare(e2.getNumOfAttendees(), e1.getNumOfAttendees()))
               .toList(); 
@@ -554,5 +597,17 @@ public class EventService {
                 return true;
         }
     }
+    
+    private boolean canUserSeeEvent(AuthentifiedUser user, Event event, List<Invitation> invitations) {
+        if (!Boolean.TRUE.equals(event.getIsPrivate())) {
+            return true;
+        }
+
+        return invitations.stream()
+                .anyMatch(inv -> inv.getEvent().equals(event) &&
+                                 user.getEmail().equalsIgnoreCase(inv.getInvitedUser()) &&
+                                 inv.getStatus() != InvitationStatus.DENIED);
+    }
+
     
 }

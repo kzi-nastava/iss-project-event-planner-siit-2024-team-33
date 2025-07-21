@@ -60,7 +60,6 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
 	}
 	
-	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping(value = "/me",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetUserDTO> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {

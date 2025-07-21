@@ -43,4 +43,5 @@ public class EventRating {
     public int hashCode() {
         return Objects.hash(this.getId());
     }
+    
 }

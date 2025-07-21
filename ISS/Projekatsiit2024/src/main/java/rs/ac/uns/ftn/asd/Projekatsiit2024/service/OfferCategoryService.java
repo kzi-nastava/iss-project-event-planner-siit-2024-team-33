@@ -10,13 +10,17 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.controller.NotificationController;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Admin;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AdminRepository;
 
 @Service
 public class OfferCategoryService {
@@ -25,6 +29,10 @@ public class OfferCategoryService {
 	private OfferCategoryRepository offerCategoryRepo;
 	@Autowired
 	private OfferRepository offerRepo;
+	@Autowired
+	private NotificationService notifService;
+	@Autowired
+	private AdminRepository adminRepo;
 	
 	private void validateData(String name, String description) {
 		if(name == null)
@@ -39,7 +47,6 @@ public class OfferCategoryService {
 	
 	//Without database flush
 	public OfferCategory create(String name, String description) {
-		//TODO: User validation
 		validateData(name, description);
 		OfferCategory oc = new OfferCategory(name, description, true, true);
 		oc = offerCategoryRepo.save(oc);
@@ -47,7 +54,6 @@ public class OfferCategoryService {
 	}
 	
 	public OfferCategory createAndFlush(String name, String description) {
-		//TODO: User validation
 		validateData(name, description);
 		OfferCategory oc = create(name, description);
 		offerCategoryRepo.flush();
@@ -55,14 +61,17 @@ public class OfferCategoryService {
 	}
 	
 	public OfferCategory editCategory(Integer id, String name, String description, Boolean isEnabled) {
-		//TODO: Validation
 		//TODO: Notify PUP about changes
-		//TODO: Admin validation
 		validateData(name, description);
 		
 		Optional<OfferCategory> optionalOc = offerCategoryRepo.findById(id);
 		if(optionalOc.isEmpty())
 			throw new IllegalArgumentException("Invalid argument, no offer category with ID " + id + " exists.");
+		
+		List<Provider> providers = offerCategoryRepo.getProvidersWithCategory(id);
+		providers.forEach(p -> {
+			notifService.createNotification(p.getId(), "Offer category \"" + optionalOc.get().getName() +"\" was recently edited.");
+		});
 		
 		OfferCategory oc = optionalOc.get();
 		oc.setName(name);
@@ -74,8 +83,6 @@ public class OfferCategoryService {
 	}
 	
 	public void deleteCategory(Integer id) throws IllegalArgumentException, DataIntegrityViolationException {
-		//TODO: Admin validation
-		
 		Optional<OfferCategory> optionalOc = offerCategoryRepo.findById(id);
 		if(optionalOc.isEmpty())
 			throw new IllegalArgumentException("Invalid argument, no offer category with ID " + id + " exists.");
@@ -90,11 +97,14 @@ public class OfferCategoryService {
 	
 	//Without flush
 	public OfferCategory createSuggestion(String name, String description) {
-		//TODO: User validation
 		validateData(name, description);
 		OfferCategory oc = new OfferCategory(name, description, false, false);
 		oc = offerCategoryRepo.save(oc);
-		//TODO: Send notification
+		
+		adminRepo.findAll().forEach(a -> {
+			notifService.createNotification(a.getId(), "New offer category suggestion: \"" + name + "\"");
+		});
+		
 		return oc;
 	}
 	
@@ -104,8 +114,6 @@ public class OfferCategoryService {
 	
 	@Transactional
 	public OfferCategory acceptSuggestion(Integer id, String name, String description) {
-		//TODO: Admin validation
-		//TODO: Notify PUP
 		validateData(name, description);
 		Optional<OfferCategory> optionalOc = offerCategoryRepo.findById(id);
 		if(optionalOc.isEmpty())
@@ -124,14 +132,17 @@ public class OfferCategoryService {
 			offerRepo.save(o);
 		}
 		
+		List<Provider> providers = offerCategoryRepo.getProvidersWithCategory(id);
+		providers.forEach(p -> {
+			notifService.createNotification(p.getId(), "Offer category \"" + optionalOc.get().getName() +"\" was recently edited.");
+		});
+		
 		return oc;
 	}
 	
-	//Reject the suggestion withe the id "id", and set the offer category of pending offers to "newCategoryId"
+	//Reject the suggestion with the the id "id", and set the offer category of pending offers to "newCategoryId"
 	@Transactional
 	public OfferCategory rejectSuggestion(Integer id, Integer newCategoryId) {
-		//TODO: Admin validation
-		//TODO: Notify PUP
 		Optional<OfferCategory> optionalOc = offerCategoryRepo.findById(id);
 		if(optionalOc.isEmpty())
 			throw new IllegalArgumentException("Invalid argument, no offer category with ID " + id + " exists.");
@@ -146,6 +157,11 @@ public class OfferCategoryService {
 			o.setCategory(newOC.get());
 			offerRepo.save(o);
 		}
+
+		List<Provider> providers = offerCategoryRepo.getProvidersWithCategory(id);
+		providers.forEach(p -> {
+			notifService.createNotification(p.getId(), "Offer category \"" + optionalOc.get().getName() +"\" was recently edited.");
+		});
 		
 		offerCategoryRepo.deleteById(id);
 		

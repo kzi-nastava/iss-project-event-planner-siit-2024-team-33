@@ -17,4 +17,6 @@ public interface InvitationRepository extends JpaRepository<Invitation, Integer>
     //List<Invitation> findByRecipientEmail(String recipientEmail);
     
     int countByEvent(Event event);
+
+    Optional<Invitation> findByEventAndInvitedUser(Event event, String invitedUser);
 }

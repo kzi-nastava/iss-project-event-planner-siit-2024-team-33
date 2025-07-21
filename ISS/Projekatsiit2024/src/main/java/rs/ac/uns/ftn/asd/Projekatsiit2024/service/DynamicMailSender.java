@@ -9,6 +9,20 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 public class DynamicMailSender {
 
+	public static JavaMailSender createMailSender(String apiKey) {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.sendgrid.net");
+        mailSender.setPort(587);
+        mailSender.setUsername("apikey");
+        mailSender.setPassword(apiKey);
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        return mailSender;
+    }
+	
     public static JavaMailSender createMailSender(String senderEmail, String senderPassword) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");

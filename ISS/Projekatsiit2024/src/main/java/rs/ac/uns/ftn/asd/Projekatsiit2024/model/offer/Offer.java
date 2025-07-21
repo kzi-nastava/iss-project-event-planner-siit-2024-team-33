@@ -72,7 +72,9 @@ public class Offer
 			List<String> pictures,
 			OfferCategory category,
 			Provider provider,
-			List<EventType> validEvents) {
+			List<EventType> validEvents,
+			String city,
+			Availability availability) {
 		super();
 		this.offerID = offerID;
 		this.name = name;
@@ -84,7 +86,9 @@ public class Offer
 		this.provider = provider;
 		this.creationDate = LocalDateTime.now();
 		this.validEvents = validEvents;
-		this.availability = Availability.AVAILABLE;
+		this.availability = availability;
+		this.city = city;
+		
 		this.isPending = false;
 		this.isDeleted =false;
 	}

@@ -21,7 +21,39 @@ public class Report
     public Date dateOfSending;
 
     @ManyToOne
-    public AuthentifiedUser author;
+    public AuthentifiedUser reporter;
     @ManyToOne
-    public AuthentifiedUser receiver;
+    public AuthentifiedUser reported;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public Date getDateOfSending() {
+		return dateOfSending;
+	}
+	public void setDateOfSending(Date dateOfSending) {
+		this.dateOfSending = dateOfSending;
+	}
+	public AuthentifiedUser getReporter() {
+		return reporter;
+	}
+	public void setReporter(AuthentifiedUser reporter) {
+		this.reporter = reporter;
+	}
+	public AuthentifiedUser getReported() {
+		return reported;
+	}
+	public void setReported(AuthentifiedUser reported) {
+		this.reported = reported;
+	}
+    
+    
 }

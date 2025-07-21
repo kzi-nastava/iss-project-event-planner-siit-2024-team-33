@@ -112,11 +112,33 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.POST, "/api/favorites/events/*").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
 		        
+		        //verify
+		        .requestMatchers(HttpMethod.POST, "/api/users/verify").permitAll()
+		        
 		        //offer categories
+		        .requestMatchers("/api/offerCategories/**").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
 		        
 		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
+		        
+		        //Reviews
+		        .requestMatchers(HttpMethod.GET, "/api/ratings/**").permitAll() // anyone can read ratings
+		        .requestMatchers(HttpMethod.POST, "/api/ratings/**").hasAnyAuthority("ORGANIZER_ROLE") //Organizer can comment on offers
+		        .requestMatchers(HttpMethod.POST, "/api/ratings/events/**").hasAnyAuthority("PROVIDER_ROLE") //Provider can comment on events.
+		        .requestMatchers(HttpMethod.PUT, "/api/ratings/events/approve/**").hasAnyAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/ratings/approve/**").hasAnyAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/ratings/events/**").hasAnyAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/ratings/**").hasAnyAuthority("ADMIN_ROLE")
+		        
+		        //offers
+		        .requestMatchers("/api/offers/mine/**").authenticated()
+		        
+		        //service
+		        .requestMatchers(HttpMethod.POST, "/api/services").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
+		        .requestMatchers(HttpMethod.PUT, "/api/services/**").authenticated()
+		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").authenticated()
 		        
 		        .requestMatchers("/api/events/invitations/pending").authenticated()
 		        .requestMatchers("/api/events/top5/authentified").authenticated()

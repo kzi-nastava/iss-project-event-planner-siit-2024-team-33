@@ -1,6 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.user;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -32,7 +31,7 @@ public class AuthentifiedUser {
     private String picture;
     private Boolean isDeleted;
     private Boolean isVerified;
-    private Date suspensionEndDate; //added for reports
+    private LocalDateTime suspensionEndDate; //added for reports
     private LocalDateTime dateOfCreation;
     @ManyToOne
     private Role role;

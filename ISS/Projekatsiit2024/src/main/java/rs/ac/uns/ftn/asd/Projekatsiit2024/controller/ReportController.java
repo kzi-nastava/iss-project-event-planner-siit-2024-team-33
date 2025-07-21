@@ -1,15 +1,28 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.report.GetReportDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.report.PostReportDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Report;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ReportRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.reportService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -18,22 +31,31 @@ public class ReportController {
 
     @Autowired
     private reportService reportService;
-
+    @Autowired
+    private AuthentifiedUserRepository userRepo;
+    @Autowired
+    private ReportRepository reportRepo;
     @PostMapping
-    public ResponseEntity<String> submitReport(@RequestBody PostReportDTO postReportDTO) {
-        reportService.createReport(
+    public ResponseEntity<GetReportDTO> submitReport(@RequestBody PostReportDTO postReportDTO) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) auth.getPrincipal();
+        String email = principal.getUsername();
+        AuthentifiedUser user = userRepo.findByEmail(email);
+        int userId = user.getId();
+
+        Report report = reportService.createReport(
                 postReportDTO.getContent(),
-                postReportDTO.getReporterId(),
+                userId,
                 postReportDTO.getReportedUserId());
-        return ResponseEntity.ok("");
+
+        return ResponseEntity.ok(new GetReportDTO(report));
     }
 
-    @GetMapping("/reports")
-    public ResponseEntity<List<GetReportDTO>> getReports() {
-        List<Report> reports = reportService.getAllReports();
-        List<GetReportDTO> reportDTOs = reports.stream()
-                .map(GetReportDTO::new)
-                .collect(Collectors.toList());
+
+    @GetMapping
+    public ResponseEntity<Page<GetReportDTO>> getReports(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
+        Page<Report> reports = reportService.getAllReports(pageable);
+        Page<GetReportDTO> reportDTOs = reports.map(GetReportDTO::new);
         return ResponseEntity.ok(reportDTOs);
     }
 
