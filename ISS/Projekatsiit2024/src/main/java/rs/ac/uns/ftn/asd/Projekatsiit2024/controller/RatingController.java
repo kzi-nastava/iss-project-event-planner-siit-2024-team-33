@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.EventRatingDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.GetProviderRatingDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.GetRatingDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating.PostRatingDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventRating;
@@ -31,7 +33,13 @@ public class RatingController {
     @Autowired
     private AuthentifiedUserRepository userRepo;
     
-    
+    //Get all comments on all offers of a provider
+    @GetMapping(value="/provider/{providerId}")
+    public ResponseEntity<List<GetRatingDTO>> getProviderRatings(@PathVariable int providerId) {
+    	List<Rating> ratings = ratingService.getRatingsByProvider(providerId).stream()
+    			.filter(r -> r.getAccepted() && !r.getIsDeleted()).toList();
+    	return new ResponseEntity<List<GetRatingDTO>>(ratings.stream().map(r -> new GetRatingDTO(r)).toList(), HttpStatus.OK);
+    }
 
     @GetMapping
     public ResponseEntity<Page<GetRatingDTO>> getAllRatings(

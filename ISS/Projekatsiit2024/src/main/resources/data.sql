@@ -32,7 +32,7 @@ INSERT INTO authentified_user
 VALUES 
 ('provider@example.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
- 'Provider', 'Company', 'provider.jpg', 
+ 'Provider', 'Company', 'Untitled.png', 
  false, true, NULL, 
  3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 

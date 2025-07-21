@@ -97,6 +97,12 @@ public class RatingService {
         }
     }
     
+    public List<Rating> getRatingsByProvider(int providerId){
+    	List<Rating> ratingsForProvider = ratingRepository.findByProviderId(providerId);
+    	
+    	return ratingsForProvider;
+    }
+    
     public List<Rating> getRatingsByOfferId(int offerId) {
         return ratingRepository.findByOfferIdAndAcceptedTrue(offerId);
     }

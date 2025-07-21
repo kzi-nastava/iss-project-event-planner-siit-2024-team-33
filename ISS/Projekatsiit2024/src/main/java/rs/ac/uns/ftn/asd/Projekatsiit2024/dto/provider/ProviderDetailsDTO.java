@@ -27,6 +27,8 @@ public class ProviderDetailsDTO {
     	this.providerName = p.getProviderName();
     	this.residency = p.getResidency();
     	this.picturesDataURI = new ArrayList<>();
+    	if(p.getPicture() != null && p.getPicture() != "")
+    		this.picturesDataURI.add(ImageManager.loadAsDataURI(p.getPicture()));
     	if(p.getPictures() != null)
     		this.picturesDataURI = p.getPictures().stream().map(imgPath -> ImageManager.loadAsDataURI(imgPath)).toList();
     }
