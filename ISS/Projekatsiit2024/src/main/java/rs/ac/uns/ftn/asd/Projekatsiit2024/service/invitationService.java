@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.InvitationStatus;
@@ -21,6 +22,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.event.EventService;
 
 @Service
 public class invitationService {
@@ -33,7 +35,9 @@ public class invitationService {
 
     @Autowired
     private InvitationRepository invitationRepo;
-
+    
+    @Autowired
+    private EventService eventService;
 
     @Transactional
     public void createInvitations(
@@ -68,7 +72,8 @@ public class invitationService {
     
     @Transactional
     public void acceptInvitation(Integer invitationId, AuthentifiedUser user) {
-        Invitation invitation = invitationRepo.findById(invitationId).orElseThrow(() -> new IllegalArgumentException("Invitation not found"));
+        Invitation invitation = invitationRepo.findById(invitationId)
+            .orElseThrow(() -> new IllegalArgumentException("Invitation not found"));
 
         if (invitation.getStatus() == InvitationStatus.ACCEPTED) {
             throw new IllegalStateException("Invitation already accepted");
@@ -78,10 +83,23 @@ public class invitationService {
             throw new IllegalArgumentException("This invitation is not for you.");
         }
 
+    
         invitation.setStatus(InvitationStatus.ACCEPTED);
         invitation.setInvitedUser(user.getEmail());
-        invitationRepo.save(invitation);
+
+        Event event = invitation.getEvent();
+        if (!event.getListOfAttendees().contains(user)) {
+        	if (event.getNumOfAttendees() == event.getListOfAttendees().size()) {
+        		invitation.setStatus(InvitationStatus.PENDING);
+        		throw new EventValidationException("There is no more place left to join event.", 
+        				"NO_PLACE");
+        	}
+        	invitationRepo.save(invitation);
+            event.getListOfAttendees().add(user);
+            eventRepo.save(event);
+        }
     }
+
     
     @Transactional
     public void denyInvitation(Integer invitationId, AuthentifiedUser user) {
