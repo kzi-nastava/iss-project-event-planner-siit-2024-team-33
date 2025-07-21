@@ -36,8 +36,6 @@ public class invitationService {
     @Autowired
     private InvitationRepository invitationRepo;
     
-    @Autowired
-    private EventService eventService;
 
     @Transactional
     public void createInvitations(
@@ -90,7 +88,6 @@ public class invitationService {
         Event event = invitation.getEvent();
         if (!event.getListOfAttendees().contains(user)) {
         	if (event.getNumOfAttendees() == event.getListOfAttendees().size()) {
-        		invitation.setStatus(InvitationStatus.PENDING);
         		throw new EventValidationException("There is no more place left to join event.", 
         				"NO_PLACE");
         	}
