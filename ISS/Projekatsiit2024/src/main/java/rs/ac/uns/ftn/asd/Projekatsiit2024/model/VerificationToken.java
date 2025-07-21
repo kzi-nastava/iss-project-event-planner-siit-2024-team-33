@@ -2,7 +2,6 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
 @Entity
 public class VerificationToken {

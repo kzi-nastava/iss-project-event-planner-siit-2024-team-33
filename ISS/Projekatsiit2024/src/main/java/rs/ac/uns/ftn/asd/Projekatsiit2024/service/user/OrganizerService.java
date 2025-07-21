@@ -32,7 +32,7 @@ public class OrganizerService {
 	
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 	
-	@Transactional(propagation = Propagation.REQUIRED)
+	
     public Organizer createOrganizer(RegisterUser registerUser) 
     		throws OrganizerValidationException {
 		

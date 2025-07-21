@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.user;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.VerificationService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.VerificationService;
 
 @RestController
 @RequestMapping("/api")

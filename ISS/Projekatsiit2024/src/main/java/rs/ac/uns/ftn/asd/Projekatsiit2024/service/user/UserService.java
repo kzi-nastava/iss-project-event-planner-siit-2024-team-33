@@ -26,7 +26,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.VerificationService;
 
 @Service
 public class UserService {
@@ -48,7 +47,9 @@ public class UserService {
 	
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 	
+	
 	//creates user of which ever role wanted
+	@Transactional
 	public AuthentifiedUser registerUser(RegisterUser registerUser) throws Exception, 
 		UserCreationException, OrganizerValidationException, ProviderValidationException, AuthentifiedUserValidationException {
 		
@@ -238,5 +239,4 @@ public class UserService {
 	    me.setBlockedUsers(blockedUsers);
 	    userRepo.save(me);
 	}
-
 }

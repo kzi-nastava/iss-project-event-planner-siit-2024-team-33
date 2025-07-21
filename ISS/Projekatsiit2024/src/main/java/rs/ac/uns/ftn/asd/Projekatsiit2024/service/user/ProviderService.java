@@ -45,7 +45,7 @@ public class ProviderService {
 		return p.get();
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRED)
+	
     public Provider createProvider(RegisterUser registerUser) throws ProviderValidationException {
         
 		LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
