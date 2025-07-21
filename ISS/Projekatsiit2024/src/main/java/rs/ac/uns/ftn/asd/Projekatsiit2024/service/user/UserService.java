@@ -26,6 +26,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.VerificationService;
 
 @Service
 public class UserService {
@@ -42,10 +43,12 @@ public class UserService {
 	@Autowired
 	private AuthentifiedUserRepository userRepo;
 	
+	@Autowired
+	private VerificationService verificationService;
+	
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 	
 	//creates user of which ever role wanted
-	@Transactional(propagation = Propagation.REQUIRED)
 	public AuthentifiedUser registerUser(RegisterUser registerUser) throws Exception, 
 		UserCreationException, OrganizerValidationException, ProviderValidationException, AuthentifiedUserValidationException {
 		
@@ -63,10 +66,12 @@ public class UserService {
 		
 			case "ORGANIZER_ROLE":
 				registeredUser = organizerService.createOrganizer(registerUser);
+				verificationService.sendVerificationEmail(registeredUser);
 				break;
 				
 			case "PROVIDER_ROLE":
 				registeredUser = providerService.createProvider(registerUser);
+				verificationService.sendVerificationEmail(registeredUser);
 				break;
 			
 			default:
@@ -78,7 +83,6 @@ public class UserService {
 	
 	
 	//updates user of which role it is
-	@Transactional(propagation = Propagation.REQUIRED)
 	public UpdatedUser updateUser(AuthentifiedUser user, UpdateUser updateUser) throws  
 	UserUpdateException, AuthentifiedUserValidationException, OrganizerValidationException, 
 	ProviderValidationException {

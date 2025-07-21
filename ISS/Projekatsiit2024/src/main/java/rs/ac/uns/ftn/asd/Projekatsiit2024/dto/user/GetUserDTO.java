@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -8,6 +9,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Admin;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 @Getter
 @Setter
@@ -40,7 +42,7 @@ public class GetUserDTO {
 		this.setPassword(au.getPassword());
 		this.setName(au.getName());
 		this.setSurname(au.getSurname());
-		this.setPicture(au.getPicture());
+		this.setPicture(ImageManager.loadAsDataURI(au.getPicture()));
 		this.setRoleName(au.getRole().getName());
 	}
 	
@@ -49,7 +51,7 @@ public class GetUserDTO {
 		this.setPassword(admin.getPassword());
 		this.setName(admin.getName());
 		this.setSurname(admin.getSurname());
-		this.setPicture(admin.getPicture());
+		this.setPicture(ImageManager.loadAsDataURI(admin.getPicture()));
 		this.setRoleName(admin.getRole().getName());
 	}
 	
@@ -58,7 +60,7 @@ public class GetUserDTO {
 		this.setPassword(organizer.getPassword());
 		this.setName(organizer.getName());
 		this.setSurname(organizer.getSurname());
-		this.setPicture(organizer.getPicture());
+		this.setPicture(ImageManager.loadAsDataURI(organizer.getPicture()));
 		this.setResidency(organizer.getResidency());
 		this.setPhoneNumber(organizer.getPhoneNumber());
 		this.setRoleName(organizer.getRole().getName());
@@ -69,12 +71,19 @@ public class GetUserDTO {
 		this.setPassword(provider.getPassword());
 		this.setName(provider.getName());
 		this.setSurname(provider.getSurname());
-		this.setPicture(provider.getPicture());
+		this.setPicture(ImageManager.loadAsDataURI(provider.getPicture()));
 		this.setResidency(provider.getResidency());
 		this.setPhoneNumber(provider.getPhoneNumber());
 		this.setProviderName(provider.getProviderName());
 		this.setDescription(provider.getDescription());
-		this.setPictures(provider.getPictures());
+		if (provider.getPictures() == null)
+			provider.setPictures(new ArrayList<>());
+		this.setPictures(
+			    provider.getPictures().stream()
+			        .map(ImageManager::loadAsDataURI)
+			        .filter(img -> img != null)
+			        .toList()
+			);
 		this.setRoleName(provider.getRole().getName());
 	}
 }

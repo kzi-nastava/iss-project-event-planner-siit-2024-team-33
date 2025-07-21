@@ -36,7 +36,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.UserService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.TokenUtils;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.VerificationService;
 
 
 @RestController
@@ -45,8 +44,6 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private VerificationService verificationService;
 	
 	@Autowired
 	private TokenUtils tokenUtils;
@@ -60,7 +57,6 @@ public class UserController {
 		AuthentifiedUser user = userService.registerUser(registerUser);
 		RegisteredUser registeredUser = new RegisteredUser(user);
 		
-		verificationService.sendVerificationEmail(user);
 		return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
 	}
 	

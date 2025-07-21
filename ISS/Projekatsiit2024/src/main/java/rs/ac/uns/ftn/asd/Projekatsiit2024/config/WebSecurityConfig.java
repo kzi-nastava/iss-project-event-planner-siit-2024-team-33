@@ -84,6 +84,10 @@ public class WebSecurityConfig {
 		        
 		        //users
 		        .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+		        .requestMatchers(HttpMethod.PUT, "/api/users/update/profile").authenticated()
+		        .requestMatchers(HttpMethod.PUT, "/api/users/update/password").authenticated()
+		        .requestMatchers(HttpMethod.DELETE, "/api/users/terminate/profile").authenticated()
 
 		        //event types
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()

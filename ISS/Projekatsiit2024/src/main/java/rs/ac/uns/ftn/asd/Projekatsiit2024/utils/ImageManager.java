@@ -92,7 +92,16 @@ public class ImageManager {
 	
 	
 	public static boolean deleteFile(String filename) {
+	    if (filename == null || filename.trim().isEmpty()) {
+	        return false;
+	    }
+
 	    File f = new File(IMAGE_DIR + "/" + filename);
-	    return f.exists() && f.delete();
+
+	    if (!f.exists()) {
+	        return false;
+	    }
+
+	    return f.delete();
 	}
 }

@@ -31,6 +31,20 @@ public class AuthentifiedUserService {
 	@Transactional(propagation = Propagation.REQUIRED)
     public AuthentifiedUser createAuthentifiedUser(RegisterUser registerUser) throws AuthentifiedUserValidationException {
         
+		//is there a verified user or one which needs to verify the account
+		//that already uses this email
+		LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
+		if (userRepository.findIfEmailForRegistrationExists(registerUser.getEmail(), thresholdDate) != null) {
+            throw new AuthentifiedUserValidationException("That email is already taken.");
+        }
+		
+		//trying to find an old unverified user and delete if present
+        AuthentifiedUser oldUnverified = userRepository.findOldUnverifiedUserByEmail(registerUser.getEmail(), thresholdDate);
+        if (oldUnverified != null) {
+        	userRepository.deleteById(oldUnverified.getId());
+        }
+		
+		
 		AuthentifiedUser aUser = new AuthentifiedUser();
 		
 		//creating authentified user
@@ -38,10 +52,8 @@ public class AuthentifiedUserService {
         aUser.setPassword(registerUser.getPassword());
         aUser.setName(registerUser.getName());
         aUser.setSurname(registerUser.getSurname());
-        //it's either null or uploaded filename
-        aUser.setPicture(ImageManager.saveAsFile(registerUser.getPicture()));
         aUser.setIsDeleted(false);
-        aUser.setIsVerified(false);
+        aUser.setIsVerified(true);
         aUser.setSuspensionEndDate(null);
         aUser.setLastPasswordResetDate(null);
         aUser.setDateOfCreation(LocalDateTime.now());
@@ -51,6 +63,9 @@ public class AuthentifiedUserService {
         
         //encoding password before storing it
         aUser.setPassword(this.encoder.encode(aUser.getPassword()));
+        
+        //it's either null or uploaded filename
+        aUser.setPicture(ImageManager.saveAsFile(registerUser.getPicture()));
         
         return userRepository.save(aUser);
     }
@@ -63,10 +78,10 @@ public class AuthentifiedUserService {
 		//updating organizer
         aUser.setName(updateUser.getName());
         aUser.setSurname(updateUser.getSurname());
-        //see first if they are the same
-        aUser.setPicture(updateUser.getPicture());
 		
 		isDataCorrect(aUser, true);
+		
+        aUser.setPicture(ImageManager.saveAsFile(updateUser.getPicture()));
 		
 		return userRepository.save(aUser);
 	}
@@ -78,20 +93,6 @@ public class AuthentifiedUserService {
 		}
 		
 		if(!isUpdate) {
-			//is there a verified user or one which needs to verify the account
-			//that already uses this email
-			LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
-			if (userRepository.findIfEmailForRegistrationExists(aUser.getEmail(), thresholdDate) != null) {
-	            throw new AuthentifiedUserValidationException("That email is already taken.");
-	        }
-			
-			//trying to find an old unverified user and delete if present
-	        AuthentifiedUser oldUnverified = userRepository.findOldUnverifiedUserByEmail(aUser.getEmail(), thresholdDate);
-	        if (oldUnverified != null) {
-	        	userRepository.deleteById(oldUnverified.getId());
-	            userRepository.flush();
-	        }
-
 			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", aUser.getPassword())) {
 				throw new AuthentifiedUserValidationException("Password is not of valid format.");
 			}

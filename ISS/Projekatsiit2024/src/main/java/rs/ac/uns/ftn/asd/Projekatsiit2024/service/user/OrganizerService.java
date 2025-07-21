@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
@@ -36,6 +35,19 @@ public class OrganizerService {
 	@Transactional(propagation = Propagation.REQUIRED)
     public Organizer createOrganizer(RegisterUser registerUser) 
     		throws OrganizerValidationException {
+		
+		LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
+
+        // Check for existing email usage (verified or unverified within 24h)
+        if (userRepository.findIfEmailForRegistrationExists(registerUser.getEmail(), thresholdDate) != null) {
+            throw new OrganizerValidationException("That email is already taken.");
+        }
+
+        // Remove old unverified user (any subclass)
+        AuthentifiedUser oldUnverified = userRepository.findOldUnverifiedUserByEmail(registerUser.getEmail(), thresholdDate);
+        if (oldUnverified != null) {
+            userRepository.deleteById(oldUnverified.getId());
+        }
         
 		Organizer organizer = new Organizer();
         
@@ -44,8 +56,6 @@ public class OrganizerService {
         organizer.setPassword(registerUser.getPassword());
         organizer.setName(registerUser.getName());
         organizer.setSurname(registerUser.getSurname());
-        //it's either null or uploaded filename
-        organizer.setPicture(ImageManager.saveAsFile(registerUser.getPicture()));
         organizer.setResidency(registerUser.getResidency());
         organizer.setPhoneNumber(registerUser.getPhoneNumber());
         organizer.setIsDeleted(false);
@@ -60,6 +70,9 @@ public class OrganizerService {
         //encoding password before storing it
         organizer.setPassword(this.encoder.encode(organizer.getPassword()));
         
+        //it's either null or uploaded filename
+        organizer.setPicture(ImageManager.saveAsFile(registerUser.getPicture()));
+        
         return organizerRepository.save(organizer);
     }
 	
@@ -72,12 +85,12 @@ public class OrganizerService {
 		//updating organizer
         organizer.setName(updateUser.getName());
         organizer.setSurname(updateUser.getSurname());
-        //see first if they are the same
-        organizer.setPicture(updateUser.getPicture());
         organizer.setResidency(updateUser.getResidency());
         organizer.setPhoneNumber(updateUser.getPhoneNumber());
 		
 		isDataCorrect(organizer, true);
+		
+        organizer.setPicture(ImageManager.saveAsFile(updateUser.getPicture()));
 		
 		return organizerRepository.save(organizer);
 	}
@@ -89,20 +102,6 @@ public class OrganizerService {
 		}
 		
 		if(!isUpdate) {
-			//is there a verified user or one which needs to verify the account
-			//that already uses this email
-			LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
-			if (userRepository.findIfEmailForRegistrationExists(organizer.getEmail(), thresholdDate) != null) {
-	            throw new OrganizerValidationException("That email is already taken.");
-	        }
-			
-			//trying to find an old unverified user and delete if present
-	        AuthentifiedUser oldUnverified = userRepository.findOldUnverifiedUserByEmail(organizer.getEmail(), thresholdDate);
-	        if (oldUnverified != null) {
-	        	userRepository.deleteById(oldUnverified.getId());
-	            userRepository.flush();
-	        }
-
 			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", organizer.getPassword())) {
 				throw new OrganizerValidationException("Password is not of valid format.");
 			}
@@ -115,7 +114,7 @@ public class OrganizerService {
 			throw new OrganizerValidationException("Surname is not of valid format.");
 		}
 		if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", organizer.getResidency()) || organizer.getResidency().length() > 150)
-    	    throw new EventValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
+    	    throw new OrganizerValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
 		
 		
 		if (!Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", organizer.getPhoneNumber())) {

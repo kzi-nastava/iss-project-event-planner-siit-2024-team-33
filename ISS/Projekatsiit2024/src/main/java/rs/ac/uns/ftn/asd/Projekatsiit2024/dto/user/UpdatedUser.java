@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 @Getter
 @Setter
@@ -15,7 +17,6 @@ public class UpdatedUser {
 	private String name;
 	private String surname;
 	private String picture;
-	private String city;
 	private String residency;
 	private String phoneNumber;
 	private String description;
@@ -29,14 +30,14 @@ public class UpdatedUser {
 		this.setEmail(aUser.getEmail());
 		this.setName(aUser.getName());
 		this.setSurname(aUser.getSurname());
-		this.setPicture(aUser.getPicture());
+		this.setPicture(ImageManager.loadAsDataURI(aUser.getPicture()));
 	}
 	
 	public UpdatedUser(Organizer organizer) {
 		this.setEmail(organizer.getEmail());
 		this.setName(organizer.getName());
 		this.setSurname(organizer.getSurname());
-		this.setPicture(organizer.getPicture());
+		this.setPicture(ImageManager.loadAsDataURI(organizer.getPicture()));
 		this.setResidency(organizer.getResidency());
 		this.setPhoneNumber(organizer.getPhoneNumber());
 	}
@@ -45,11 +46,18 @@ public class UpdatedUser {
 		this.setEmail(provider.getEmail());
 		this.setName(provider.getName());
 		this.setSurname(provider.getSurname());
-		this.setPicture(provider.getPicture());
+		this.setPicture(ImageManager.loadAsDataURI(provider.getPicture()));
 		this.setResidency(provider.getResidency());
 		this.setPhoneNumber(provider.getPhoneNumber());
 		this.setDescription(provider.getDescription());
 		this.setProviderName(provider.getProviderName());
-		this.setPictures(provider.getPictures());
+		if (provider.getPictures() == null)
+			provider.setPictures(new ArrayList<>());
+		this.setPictures(
+			    provider.getPictures().stream()
+			        .map(ImageManager::loadAsDataURI)
+			        .filter(img -> img != null)
+			        .toList()
+			);
 	}
 }
