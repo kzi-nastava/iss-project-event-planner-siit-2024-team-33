@@ -41,5 +41,5 @@ public interface OfferRepository extends JpaRepository<Offer,Integer>{
     
 	@Query("SELECT o FROM Offer o WHERE o.id=(SELECT max(o2.id) FROM Offer o2 WHERE o2.offerID=:offerId)")
 	public Offer getLatestOfferVersion(@Param("offerId") Integer offerId);
-
+	
 }

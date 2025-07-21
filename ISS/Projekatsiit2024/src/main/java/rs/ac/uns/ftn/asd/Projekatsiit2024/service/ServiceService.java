@@ -8,7 +8,9 @@ import java.util.Optional;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,16 +126,17 @@ public class ServiceService {
 		if(s == null)
 			throw new EntityNotFoundException("Service with that id doesn't exist");
 		
-	    UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    Authentication up = SecurityContextHolder.getContext().getAuthentication();
 	    AuthentifiedUser user = null;
-	    if(up != null)
-	    	user = up.getUser();
-		
-		if(user.getId() != s.getProvider().getId() && (s.getIsDeleted() || s.getAvailability() == Availability.INVISIBLE))
-			throw new EntityNotFoundException("Service with that id doesn't exist");
-		
-		if(user.getId() != s.getProvider().getId() && !s.getCategory().getIsAccepted())
-			throw new EntityNotFoundException("Service with that id doesn't exist");
+	    if(up.getClass() != AnonymousAuthenticationToken.class) {
+	    	UserPrincipal pl = (UserPrincipal)up.getPrincipal();
+			user = pl.getUser();
+	    }
+	    
+	    if(s.getIsDeleted() || s.getAvailability() == Availability.INVISIBLE || !s.getCategory().getIsAccepted()) {
+	    	if(user != null && user.getId() != s.getProvider().getId())
+				throw new EntityNotFoundException("Service with that id doesn't exist");
+	    }
 			
 		return s;
 	}

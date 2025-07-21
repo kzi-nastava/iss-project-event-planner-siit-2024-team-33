@@ -117,7 +117,7 @@ public class WebSecurityConfig {
 		        
 		        //service
 		        .requestMatchers(HttpMethod.POST, "/api/services").authenticated()
-		        .requestMatchers(HttpMethod.GET, "/api/services/**").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
 		        .requestMatchers(HttpMethod.PUT, "/api/services/**").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").authenticated()
 		        
