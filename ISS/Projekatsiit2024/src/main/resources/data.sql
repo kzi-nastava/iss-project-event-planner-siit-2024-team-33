@@ -5,8 +5,8 @@ INSERT INTO Role (id, name) VALUES (3, 'PROVIDER_ROLE');
 
 -- Admin (no residency, phone number, provider name, or description)
 INSERT INTO authentified_user
-(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
-VALUES 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE)  
+VALUES
 ('admin@example.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Admin', 'User', 'milion.jpg', 
@@ -32,7 +32,7 @@ INSERT INTO authentified_user
 VALUES 
 ('provider@example.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
- 'Provider', 'Company', 'provider.jpg', 
+ 'Provider', 'Company', 'Untitled.png', 
  false, true, NULL, 
  3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 

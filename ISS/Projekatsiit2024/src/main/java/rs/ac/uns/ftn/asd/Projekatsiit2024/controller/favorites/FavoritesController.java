@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.MinimalOfferDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
@@ -40,7 +41,7 @@ public class FavoritesController {
 	
 	
 	@GetMapping(value = "/events/{eventId}/exists", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> isFavorite(
+	public ResponseEntity<Boolean> isFavoriteEvent(
 	        @AuthenticationPrincipal UserPrincipal userPrincipal,
 	        @PathVariable Integer eventId) {
 
@@ -50,7 +51,7 @@ public class FavoritesController {
 	
 	
 	@PostMapping(value = "/events/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MinimalEventDTO> addFavorite(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+    public ResponseEntity<MinimalEventDTO> addFavoriteEvent(@AuthenticationPrincipal UserPrincipal userPrincipal, 
     		@PathVariable Integer eventId) throws EventValidationException {
         Event event = favoritesService.addFavoriteEvent(eventId, userPrincipal);
         return ResponseEntity.ok(new MinimalEventDTO(event));
@@ -58,13 +59,32 @@ public class FavoritesController {
 
 	
     @DeleteMapping(value = "/events/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MinimalEventDTO> removeFavorite(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+    public ResponseEntity<MinimalEventDTO> removeFavoriteEvent(@AuthenticationPrincipal UserPrincipal userPrincipal, 
     		@PathVariable Integer eventId) throws EventValidationException {
         Event event = favoritesService.removeFavoriteEvent(eventId, userPrincipal);
         return ResponseEntity.ok(new MinimalEventDTO(event));
     }
 	
-	
+    @GetMapping(value = "/offers/{offerId}")
+	public ResponseEntity<Boolean> isFavoriteOffer(
+	        @AuthenticationPrincipal UserPrincipal userPrincipal,
+	        @PathVariable Integer offerId){
+		return new ResponseEntity<Boolean>(favoritesService.isOfferFavorited(userPrincipal, offerId), HttpStatus.OK);
+	}
+    
+    @PostMapping(value = "/offers/{offerId}")
+	public ResponseEntity<MinimalOfferDTO> addFavoriteOffer(
+	        @AuthenticationPrincipal UserPrincipal userPrincipal,
+	        @PathVariable Integer offerId){
+		return new ResponseEntity<MinimalOfferDTO>(new MinimalOfferDTO(favoritesService.addFavoriteOffer(userPrincipal, offerId)), HttpStatus.OK);
+	}
+    
+    @DeleteMapping(value = "/offers/{offerId}")
+	public ResponseEntity<MinimalOfferDTO> removeFavoriteOffer(
+	        @AuthenticationPrincipal UserPrincipal userPrincipal,
+	        @PathVariable Integer offerId){
+		return new ResponseEntity<MinimalOfferDTO>(new MinimalOfferDTO(favoritesService.removeFavoriteOffer(userPrincipal, offerId)), HttpStatus.OK);
+	}
 	
 	
 	

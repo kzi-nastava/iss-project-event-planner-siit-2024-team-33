@@ -28,6 +28,7 @@ public class GetServiceDTO {
 	public int minLengthInMins;
 	public int maxLengthInMins;
 
+	public int providerId;
 	public String providerName;
 	public String providerEmail;
 	
@@ -43,7 +44,7 @@ public class GetServiceDTO {
 		this.validEventCategories = s.getValidEvents().stream().map(eventType -> new MinimalEventTypeDTO(eventType)).toList();
 		this.avgRating = null;
 		//If it is available, it's visible
-		this.isVisible = s.getAvailability() == Availability.AVAILABLE;
+		this.isVisible = !s.getIsDeleted();
 		this.isAvailable = s.getAvailability() == Availability.AVAILABLE || s.getAvailability() == Availability.INVISIBLE;
 		
 		this.category = new MinimalOfferCategoryDTO(s.getCategory());
@@ -53,6 +54,7 @@ public class GetServiceDTO {
 		this.minLengthInMins = s.getMinLengthInMins();
 		this.maxLengthInMins = s.getMaxLengthInMins();
 		
+		this.providerId = s.getProvider().getId();
 		this.providerEmail = s.getProvider().getEmail();
 		this.providerName = s.getProvider().getName();
 	}

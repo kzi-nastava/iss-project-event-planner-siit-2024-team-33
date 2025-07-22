@@ -3,17 +3,23 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.service.favorites;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
@@ -26,6 +32,8 @@ public class FavoritesService {
 	@Autowired
 	EventRepository eventRepository;
 
+	@Autowired
+	OfferRepository offerRepository;
 	
 	
 	public Page<MinimalEventDTO> getFavoriteEvents(UserPrincipal userPrincipal, Pageable pageable) {
@@ -140,5 +148,64 @@ public class FavoritesService {
     	}
 		
 		return true;
+	}
+	
+	public boolean isOfferFavorited(UserPrincipal user, int offerId) {
+		Offer o = offerRepository.getLatestOfferVersion(offerId);
+		if(o == null)
+			throw new EntityNotFoundException();
+		
+		if(user == null)
+			throw new AuthenticationCredentialsNotFoundException("");
+		
+		AuthentifiedUser au = userRepository.findByEmail(user.getUsername());
+		
+		return au.getFavoriteOffers().contains(o);
+	}
+	
+	public Offer addFavoriteOffer(UserPrincipal user, int offerId) {
+		Offer o = offerRepository.getLatestOfferVersion(offerId);
+		if(o == null)
+			throw new EntityNotFoundException();
+		
+		if(user == null)
+			throw new AuthenticationCredentialsNotFoundException("");
+		
+		AuthentifiedUser au = userRepository.findByEmail(user.getUsername());
+		
+		if(au.getFavoriteOffers().contains(o))
+			throw new DataIntegrityViolationException("");
+		
+		if(o.getAvailability() == Availability.UNAVAILABLE || o.getAvailability() == Availability.INVISIBLE)
+			throw new EntityNotFoundException();
+		
+		au.getFavoriteOffers().add(o);
+		
+		userRepository.save(au);
+		
+		return o;
+	}
+	
+	public Offer removeFavoriteOffer(UserPrincipal user, int offerId) {
+		Offer o = offerRepository.getLatestOfferVersion(offerId);
+		if(o == null)
+			throw new EntityNotFoundException();
+		
+		if(user == null)
+			throw new AuthenticationCredentialsNotFoundException("");
+		
+		AuthentifiedUser au = userRepository.findByEmail(user.getUsername());
+		
+		if(!au.getFavoriteOffers().contains(o))
+			throw new EntityNotFoundException();
+		
+		if(o.getAvailability() == Availability.UNAVAILABLE || o.getAvailability() == Availability.INVISIBLE)
+			throw new EntityNotFoundException();
+		
+		au.getFavoriteOffers().remove(o);
+		
+		userRepository.save(au);
+		
+		return o;
 	}
 }
