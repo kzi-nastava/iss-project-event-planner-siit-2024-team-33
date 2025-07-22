@@ -21,6 +21,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
@@ -75,9 +76,18 @@ public class OfferService {
         List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
         
         List<Offer> offers = offerRepo.findAll();
-        //String city = user.getCity();
+        
+        String residencyTemp = null;
+	    if (user instanceof Organizer organizer) {
+	        residencyTemp = organizer.getResidency();
+	    } else if (user instanceof Provider provider) {
+	        residencyTemp = provider.getResidency();
+	    }
+
+	    final String residency = residencyTemp;
+	    
         List<Offer> filteredOffers = offers.stream()
-        		//.filter(offer -> offer.getCity() != null && city.equalsIgnoreCase(offer.getCity()))
+	            .filter(offer -> residency == null || residency.equalsIgnoreCase(offer.getCity()))
                 .filter(offer -> isOfferVisibleForUser(user, offer))
                 .sorted((o1, o2) -> Double.compare(o1.getDiscount(),o2.getDiscount()))
                 .limit(5)
@@ -173,11 +183,10 @@ public class OfferService {
     private boolean isOfferVisibleForUser(AuthentifiedUser user, Offer offer) {
         AuthentifiedUser provider = offer.getProvider();
         if (provider == null) {
-            return true; // Safety measures.
+            return true;
         }
 
-        //if logged in user is blocked, can't see.
-        return !user.getBlockedUsers().contains(provider);
+        return !provider.getBlockedUsers().contains(user);
     }
     
     public void editOfferPrice(Integer OfferId, double newPrice, double newDiscount) throws BadRequestException {
