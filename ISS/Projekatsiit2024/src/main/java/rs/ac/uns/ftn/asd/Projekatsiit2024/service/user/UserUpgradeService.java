@@ -151,8 +151,6 @@ public class UserUpgradeService {
 		Set<Event> favoriteEvents = userForUpgrade.getFavoriteEvents();
 		List<AuthentifiedUser> blockedUsers = userForUpgrade.getBlockedUsers();
 		
-		userRepository.delete(userForUpgrade); // marked for deletion
-
         Provider provider = new Provider();
         provider.setId(userForUpgrade.getId()); // reuse ID
         provider.setEmail(userForUpgrade.getEmail());
@@ -171,6 +169,12 @@ public class UserUpgradeService {
         provider.setFavoriteOffers(favoriteOffers);
         provider.setBlockedUsers(blockedUsers);
 
+        uuuRepository.delete(uuu);
+        uuuRepository.flush();
+
+        userRepository.delete(userForUpgrade);
+        userRepository.flush();
+        
         return providerRepository.save(provider); // save new version
 		
 	}
