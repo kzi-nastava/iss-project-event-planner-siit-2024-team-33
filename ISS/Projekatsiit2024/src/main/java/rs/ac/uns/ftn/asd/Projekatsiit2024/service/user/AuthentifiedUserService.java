@@ -1,12 +1,11 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
+
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
@@ -28,7 +27,6 @@ public class AuthentifiedUserService {
 	
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 	
-	@Transactional(propagation = Propagation.REQUIRED)
     public AuthentifiedUser createAuthentifiedUser(RegisterUser registerUser) throws AuthentifiedUserValidationException {
         
 		//is there a verified user or one which needs to verify the account

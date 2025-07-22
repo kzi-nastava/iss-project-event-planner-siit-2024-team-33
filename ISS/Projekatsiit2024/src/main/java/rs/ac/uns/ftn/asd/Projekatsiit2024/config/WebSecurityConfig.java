@@ -88,6 +88,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.PUT, "/api/users/update/profile").authenticated()
 		        .requestMatchers(HttpMethod.PUT, "/api/users/update/password").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/users/terminate/profile").authenticated()
+		        .requestMatchers(HttpMethod.POST, "/api/users/me/upgrade").hasAuthority("AUSER_ROLE")
 
 		        //event types
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()
@@ -113,7 +114,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
 		        
 		        //verify
-		        .requestMatchers(HttpMethod.POST, "/api/users/verify").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/verify").permitAll()
 		        
 		        //offer categories
 		        .requestMatchers("/api/offerCategories/**").authenticated()

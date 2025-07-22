@@ -25,6 +25,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisteredUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatePassword;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdatedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpgradeRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpgradeUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.InvalidPasswordException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.InvalidPasswordFormatException;
@@ -34,7 +36,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.UnverifiedUserUpgrade;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.UserService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.user.VerificationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.TokenUtils;
 
 
@@ -48,6 +52,9 @@ public class UserController {
 	@Autowired
 	private TokenUtils tokenUtils;
 	
+	@Autowired
+	private VerificationService verificationService;
+	
 	
 	@PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<RegisteredUser> createUser(@RequestBody RegisterUser registerUser) 
@@ -59,6 +66,17 @@ public class UserController {
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
 	}
+	
+	
+	@PostMapping(value = "/me/upgrade", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UpgradeRequest> upgradeUser(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+			@RequestBody UpgradeUser upgradeUser) {
+		
+		UnverifiedUserUpgrade uuu = verificationService.upgradeUser(userPrincipal, upgradeUser);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(new UpgradeRequest(uuu));
+	}
+	
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping(value = "/me",produces = MediaType.APPLICATION_JSON_VALUE)

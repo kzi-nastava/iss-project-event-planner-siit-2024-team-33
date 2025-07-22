@@ -23,6 +23,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationExce
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpgradeException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.verification.VerificationTokenException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ErrorMessages;
 
 @ControllerAdvice
@@ -116,6 +118,20 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(PdfGenerationException.class)
     public ResponseEntity<ErrorMessages> handleException(PdfGenerationException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessages(ex.getMessage()));
+    }
+	
+	
+	
+	//verification and upgrade
+	
+	@ExceptionHandler(VerificationTokenException.class)
+    public ResponseEntity<ErrorMessages> handleException(VerificationTokenException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
+    }
+	
+	@ExceptionHandler(UserUpgradeException.class)
+    public ResponseEntity<ErrorMessages> handleException(UserUpgradeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
     }
 	
     
