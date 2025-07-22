@@ -49,6 +49,9 @@ public class ProductService {
 		
 		if(reservationRepo.findByEventAndOffer(productId, eventId) != null)
 			throw new IllegalArgumentException("Reservation already exists");
+		//TODO
+//		if(!product.get().getValidEvents().contains(event.get().getEventType()))
+//			throw new IllegalArgumentException("Reservation already exists");
 		
 		product.get().setAvailability(Availability.UNAVAILABLE);
 		productRepo.save(product.get());
