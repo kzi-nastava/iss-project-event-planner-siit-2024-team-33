@@ -91,7 +91,7 @@ public class ProductController {
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(404).body(null);
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(null);
+			return ResponseEntity.status(409).body(null);
 		}
 	}
 	
