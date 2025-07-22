@@ -54,6 +54,6 @@ public class ChatController {
 	    Set<AuthentifiedUser> contacts = new HashSet<>();
 	    contacts.addAll(messageRepo.findRecipients(currentUser));
 	    contacts.addAll(messageRepo.findSenders(currentUser));
-		return contacts.stream().map( user -> new ChatContactDTO(user.getEmail(), user.getName(), currentUser.getBlockedUsers().contains(user))).toList();
+		return contacts.stream().map( user -> new ChatContactDTO(user.getEmail(), user.getName(), currentUser.getBlockedUsers().contains(user), user.getPicture())).toList();
 	}
 }

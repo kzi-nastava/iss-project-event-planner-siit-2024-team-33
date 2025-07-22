@@ -382,6 +382,7 @@ VALUES
 (5, 'Absolutely fantastic!', FALSE, FALSE, 1, 3),
 (2, 'Not worth the money.', FALSE, FALSE, 2, 2),
 (4, 'Pretty good but could be better.', TRUE, FALSE, 3, 3),
+(4, 'Pretty good but could be better.', TRUE, FALSE, 3, 4),
 (1, 'Terrible experience.', FALSE, FALSE, 1, 1),
 (5, 'Best deal I have ever found!', FALSE, FALSE, 2, 3);
 
