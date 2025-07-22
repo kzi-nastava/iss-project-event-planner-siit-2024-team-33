@@ -160,6 +160,20 @@ public class offerReservationService {
                 throw new ServiceBookingException("This offer's times collide with already existant offers of this event.","TIME_COLLISION_WITH_ANOTHER_OFFER_AT_SAME_EVENT");
             }
         }
+        
+        if (offer instanceof rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service service) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime reservationDeadline = event.getDateOfEvent().minusHours(service.getReservationInHours());
+
+            if (now.isAfter(reservationDeadline)) {
+                throw new ServiceBookingException(
+                    "You can no longer book this service. Reservations must be made at least "
+                    + service.getReservationInHours() + " hours before the event starts.",
+                    "TOO_LATE_FOR_RESERVATION"
+                );
+            }
+        }
+
 
         return createOfferReservation(event.getDateOfEvent().toLocalDate(),offer.getOfferID(),event.getId(),offerStartTime.toLocalTime(),offerEndTime.toLocalTime());
     }

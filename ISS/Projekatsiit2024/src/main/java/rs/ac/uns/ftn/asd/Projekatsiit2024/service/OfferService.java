@@ -133,7 +133,7 @@ public class OfferService {
 			
 			//Filter by name
 			if (name != null && !name.isEmpty()) {
-					offers.filter(offer -> offer.getName() != null && offer.getName().toLowerCase().contains(name.toLowerCase()));
+				offers=offers.filter(offer -> offer.getName() != null && offer.getName().toLowerCase().contains(name.toLowerCase()));
 			}
 			
 			//Filter by offer category
