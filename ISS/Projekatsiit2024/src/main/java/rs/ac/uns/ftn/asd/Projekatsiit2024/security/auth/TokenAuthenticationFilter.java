@@ -33,15 +33,17 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
 			throws IOException, ServletException {
 		String username;
-		
+		//Extracts from TokenUtils
 		String authToken = tokenUtils.getToken(request);
 		
 		
 		try {
 			if (authToken != null && !authToken.equals("")) {
+				//Gets username from token, decodes from the enconding we did
 				username = tokenUtils.getUsernameFromToken(authToken);
 				
 				if (username != null) {
+					//If exists
 					UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 					
 					//account check
@@ -50,7 +52,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 					    userDetails.isAccountNonExpired() || 
 					    userDetails.isCredentialsNonExpired()) {
 						if (tokenUtils.validateToken(authToken, userDetails)) {
-							
+							//User je sad autentifikovan preko UserDetailsa
 							TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
 							authentication.setToken(authToken);
 							SecurityContextHolder.getContext().setAuthentication(authentication);
