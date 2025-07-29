@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import ch.qos.logback.core.spi.ConfigurationEvent.EventType;
@@ -20,10 +23,12 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.BudgetOfferDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.GetBudgetDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.BudgetItem;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.BudgetItemRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
@@ -54,17 +59,21 @@ public class BudgetService {
 	}
 	
 	public BudgetItem createItem(Integer eventId, Integer categoryId, Double maxBudget) {
-		//TODO: User validation
 		BudgetItem bi = budgetItemRepo.findByEventAndCategory(eventId, categoryId);
 		if (bi != null)
 			throw new DataIntegrityViolationException("Budget item already exists");
 		if(maxBudget < 0)
 			throw new IllegalArgumentException("Budget can't be negative");
-		//TODO: USER VALIDATION AND MORE
 		
 		Optional<Event> e = eventRepo.findById(eventId);
 		if(e.isEmpty())
 			throw new EntityNotFoundException("Nonexistent event");
+		
+		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    if(up == null)
+	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
+	    if(e.get().getOrganizer().getId() != up.getUser().getId())
+	    	throw new AccessDeniedException("Wrong user");
 		
 		Optional<OfferCategory> oc = offerCategoryRepo.findById(categoryId);
 		if(oc.isEmpty())
@@ -80,7 +89,6 @@ public class BudgetService {
 	}
 	
 	public BudgetItem editItem(Integer eventId, Integer categoryId, Double maxBudget) {
-		//TODO: User validation
 		BudgetItem bi = budgetItemRepo.findByEventAndCategory(eventId, categoryId);
 		if (bi == null)
 			throw new EntityNotFoundException();
@@ -89,17 +97,27 @@ public class BudgetService {
 		if(maxBudget < getUsedBudget(bi))
 			throw new IllegalArgumentException("Budget can't be lower than the total spend money");
 		
+		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    if(up == null)
+	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
+	    if(bi.getEvent().getOrganizer().getId() != up.getUser().getId())
+	    	throw new AccessDeniedException("Wrong user");
+		
 		bi.setBudget(maxBudget);
 		bi = budgetItemRepo.saveAndFlush(bi);
 		return bi;
 	}
 	
 	public void deleteItem(Integer eventId, Integer categoryId) {
-		//TODO: User validation
-		
 		Optional<Event> e = eventRepo.findById(eventId);
 		if(e.isEmpty())
 			throw new EntityNotFoundException("Nonexistent event");
+		
+		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    if(up == null)
+	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
+	    if(e.get().getOrganizer().getId() != up.getUser().getId())
+	    	throw new AccessDeniedException("Wrong user");
 		
 		BudgetItem bi = budgetItemRepo.findByEventAndCategory(eventId, categoryId);
 		if(bi == null)
@@ -117,12 +135,17 @@ public class BudgetService {
 	}
 	
 	public GetBudgetDTO getBudget(Integer eventId){
-		//TODO: User validation
 		GetBudgetDTO budget = new GetBudgetDTO();
 		
 		Optional<Event> e = eventRepo.findById(eventId);
 		if(e.isEmpty())
 			throw new EntityNotFoundException("Nonexistent event");
+		
+		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    if(up == null)
+	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
+	    if(e.get().getOrganizer().getId() != up.getUser().getId())
+	    	throw new AccessDeniedException("Wrong user");
 		
 		Set<OfferCategory> recommendedCategories = 
 			    new HashSet<>(e.get().getEventType().getRecommendedCategories());

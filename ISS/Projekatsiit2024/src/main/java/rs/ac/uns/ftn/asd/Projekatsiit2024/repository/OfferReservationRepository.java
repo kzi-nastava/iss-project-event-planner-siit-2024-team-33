@@ -39,4 +39,6 @@ public interface OfferReservationRepository extends JpaRepository<OfferReservati
     
     List<OfferReservation> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 
+    List<OfferReservation> findAllByOffer_IdAndEvent_Organizer_Email(Integer offerId, String email);
+
 }

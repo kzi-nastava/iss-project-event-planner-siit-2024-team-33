@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -59,12 +60,9 @@ public class RatingController {
     
     @PostMapping
     public ResponseEntity<GetRatingDTO> submitRating(@RequestBody PostRatingDTO postRatingDTO,
-                                                     @RequestParam int offerId)  {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
-	
-		AuthentifiedUser user = userRepo.findByEmail(email);
+                                                     @RequestParam int offerId,
+                                                     @AuthenticationPrincipal UserPrincipal userPrincipal)  {
+		AuthentifiedUser user = userPrincipal.getUser();
 		
 		int userId = user.getId();
         Rating rating = ratingService.submitComment(postRatingDTO.getValue(), postRatingDTO.getComment(), userId, offerId);
@@ -73,12 +71,9 @@ public class RatingController {
     
     @PostMapping("/events")
     public ResponseEntity<EventRatingDTO> submitEventRating(@RequestBody EventRatingDTO postRatingDTO,
-                                                            @RequestParam int eventId)  {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails principal = (UserDetails) auth.getPrincipal();
-        String email = principal.getUsername();
-
-        AuthentifiedUser user = userRepo.findByEmail(email);
+                                                            @RequestParam int eventId,
+                                                            @AuthenticationPrincipal UserPrincipal userPrincipal)  {
+        AuthentifiedUser user = userPrincipal.getUser();
         int userId = user.getId();
 
         EventRating eventRating = ratingService.submitEventRating(

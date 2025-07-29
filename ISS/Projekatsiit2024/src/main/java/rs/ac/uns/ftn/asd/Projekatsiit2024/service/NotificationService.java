@@ -31,7 +31,7 @@ public class NotificationService {
     private NotificationRepository notifRepo;
     
     
-    public void createNotification(Integer receiverId, String content) {
+    public PostNotificationDTO createNotification(Integer receiverId, String content) {
         Optional<AuthentifiedUser> receiverOptional = userRepo.findById(receiverId);
 
         if (receiverOptional.isEmpty()) {
@@ -58,6 +58,7 @@ public class NotificationService {
                 "/queue/notifications",
                 not
             );
+        return not;
     }
     
     public List<Notification> getAllNotificationsForUser(Integer userId) {

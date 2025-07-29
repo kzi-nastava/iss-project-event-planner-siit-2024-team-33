@@ -30,7 +30,7 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, provider_name, description, DTYPE) 
 VALUES 
-('provider@example.com', 
+('mirkodjukic314@gmail.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Provider', 'Company', 'Untitled.png', 
  false, true, NULL, 
@@ -53,7 +53,7 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, DTYPE) 
 VALUES 
-('organizer2@example.com', 
+('mirkodjukic23@gmail.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Steve', 'Williams', 'organizer2.jpg', 
  false, true, NULL, 
@@ -64,7 +64,6 @@ VALUES
  -- Plain AuthentifiedUser (no subtype like Admin, Organizer, or Provider)
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
-VALUES 
 ('user@example.com',
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Basic', 'User', 'default.jpg',
@@ -72,7 +71,16 @@ VALUES
  1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'AuthentifiedUser');
 
-
+ INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, provider_name, description, DTYPE) 
+VALUES 
+('provider2@gmail.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Provider part 2', 'lethal company', 'Untitled.png', 
+ false, true, NULL, 
+ 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
+ 'Provider');
 
 INSERT INTO OFFER_CATEGORY (IS_ACCEPTED, IS_ENABLED, DESCRIPTION, NAME, OFFER_TYPE)
 VALUES
@@ -196,8 +204,8 @@ INSERT INTO EVENT (
 ) VALUES 
 -- Paris
 (
-    CAST('2025-07-23 01:35:00' AS TIMESTAMP),
-    CAST('2025-07-23 23:00:00' AS TIMESTAMP),
+    CAST('2025-08-01 01:35:00' AS TIMESTAMP),
+    CAST('2025-08-01 23:00:00' AS TIMESTAMP),
     FALSE,
     48.8566,
     2.3522,

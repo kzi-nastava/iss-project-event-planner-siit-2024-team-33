@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.GetInvitationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.SimpleInvitation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
@@ -38,12 +40,8 @@ public class InvitationController {
 	EventRepository eventRepo;
     
 	@PostMapping("/invitations")
-	public ResponseEntity<HttpStatus> createInvitations( @RequestBody PostInvitationDTO postInvitationDTO) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) auth.getPrincipal();
-		String email = userDetails.getUsername();
-		
-		AuthentifiedUser userInviter = userRepo.findByEmail(email);
+	public ResponseEntity<HttpStatus> createInvitations( @RequestBody PostInvitationDTO postInvitationDTO, @AuthenticationPrincipal UserPrincipal userPrincipal) {		
+		AuthentifiedUser userInviter = userPrincipal.getUser();
 
         try {
             invitationService.createInvitations(
@@ -61,10 +59,10 @@ public class InvitationController {
 	
 	@PatchMapping("/invitations/{id}")
 	public ResponseEntity<Void> updateInvitationStatus(@PathVariable Integer id,
-	                                                   @RequestBody Map<String, String> body) {
+	                                                   @RequestBody Map<String, String> body,
+	                                                   @AuthenticationPrincipal UserPrincipal userPrincipal) {
 	    String status = body.get("status");
-	    String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-	    AuthentifiedUser user = userRepo.findByEmail(email);
+	    AuthentifiedUser user = userPrincipal.getUser();
 
 	    try {
 	        switch (status.toUpperCase()) {
@@ -81,12 +79,8 @@ public class InvitationController {
 	}
 
     @GetMapping("/invitations/pending")
-	public ResponseEntity<List<SimpleInvitation>> getMyPendingInvitations() {
-	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	    UserDetails userDetails = (UserDetails) auth.getPrincipal();
-	    String email = userDetails.getUsername();
-
-	    AuthentifiedUser user = userRepo.findByEmail(email);
+	public ResponseEntity<List<SimpleInvitation>> getMyPendingInvitations(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+	    AuthentifiedUser user = userPrincipal.getUser();
 
 	    List<Invitation> invitations = invitationService.getInvitationForUser(user);
 	    List<SimpleInvitation> simpleDTOs = invitations.stream()
@@ -98,7 +92,7 @@ public class InvitationController {
 
 
     @GetMapping("/{eventId}/invitations")
-    public ResponseEntity<List<GetInvitationDTO>> getInvitationsForEvent(@PathVariable Integer eventID) {
+    public ResponseEntity<List<GetInvitationDTO>> getInvitationsForEvent(@PathVariable Integer eventID, @AuthenticationPrincipal UserPrincipal userPrincipal) {
         if (eventID == null || eventID <= 0) {
             return ResponseEntity.status(403).build();
         }

@@ -85,6 +85,8 @@ public class ServiceController {
 			return ResponseEntity.status(401).body(null);
 		} catch (AccessDeniedException e) {
 			return ResponseEntity.status(403).body(null);
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(404).body(null);
 		}
 	}
 	
@@ -99,6 +101,8 @@ public class ServiceController {
 			return ResponseEntity.status(401).body(null);
 		} catch (AccessDeniedException e) {
 			return ResponseEntity.status(403).body(null);
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(404).body(null);
 		}
 	}
 }

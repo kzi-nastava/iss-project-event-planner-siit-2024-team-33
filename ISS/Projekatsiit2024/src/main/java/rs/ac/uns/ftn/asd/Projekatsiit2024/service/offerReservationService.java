@@ -186,7 +186,7 @@ public class offerReservationService {
         rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service service = (rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service) reservation.getOffer();
 //        long timeUntilCancellation = reservation.getDateOfReservation().minus(LocalDate.now());
         long timeUntilCancellation = ChronoUnit.MILLIS.between(LocalDate.now().atStartOfDay(), reservation.getDateOfReservation().atStartOfDay());
-        long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000;
+        long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000 * 10;
 
         if (timeUntilCancellation < cancellationDeadline) {
             throw new IllegalArgumentException("Cannot cancel the service less than " + service.getCancellationInHours() + " hours before the reservation.");
@@ -225,6 +225,11 @@ public class offerReservationService {
 
 	    return offerReservationRepo.save(reservation);
 	}
+	
+	public List<OfferReservation> getReservationsForServiceByOrganizer(Integer serviceID, String organizerEmail) {
+	    return offerReservationRepo.findAllByOffer_IdAndEvent_Organizer_Email(serviceID, organizerEmail);
+	}
+
 
 	private Event getEventByID(Integer id) {
 		Optional<Event> optEvent = eventRepo.findById(id);

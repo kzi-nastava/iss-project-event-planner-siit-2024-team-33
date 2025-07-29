@@ -78,6 +78,8 @@ public class PriceController {
 					.map(o -> new PriceItemDTO(o)).toList());
 		} catch (BadRequestException e) {
 			return ResponseEntity.status(400).body(null);
+		} catch (AccessDeniedException e) {
+			return ResponseEntity.status(403).body(null);
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(404).body(null);
 		}
