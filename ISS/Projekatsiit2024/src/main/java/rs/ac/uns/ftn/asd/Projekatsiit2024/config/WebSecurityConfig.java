@@ -116,7 +116,7 @@ public class WebSecurityConfig {
 		        //events
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.POST, "/api/events/*/join").authenticated()
-		        .requestMatchers(HttpMethod.GET, "/api/events/*").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/details").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/statistics").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
@@ -155,7 +155,7 @@ public class WebSecurityConfig {
 	            .requestMatchers(HttpMethod.GET, "/api/services/*/reservations/*").authenticated()
 	            
 		        //service
-		        .requestMatchers("/api/services/*/reservations/**").permitAll()
+//		        .requestMatchers("/api/services/*/reservations/**").permitAll()
 		        .requestMatchers(HttpMethod.POST, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
 		        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
 		        .requestMatchers(HttpMethod.PUT, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")

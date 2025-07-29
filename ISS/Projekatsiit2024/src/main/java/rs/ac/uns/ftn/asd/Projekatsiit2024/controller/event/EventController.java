@@ -155,14 +155,12 @@ public class EventController {
     
 
     @GetMapping(value = "/paginated", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<MinimalEventDTO>> getPaginatedEvents(
+    public ResponseEntity<Page<MinimalEventDTO>> getPaginatedEvents(@AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails principal = (UserDetails) auth.getPrincipal();
-        String email = principal.getUsername();
-        AuthentifiedUser user = userRepo.findByEmail(email);
+    	AuthentifiedUser user = userPrincipal.getUser();
+
         int userId = user.getId();
 
         Page<Event> eventsPage = eventService.getRestEventsPaginated(userId, page, size);
@@ -174,7 +172,7 @@ public class EventController {
     
 
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<MinimalEventDTO>> getEventList(
+    public ResponseEntity<Page<MinimalEventDTO>> getEventList(@AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "location", required = false) String location,
             @RequestParam(name = "numOfAttendees", required = false) Integer numOfAttendees,

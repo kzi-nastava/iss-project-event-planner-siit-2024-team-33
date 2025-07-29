@@ -36,11 +36,8 @@ public class ReportController {
     @Autowired
     private ReportRepository reportRepo;
     @PostMapping
-    public ResponseEntity<GetReportDTO> submitReport(@RequestBody PostReportDTO postReportDTO) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails principal = (UserDetails) auth.getPrincipal();
-        String email = principal.getUsername();
-        AuthentifiedUser user = userRepo.findByEmail(email);
+    public ResponseEntity<GetReportDTO> submitReport(@RequestBody PostReportDTO postReportDTO, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        AuthentifiedUser user = userPrincipal.getUser();
         int userId = user.getId();
 
         Report report = reportService.createReport(

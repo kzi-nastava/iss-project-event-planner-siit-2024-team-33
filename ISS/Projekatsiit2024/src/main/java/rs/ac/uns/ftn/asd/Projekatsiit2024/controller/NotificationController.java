@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.GetNotificationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PostNotificationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PutNotificationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Notification;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.NotificationService;
@@ -45,12 +47,8 @@ public class NotificationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetNotificationDTO>> getNotifications() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails principal = (UserDetails) auth.getPrincipal();
-		String email = principal.getUsername();
-	
-		AuthentifiedUser user = userRepo.findByEmail(email);
+    public ResponseEntity<List<GetNotificationDTO>> getNotifications(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		AuthentifiedUser user = userPrincipal.getUser();
 		
 		int receiverId = user.getId();
         
