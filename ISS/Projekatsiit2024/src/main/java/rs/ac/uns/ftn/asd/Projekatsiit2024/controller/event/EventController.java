@@ -1,7 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.event;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreatedEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.DetailedEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.JoinedEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventStatistics.EventArrayStats;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventActivityValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventUserValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
@@ -104,6 +104,16 @@ public class EventController {
 		            .header("Content-Disposition", "attachment; filename=event-details.pdf")
 		            .contentType(MediaType.APPLICATION_PDF)
 		            .body(pdfBytes);
+	}
+	
+	
+	@GetMapping(value = "/{eventId}/statistics", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EventArrayStats> getEventStatistics(@AuthenticationPrincipal UserPrincipal userPrincipal, 
+			@PathVariable Integer eventId) {
+		
+		EventArrayStats eventArrayStats = reportPDFService.getEventStats(userPrincipal, eventId);
+		
+		return ResponseEntity.ok(eventArrayStats);
 	}
 	
 	

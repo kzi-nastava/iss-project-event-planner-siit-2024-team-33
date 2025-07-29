@@ -102,6 +102,9 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.PUT, "/api/users/update/password").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/users/terminate/profile").authenticated()
 		        .requestMatchers(HttpMethod.POST, "/api/users/me/upgrade").hasAuthority("AUSER_ROLE")
+		        
+		        //verification
+		        .requestMatchers(HttpMethod.GET, "/api/users/verification").permitAll()
 
 		        //event types
 		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
@@ -120,15 +123,13 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/details").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/statistics").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/*/statistics").authenticated()
 		        
 		        //favorites
 		        .requestMatchers(HttpMethod.GET, "/api/favorites/events").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/favorites/events/*/exists").permitAll()
 		        .requestMatchers(HttpMethod.POST, "/api/favorites/events/*").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
-		        
-		        //verify
-		        .requestMatchers(HttpMethod.GET, "/api/verify").permitAll()
 		        
 		        //offer categories
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
