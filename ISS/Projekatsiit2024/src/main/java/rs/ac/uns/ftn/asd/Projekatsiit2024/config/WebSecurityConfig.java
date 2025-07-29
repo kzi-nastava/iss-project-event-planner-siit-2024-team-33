@@ -136,6 +136,12 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/offers/mine/**").authenticated()
 		        .requestMatchers("/api/offers/**").permitAll()
 
+	            //OfferReservation
+	            .requestMatchers(HttpMethod.POST, "/api/services/*/reservations").hasAnyAuthority("ORGANIZER_ROLE")
+	            .requestMatchers(HttpMethod.DELETE, "/api/services/*/reservations/*").hasAnyAuthority("ORGANIZER_ROLE")
+	            .requestMatchers(HttpMethod.PUT, "/api/services/*/reservations/*").hasAnyAuthority("ORGANIZER_ROLE")
+	            .requestMatchers(HttpMethod.GET, "/api/services/*/reservations/*").authenticated()
+	            
 		        //service
 		        .requestMatchers(HttpMethod.POST, "/api/services").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
@@ -143,7 +149,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").authenticated()
 		        
 		        //Invitations
-		        .requestMatchers(HttpMethod.POST, "/api/events/invitations").hasAuthority("ORGANIZER_ROLE")
+		        .requestMatchers(HttpMethod.POST, "/api/events/invitations").hasAnyAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.PATCH, "/api/events/invitations/**").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events/invitations/pending").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/invitations/**").authenticated()
@@ -153,15 +159,11 @@ public class WebSecurityConfig {
 		        
 		        //Reports
 	            .requestMatchers(HttpMethod.POST, "/api/reports").authenticated()
-	            .requestMatchers(HttpMethod.POST, "/api/reports/suspend/**").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.POST, "/api/reports/suspend/**").hasAnyAuthority("ADMIN_ROLE")
 	            .requestMatchers(HttpMethod.GET, "/api/reports/suspension-time/**").authenticated()
-	            .requestMatchers(HttpMethod.GET, "/api/reports/**").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.GET, "/api/reports/**").hasAnyAuthority("ADMIN_ROLE")
 		        
-	            //OfferReservation
-                .requestMatchers(HttpMethod.POST, "/api/services/**/reservations").hasRole("ORGANIZER")
-                .requestMatchers(HttpMethod.DELETE, "/api/services/**/reservations/**").hasRole("ORGANIZER")
-                .requestMatchers(HttpMethod.PUT, "/api/services/**/reservations/**").hasRole("ORGANIZER")
-                .requestMatchers(HttpMethod.GET, "/api/services/**/reservations/**").authenticated()
+
 
 		        .requestMatchers("/api/images/**").permitAll()
 		        .requestMatchers("/api/providers/**").permitAll()
@@ -183,7 +185,6 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/products/**").permitAll()
 		        .requestMatchers("/api/ratings/**").permitAll()
 		        .requestMatchers("/api/services/**").permitAll()
-		        .requestMatchers("/api/services/*/reservations/**").permitAll()
 		        .anyRequest().permitAll();
         });
         http.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService()), UsernamePasswordAuthenticationFilter.class);

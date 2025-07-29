@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.mail.internet.ParseException;
@@ -9,8 +10,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.GetServiceReser
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.CreatedServiceReservationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.PostServiceReservationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
@@ -116,6 +119,19 @@ public class ServiceReservationController {
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(409).body(null);
         }
+    }
+    
+    @GetMapping("/my-reservations")
+    public ResponseEntity<List<GetServiceReservationDTO>> getMyReservationsForService( @PathVariable Integer serviceID,@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    	AuthentifiedUser user = userPrincipal.getUser();
+
+        List<OfferReservation> reservations = oRS.getReservationsForServiceByOrganizer(serviceID, user.getEmail());
+        
+        List<GetServiceReservationDTO> dtos = reservations.stream()
+                .map(GetServiceReservationDTO::new)
+                .toList();
+
+        return ResponseEntity.ok(dtos);
     }
     
     @DeleteMapping("/{reservationId}")
