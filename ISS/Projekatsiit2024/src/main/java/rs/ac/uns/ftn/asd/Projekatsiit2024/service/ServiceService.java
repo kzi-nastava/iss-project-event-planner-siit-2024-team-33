@@ -260,17 +260,9 @@ public class ServiceService {
 		Integer maxLengthInMins,
 		List<Integer> validEventIDs
 		) throws AuthenticationCredentialsNotFoundException, AccessDeniedException {
-		validateArguments(name, description, price, discount, picturesDataURI, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins, validEventIDs);
-
-		List<EventType> validEvents = eventTypeRepo.findAllById(validEventIDs);
-	    //In case some of the event types don't exist
-	    if(validEvents.size() < validEventIDs.size())
-	    	throw new IllegalArgumentException("Inavlid argument, no event type with that ID exists");
-	    //In case some of the event types are disabled
-	    if(validEvents.stream().anyMatch(eventType -> !eventType.getIsActive()))
-	    	throw new IllegalArgumentException("Inavlid argument, no event type with that ID exists");
-	    
-	    Service s = serviceRepo.getLatestServiceVersion(offerId);
+		Service s = serviceRepo.getLatestServiceVersion(offerId);
+		if(s == null)
+	    	throw new EntityNotFoundException("Inavlid argument, no event type with that ID exists");
 	    
 	    UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	    if(up == null)
@@ -278,6 +270,17 @@ public class ServiceService {
 	    Provider provider = providerRepo.findById(up.getUser().getId()).orElseThrow();
 	    if(s.getProvider().getId() != provider.getId())
 	    	throw new AccessDeniedException("");
+		
+		validateArguments(name, description, price, discount, picturesDataURI, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins, validEventIDs);
+
+		
+		List<EventType> validEvents = eventTypeRepo.findAllById(validEventIDs);
+	    //In case some of the event types don't exist
+	    if(validEvents.size() < validEventIDs.size())
+	    	throw new IllegalArgumentException("Inavlid argument, no event type with that ID exists");
+	    //In case some of the event types are disabled
+	    if(validEvents.stream().anyMatch(eventType -> !eventType.getIsActive()))
+	    	throw new IllegalArgumentException("Inavlid argument, no event type with that ID exists");
 	    	
 	    List<String> imagePaths = picturesDataURI.stream().map(imageData -> ImageManager.saveAsFile(imageData)).toList();
 	    
@@ -286,11 +289,6 @@ public class ServiceService {
 		
 		return newService;
 	}
-	
-	public Boolean checkIfServiceExists(Integer id) {
-		return serviceRepo.findById(id).isPresent();
-	}
-	
 	
 	
 	public void deleteService(Integer offerId) throws SQLIntegrityConstraintViolationException, AuthenticationCredentialsNotFoundException, AccessDeniedException {
@@ -313,4 +311,9 @@ public class ServiceService {
 	    serviceRepo.saveAll(services);
 	    serviceRepo.flush();
 	}
+	
+	public Boolean checkIfServiceExists(Integer id) {
+		return serviceRepo.findById(id).isPresent();
+	}
+	
 }
