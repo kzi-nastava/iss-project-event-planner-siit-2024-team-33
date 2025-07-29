@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +39,10 @@ public class BudgetController {
 			return ResponseEntity.status(404).body(e.toString());
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(e.toString());
+		} catch (AuthenticationCredentialsNotFoundException e) {
+			return ResponseEntity.status(401).body(null);
+		} catch (AccessDeniedException e) {
+			return ResponseEntity.status(403).body(null);
 		}
 	}
 	
@@ -51,6 +57,10 @@ public class BudgetController {
 			return ResponseEntity.status(404).body(e.toString());
 		} catch (DataIntegrityViolationException e) {
 			return ResponseEntity.status(409).body(e.toString());
+		} catch (AuthenticationCredentialsNotFoundException e) {
+			return ResponseEntity.status(401).body(null);
+		} catch (AccessDeniedException e) {
+			return ResponseEntity.status(403).body(null);
 		}
 	}
 	
@@ -63,6 +73,10 @@ public class BudgetController {
 			return ResponseEntity.badRequest().body(e.toString());
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(404).body(e.toString());
+		} catch (AuthenticationCredentialsNotFoundException e) {
+			return ResponseEntity.status(401).body(null);
+		} catch (AccessDeniedException e) {
+			return ResponseEntity.status(403).body(null);
 		}
 	}
 	
@@ -77,6 +91,10 @@ public class BudgetController {
 			return ResponseEntity.status(404).body(e.toString());
 		} catch (DataIntegrityViolationException e) {
 			return ResponseEntity.status(409).body(e.toString());
+		} catch (AuthenticationCredentialsNotFoundException e) {
+			return ResponseEntity.status(401).body(null);
+		} catch (AccessDeniedException e) {
+			return ResponseEntity.status(403).body(null);
 		}
 	}
 }

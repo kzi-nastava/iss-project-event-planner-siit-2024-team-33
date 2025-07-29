@@ -31,6 +31,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -189,14 +190,14 @@ public class OfferService {
         return !provider.getBlockedUsers().contains(user);
     }
     
-    public void editOfferPrice(Integer OfferId, double newPrice, double newDiscount) throws BadRequestException {
+    public void editOfferPrice(Integer OfferId, double newPrice, double newDiscount) throws BadRequestException, AccessDeniedException {
     	Offer o = offerRepo.getLatestOfferVersion(OfferId);
     	if (o == null)
     		throw new EntityNotFoundException();
     	
     	UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	if (up.getUser().getEmail() != o.getProvider().getEmail())
-    		throw new BadRequestException();
+    		throw new AccessDeniedException("");
     	
     	if (newPrice == o.getPrice() && newDiscount == o.getDiscount())
     		return;

@@ -38,9 +38,6 @@ public class OfferCategoryController {
 			@RequestParam(name = "isEnabled", required = false) Boolean isEnabled,
 			@AuthenticationPrincipal UserPrincipal userPrincipal
 			) {
-		if(!userPrincipal.getUser().getRole().getName().equals("ADMIN_ROLE"))
-			return ResponseEntity.status(404).body(null);
-		
 		List<OfferCategory> ocs = offerCategoryService.getOffers(isAccepted, isEnabled);
 		List<MinimalOfferCategoryDTO> miniOcs = ocs.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
 		return ResponseEntity.ok(miniOcs);
@@ -66,9 +63,6 @@ public class OfferCategoryController {
 	public ResponseEntity createNewCategory(@RequestBody PostOfferCategoryDTO data,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		try {
-			if(!userPrincipal.getUser().getRole().getName().equals("ADMIN_ROLE"))
-				return ResponseEntity.status(404).body(null);
-			
 			OfferCategory oc = offerCategoryService.createAndFlush(data.name, data.description);
 			return ResponseEntity.status(201).body(new MinimalOfferCategoryDTO(oc));
 		} catch (IllegalArgumentException e) {
@@ -80,9 +74,6 @@ public class OfferCategoryController {
 	public ResponseEntity editExistingCategory(@PathVariable Integer id, @RequestBody PutOfferCategoryDTO data,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		try {
-			if(!userPrincipal.getUser().getRole().getName().equals("ADMIN_ROLE"))
-				return ResponseEntity.status(404).body(null);
-			
 			offerCategoryService.editCategory(id, data.name, data.description, data.isEnabled);
 			return ResponseEntity.noContent().build();
 		} catch (IllegalArgumentException e) {
@@ -94,9 +85,6 @@ public class OfferCategoryController {
 	public ResponseEntity handleCategorySuggestion(@PathVariable Integer id, @RequestBody HandleSuggestionDTO data,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		try {
-			if(!userPrincipal.getUser().getRole().getName().equals("ADMIN_ROLE"))
-				return ResponseEntity.status(404).body(null);
-			
 			OfferCategory oc;
 			if(data.isAccepted)
 				oc = offerCategoryService.acceptSuggestion(id, data.name, data.description);
@@ -112,9 +100,6 @@ public class OfferCategoryController {
 	public ResponseEntity deleteCategory(@PathVariable Integer id,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		try {
-			if(!userPrincipal.getUser().getRole().getName().equals("ADMIN_ROLE"))
-				return ResponseEntity.status(404).body(null);
-			
 			offerCategoryService.deleteCategory(id);
 			return ResponseEntity.noContent().build();
 		} catch (IllegalArgumentException e) {

@@ -91,13 +91,14 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.POST, "/api/users/me/upgrade").hasAuthority("AUSER_ROLE")
 
 		        //event types
-		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()
-		        .requestMatchers(HttpMethod.GET, "api/eventTypes").hasAuthority("ADMIN_ROLE")
-		        .requestMatchers(HttpMethod.POST, "/api/eventTypes").hasAuthority("ADMIN_ROLE")
-		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/activation").hasAuthority("ADMIN_ROLE")
 		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/deactivation").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()
 		        .requestMatchers(HttpMethod.GET, "api/eventTypes/exists").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "api/eventTypes").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.POST, "/api/eventTypes").hasAuthority("ADMIN_ROLE")
 		        
 		        //events
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
@@ -117,11 +118,9 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.GET, "/api/verify").permitAll()
 		        
 		        //offer categories
-		        .requestMatchers("/api/offerCategories/**").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
-		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
+		        .requestMatchers("/api/offerCategories/**").hasAnyAuthority("ADMIN_ROLE")
 		        
-		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
 		        
 		        //Reviews
 		        .requestMatchers(HttpMethod.GET, "/api/ratings/**").permitAll() // anyone can read ratings
@@ -136,12 +135,23 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/offers/mine/**").authenticated()
 		        
 		        //service
-		        .requestMatchers(HttpMethod.POST, "/api/services").authenticated()
+		        .requestMatchers("/api/services/*/reservations/**").permitAll()
+		        .requestMatchers(HttpMethod.POST, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
 		        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
-		        .requestMatchers(HttpMethod.PUT, "/api/services/**").authenticated()
-		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").authenticated()
+		        .requestMatchers(HttpMethod.PUT, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
 		        
+		        //product
+		        .requestMatchers(HttpMethod.GET, "/api/products/*/reservations/**").hasAnyAuthority("ORGANIZER_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+
+		        //Budget
+		        .requestMatchers("/api/events/*/budget/**").hasAnyAuthority("ORGANIZER_ROLE")
+
+		        //Prices
+		        .requestMatchers("/api/offers/mine/prices/**").hasAnyAuthority("PROVIDER_ROLE")
 		        
+		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
 		        .requestMatchers("/api/events/invitations/pending").authenticated()
 		        .requestMatchers("/api/events/top5/authentified").authenticated()
 		        .requestMatchers("/api/events/filter/authentified").authenticated()
@@ -153,7 +163,6 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/users/update/password").authenticated()
 		        .requestMatchers("/api/users/terminate/profile").authenticated()
 		        .requestMatchers("/h2-console/**").permitAll()
-		        .requestMatchers("/api/events/*/budget/**").permitAll()
 		        .requestMatchers("/api/chat/*/**").permitAll()
 		        .requestMatchers("/api/offers/*/**").permitAll()
 		        .requestMatchers("/api/events/**").permitAll()
@@ -163,12 +172,9 @@ public class WebSecurityConfig {
 		        .requestMatchers("/api/notifications/**").permitAll()
 		        .requestMatchers("/api/offerCategories/**").permitAll()
 		        .requestMatchers("/api/offers/**").permitAll()
-		        .requestMatchers("/api/user/*/offer-prices/**").permitAll()
 		        .requestMatchers("/api/products/**").permitAll()
 		        .requestMatchers("/api/ratings/**").permitAll()
 		        .requestMatchers("/api/reports/**").permitAll()
-		        .requestMatchers("/api/services/**").permitAll()
-		        .requestMatchers("/api/services/*/reservations/**").permitAll()
 		        .requestMatchers("/api/events/filter/unauthentified").permitAll()
 		        .requestMatchers("/api/events/filter/authentified").authenticated()
 		        .requestMatchers("/api/events/filter/unauthentified").permitAll()
