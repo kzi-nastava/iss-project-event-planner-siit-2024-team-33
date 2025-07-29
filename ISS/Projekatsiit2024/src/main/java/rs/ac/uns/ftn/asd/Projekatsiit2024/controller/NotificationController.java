@@ -32,12 +32,15 @@ public class NotificationController {
     AuthentifiedUserRepository userRepo;
     
     @PostMapping
-    public ResponseEntity<String> sendNotification(@RequestBody PostNotificationDTO postNotificationDTO) {
+    public ResponseEntity<PostNotificationDTO> sendNotification(@RequestBody PostNotificationDTO postNotificationDTO) {
         try {
-            notificationService.createNotification(postNotificationDTO.getReceiverId(), postNotificationDTO.getContent());
-            return ResponseEntity.ok("");
+            PostNotificationDTO createdNotification = notificationService.createNotification(
+                postNotificationDTO.getReceiverId(), 
+                postNotificationDTO.getContent()
+            );
+            return ResponseEntity.ok(createdNotification);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().build();
         }
     }
 

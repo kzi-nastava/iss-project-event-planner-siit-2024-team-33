@@ -58,52 +58,17 @@ public class OfferController {
 	@Autowired
 	private AuthentifiedUserRepository userRepo;
 	
-	@GetMapping(value = "/top5/authentified", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> GetTop5Offers() {
-	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	@GetMapping(value = "/top5", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<MinimalOfferDTO>> getTop5Offers(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+	    Integer userId = (userPrincipal != null) ? userPrincipal.getUser().getId() : null;
 
-	    if (auth == null || !auth.isAuthenticated()) {
-	        // Not authenticated at all
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
-	    }
+	    List<Offer> offers = (userId != null) ? offerService.getTop5Offers(userId) : offerService.getTop5OffersUnauthorized();
 
-	    Object principal = auth.getPrincipal();
+	    List<MinimalOfferDTO> offerDTOs = offers.stream()
+	        .map(MinimalOfferDTO::new)
+	        .toList();
 
-	    if (!(principal instanceof UserDetails)) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user principal");
-	    }
-
-	    UserDetails userDetails = (UserDetails) principal;
-	    String email = userDetails.getUsername();
-
-	    AuthentifiedUser user = userRepo.findByEmail(email);
-	    if (user == null) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-	    }
-
-	    List<MinimalOfferDTO> offers = new ArrayList<>();
-	    List<Offer> offerz = offerService.getTop5Offers(user.getId());
-
-	    for (Offer off : offerz) {
-	        MinimalOfferDTO offr = new MinimalOfferDTO(off);
-	        offers.add(offr);
-	    }
-
-	    return ResponseEntity.ok(offers);
-	}
-	
-	@GetMapping(value = "/top5/unauthentified", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<MinimalOfferDTO>> GetTop5OffersUnauthentified() {
-		
-	    List<MinimalOfferDTO> offers = new ArrayList<>();
-	    List<Offer> offerz = offerService.getTop5OffersUnauthorized();
-	    
-	    for(Offer off:offerz) {
-	    	MinimalOfferDTO offr = new MinimalOfferDTO(off);
-	    	offers.add(offr);
-	    }
-	    
-	    return ResponseEntity.ok(offers);
+	    return ResponseEntity.ok(offerDTOs);
 	}
 	
     @GetMapping(value = "/rest", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -117,12 +117,23 @@ public class ServiceReservationController {
             return ResponseEntity.status(409).body(null);
         }
     }
+    
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<Void> cancelServiceReservation(
+            @PathVariable Integer serviceID,
+            @PathVariable Integer reservationId) {
 
+        OfferReservation reservation = oRR.findById(reservationId).orElse(null);
 
+        if (reservation == null || !reservation.getOffer().getId().equals(serviceID)) {
+            return ResponseEntity.notFound().build();
+        }
 
-	private Date parseDate(String dateString) throws ParseException, java.text.ParseException {
-	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	    java.util.Date date = sdf.parse(dateString);
-	    return new Date(date.getTime());
-	}
+        try {
+            oRS.cancelService(reservation);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).build(); //Ne moze.
+        }
+    }
 }
