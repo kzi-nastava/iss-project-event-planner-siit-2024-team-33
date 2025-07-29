@@ -21,6 +21,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventActivity.EventActivityPDF;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventStatistics.EventArrayStats;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventStatistics.EventAttendance;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventStatistics.EventRatingsCounter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
@@ -186,6 +187,60 @@ public class ReportPDFService {
 	        throw new PdfGenerationException("Error generating PDF.");
 	    }
 	}
+	
+	
+	
+	public EventArrayStats getEventStats(UserPrincipal userPrincipal, Integer eventId) {
+		Optional<Event> optionalEvent = eventRepository.findById(eventId);
+    	if (optionalEvent.isEmpty())
+    		throw new EventValidationException("No event exists with such id.");
+    	
+    	Event event = optionalEvent.get();
+    	
+    	isUserAllowedToSeeData(userPrincipal, event);
+    	
+    	//filling attendees data
+    	List<Integer> eventAttendees = new ArrayList<>();
+    	eventAttendees.add(event.getListOfAttendees().size());
+    	eventAttendees.add(event.getNumOfAttendees() - event.getListOfAttendees().size());
+    	
+    	//filling ratings data
+    	Integer rating1 = 0;
+    	Integer rating2 = 0;
+    	Integer rating3 = 0;
+    	Integer rating4 = 0;
+    	Integer rating5 = 0;
+    	List<EventRating> ratings = new ArrayList<>(event.getEventRatings());
+    	for (EventRating rating: ratings) {
+    		int grade = rating.getRatingValue();
+    		switch (grade) {
+    		case 1:
+    			rating1 = rating1 + 1;
+    			break;
+    		case 2:
+    			rating2 = rating2 + 1;
+    			break;
+    		case 3:
+    			rating3 = rating3 + 1;
+    			break;
+    		case 4:
+    			rating4 = rating4 + 1;
+    			break;
+    		case 5:
+    			rating5 = rating5 + 1;
+    			break;
+    		}		
+    	}
+    	List<Integer> eventRatings = new ArrayList<>();
+    	eventRatings.add(rating1);
+    	eventRatings.add(rating2);
+    	eventRatings.add(rating3);
+    	eventRatings.add(rating4);
+    	eventRatings.add(rating5);
+    	
+    	return new EventArrayStats(eventAttendees, eventRatings);
+	}
+	
 	
 	
 	private boolean isUserAllowedToSeeData(UserPrincipal userPrincipal, Event event) throws EventValidationException {

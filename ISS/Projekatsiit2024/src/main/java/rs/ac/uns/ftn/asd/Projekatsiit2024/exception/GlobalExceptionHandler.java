@@ -126,7 +126,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(VerificationTokenException.class)
     public ResponseEntity<ErrorMessages> handleException(VerificationTokenException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage(), ex.getErrorCode()));
     }
 	
 	@ExceptionHandler(UserUpgradeException.class)

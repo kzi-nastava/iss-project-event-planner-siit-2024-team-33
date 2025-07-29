@@ -572,6 +572,5 @@ public class EventService {
                                  user.getEmail().equalsIgnoreCase(inv.getInvitedUser()) &&
                                  inv.getStatus() != InvitationStatus.DENIED);
     }
-
     
 }

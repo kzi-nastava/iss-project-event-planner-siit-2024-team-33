@@ -57,7 +57,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Steve', 'Williams', 'organizer2.jpg', 
  false, true, NULL, 
- 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
  'Madrid, Spain', '321-654-987', 
  'Organizer');
  
@@ -65,9 +65,9 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
 VALUES 
-('user@example.com', 
+('user@example.com',
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
- 'Basic', 'User', 'default.jpg', 
+ 'Basic', 'User', 'default.jpg',
  false, true, NULL, 
  1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'AuthentifiedUser');
