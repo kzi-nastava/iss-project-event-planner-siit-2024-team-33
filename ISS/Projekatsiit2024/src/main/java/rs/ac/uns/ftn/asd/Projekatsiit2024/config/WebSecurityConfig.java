@@ -23,6 +23,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth.RestAuthenticationEntryPoint;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth.TokenAuthenticationFilter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.auth.AuthenticationService;
@@ -68,7 +69,19 @@ public class WebSecurityConfig {
 		http.cors(Customizer.withDefaults());
 		http.csrf((csrf) -> csrf.disable());
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(restAuthenticationEntryPoint));
+        
+        http.exceptionHandling(exception -> exception
+          .authenticationEntryPoint((request, response, authException) -> {
+              response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+              response.setContentType("application/json");
+              response.getWriter().write("{\"error\": \"Unauthorized\"}");
+          })
+          .accessDeniedHandler((request, response, accessDeniedException) -> {
+              response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+              response.setContentType("application/json");
+              response.getWriter().write("{\"error\": \"Access Denied\"}");
+          })
+      );
         
         http.authorizeHttpRequests(request -> {
             request//.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
