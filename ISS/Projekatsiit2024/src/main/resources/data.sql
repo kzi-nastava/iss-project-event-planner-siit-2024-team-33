@@ -64,6 +64,7 @@ VALUES
  -- Plain AuthentifiedUser (no subtype like Admin, Organizer, or Provider)
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
+VALUES
 ('user@example.com',
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Basic', 'User', 'default.jpg',
