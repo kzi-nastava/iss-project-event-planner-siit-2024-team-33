@@ -92,7 +92,7 @@ public class OfferCategoryController {
 				oc = offerCategoryService.rejectSuggestion(id, data.newId);
 			return ResponseEntity.noContent().build();
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(e.toString());
+			return ResponseEntity.status(404).body(e.toString());
 		}
 	}
 	

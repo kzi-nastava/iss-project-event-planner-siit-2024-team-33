@@ -163,7 +163,8 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
 		        
 		        //product
-		        .requestMatchers(HttpMethod.GET, "/api/products/*/reservations/**").hasAnyAuthority("ORGANIZER_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/products/*/reservations/**").authenticated()
+		        .requestMatchers("/api/products/*/reservations/**").hasAnyAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
 
 		        //Budget
