@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
 public interface AuthentifiedUserRepository extends JpaRepository<AuthentifiedUser, Integer> {
@@ -41,6 +42,9 @@ public interface AuthentifiedUserRepository extends JpaRepository<AuthentifiedUs
 	
 	@Query("SELECT e FROM AuthentifiedUser u JOIN u.favoriteEvents e WHERE u.id = :userId")
     Page<Event> findFavoriteEventsByUserId(@Param("userId") Integer userId, Pageable pageable);
+	
+	@Query("SELECT o FROM AuthentifiedUser u JOIN u.favoriteOffers o WHERE u.id = :userId")
+    Page<Offer> findFavoriteOffersByUserId(@Param("userId") Integer userId, Pageable pageable);
 	
 	@Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END " +
 	           "FROM AuthentifiedUser u JOIN u.favoriteEvents e " +

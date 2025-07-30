@@ -65,6 +65,19 @@ public class FavoritesController {
         return ResponseEntity.ok(new MinimalEventDTO(event));
     }
 	
+    
+    
+    
+    @GetMapping(value = "/offers", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Page<MinimalOfferDTO>> getFavoriteOffers(
+			@AuthenticationPrincipal UserPrincipal userPrincipal,
+			@PageableDefault(size = 10) Pageable pageable) {
+		Page<MinimalOfferDTO> offers = favoritesService.getFavoriteOffers(userPrincipal, pageable);
+
+		return new ResponseEntity<Page<MinimalOfferDTO>>(offers, HttpStatus.OK);
+	}
+    
+    
     @GetMapping(value = "/offers/{offerId}")
 	public ResponseEntity<Boolean> isFavoriteOffer(
 	        @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -85,47 +98,4 @@ public class FavoritesController {
 	        @PathVariable Integer offerId){
 		return new ResponseEntity<MinimalOfferDTO>(new MinimalOfferDTO(favoritesService.removeFavoriteOffer(userPrincipal, offerId)), HttpStatus.OK);
 	}
-	
-	
-	
-	
-	/*@PostMapping("/favorites")
-	public ResponseEntity<?> AddToFavorites(@PathVariable Integer userID, @RequestAttribute Integer OfferID){
-		//403: Forbidden if user sent wrong userID
-		Boolean wrongUser = false;
-		if(wrongUser)
-			return ResponseEntity.status(403).build();
-		
-		//404: Offer not found
-		Boolean notFound = false;
-		if(notFound)
-			return ResponseEntity.notFound().build();
-		
-		//409: Conflict
-		Boolean alreadyFavorite = false;
-		if(alreadyFavorite)
-			return ResponseEntity.status(409).build();
-		
-		return ResponseEntity.ok(null);
-	}
-
-	@DeleteMapping("/favorites/{offerID}")
-	public ResponseEntity<?> DeleteFromFavorites(@PathVariable Integer userID, @PathVariable Integer offerID){
-		//403: Forbidden if user sent wrong userID
-		Boolean wrongUser = false;
-		if(wrongUser)
-			return ResponseEntity.status(403).build();
-		
-		//404: Offer not found
-		Boolean notFound = false;
-		if(notFound)
-			return ResponseEntity.notFound().build();
-		
-		//409: Conflict
-		Boolean alreadyNotFavorite = false;
-		if(alreadyNotFavorite)
-			return ResponseEntity.status(409).build();
-		
-		return ResponseEntity.ok(null);
-	}*/
 }

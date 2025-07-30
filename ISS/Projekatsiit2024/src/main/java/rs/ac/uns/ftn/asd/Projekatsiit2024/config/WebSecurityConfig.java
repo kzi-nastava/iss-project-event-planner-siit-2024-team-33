@@ -130,6 +130,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.GET, "/api/favorites/events/*/exists").permitAll()
 		        .requestMatchers(HttpMethod.POST, "/api/favorites/events/*").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/offers").authenticated()
 		        
 		        //offer categories
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
