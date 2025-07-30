@@ -1,13 +1,19 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification;
 
 import java.sql.Date;
+import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
+@Setter
+@Getter
 public class GetNotificationDTO {
-    private int notificationId;
+	private Integer index;
     private String content;
-    private Date dateOfSending;
+    private String dateOfSending;
     private Boolean isRead;
-
+    private Boolean isSelected;
     public GetNotificationDTO() {
         super();
     }

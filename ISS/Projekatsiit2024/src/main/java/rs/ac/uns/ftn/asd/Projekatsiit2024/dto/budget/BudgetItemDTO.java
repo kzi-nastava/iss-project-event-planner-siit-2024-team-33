@@ -2,14 +2,23 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget;
 
 import java.util.List;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.OfferDTO;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.OfferDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.BudgetItem;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class BudgetItemDTO {
-	public Integer EventID;
-	public String EventName;
-	public Integer OfferCategoryID;
-	public String OfferCategoryName;
-	public Double MaxBudget;
-	public Double UsedBudget;
-	public List<OfferDTO> ReservedOffers;
+	public Integer offerCategoryID;
+	public String offerCategoryName;
+	public Double maxBudget;
+	public Double usedBudget;
+	
+	public BudgetItemDTO(BudgetItem bi, List<Offer> offers) {
+		this.offerCategoryID = bi.getBudgetCategory().getId();
+		this.offerCategoryName = bi.getBudgetCategory().getName();
+		this.maxBudget = bi.getBudget();
+		this.usedBudget = offers.stream().mapToDouble(offer -> offer.getPrice()-offer.getDiscount()).sum();
+	}
 }

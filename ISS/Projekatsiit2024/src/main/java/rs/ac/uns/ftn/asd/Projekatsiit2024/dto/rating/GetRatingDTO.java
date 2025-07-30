@@ -2,19 +2,31 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating;
 
 import java.sql.Date;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.Model.Rating;
-
+import lombok.Getter;
+import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+@Setter
+@Getter
 public class GetRatingDTO {
-    private int ratingId;
-    private int offerId;
-    private String OfferName;
-    private int authorId;
-    private String AuthorName;
-    private int Value;
-    private String Comment;
+	private Integer id;
+    private String offerName;
+    private Integer authorId;
+    private String authorName;
+    private Integer value;
+    private String comment;
     private Boolean isAccepted;
+    private Boolean isDeleted;
     
-    public GetRatingDTO(Rating R) {
-    	
-    }
+    public GetRatingDTO(Rating rating) {
+    	this.id = rating.getId();
+        this.offerName = rating.getOffer().getName();
+        this.authorId = rating.getAuthor().getId();
+        this.authorName = rating.getAuthor().getName();
+        this.value = rating.getRatingValue();
+        this.comment = rating.getComment();
+        this.isAccepted = rating.getAccepted();
+        this.isDeleted = rating.getIsDeleted();
+     }
 }

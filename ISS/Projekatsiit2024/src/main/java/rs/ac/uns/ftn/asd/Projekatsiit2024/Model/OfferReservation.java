@@ -1,25 +1,34 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.model;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 
 @Entity
-public class OfferReservation
-{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer ID;
-	
-    public Date DateOfReservation;
+@Setter
+@Getter
+public class OfferReservation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id; 
+
+    private LocalDate dateOfReservation;
 
     @ManyToOne
-    public Offer Offer;
+    private Offer offer; 
+
     @ManyToOne
-    public Event Event;
+    private Event event; 
+    
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }
-

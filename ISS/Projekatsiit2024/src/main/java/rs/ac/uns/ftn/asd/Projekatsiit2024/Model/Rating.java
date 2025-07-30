@@ -1,23 +1,30 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.Model;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
 @Entity
-public class Rating
-{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public int ID;
-    public int Value;
-    public String Comment;
-    public Boolean Accepted;
+@Setter
+@Getter
+public class Rating {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private Integer ratingValue;
+    private String comment; 
+    private Boolean accepted;
+    private Boolean isDeleted;
 
     @ManyToOne
-    public AuthentifiedUser Author;
+    private AuthentifiedUser author;
+    
     @ManyToOne
-    public Offer Offer;
+    private Offer offer; 
 }
