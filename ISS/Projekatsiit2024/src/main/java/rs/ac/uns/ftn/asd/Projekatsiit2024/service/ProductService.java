@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
@@ -35,7 +39,7 @@ public class ProductService {
 	}
 	
 	@Transactional
-	public Product buyProduct(Integer productId, Integer eventId) {
+	public Product buyProduct(Integer productId, Integer eventId) throws AccessDeniedException {
 		Optional<Product> product = productRepo.findById(productId);
 		if(product.isEmpty())
 			throw new EntityNotFoundException("No product with that id exists");
@@ -44,12 +48,18 @@ public class ProductService {
 		if(product.isEmpty())
 			throw new EntityNotFoundException("No event with that id exists");
 		
+		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    if(up == null)
+	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
+	    if(event.get().getOrganizer().getId() != up.getUser().getId())
+	    	throw new AccessDeniedException("Wrong user");
+		
 		if(product.get().getAvailability() != Availability.AVAILABLE)
 			throw new IllegalArgumentException("Product is currently unavailable");
 		
 		if(reservationRepo.findByEventAndOffer(productId, eventId) != null)
 			throw new IllegalArgumentException("Reservation already exists");
-		//TODO
+		
 //		if(!product.get().getValidEvents().contains(event.get().getEventType()))
 //			throw new IllegalArgumentException("Reservation already exists");
 		
@@ -61,7 +71,7 @@ public class ProductService {
 	}
 	
 	@Transactional
-	public Product cancelReservation(Integer productId, Integer eventId) {
+	public Product cancelReservation(Integer productId, Integer eventId) throws AccessDeniedException {
 		Optional<Product> product = productRepo.findById(productId);
 		if(product.isEmpty())
 			throw new EntityNotFoundException("No product with that id exists");
@@ -69,6 +79,10 @@ public class ProductService {
 		Optional<Event> event = eventRepo.findById(eventId);
 		if(product.isEmpty())
 			throw new EntityNotFoundException("No event with that id exists");
+		
+		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    if(event.get().getOrganizer().getId() != up.getUser().getId())
+	    	throw new AccessDeniedException("Wrong user");
 		
 		product.get().setAvailability(Availability.AVAILABLE);
 		productRepo.save(product.get());

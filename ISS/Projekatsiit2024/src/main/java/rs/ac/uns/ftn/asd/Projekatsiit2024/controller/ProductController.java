@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -88,6 +89,8 @@ public class ProductController {
 	public ResponseEntity<MinimalProductDTO> buyProduct(@PathVariable Integer id, @RequestBody PostProductPurchaseDTO data){
 		try {
 			return ResponseEntity.ok(new MinimalProductDTO(productService.buyProduct(id, data.eventId)));
+		} catch (AccessDeniedException e) {
+			return ResponseEntity.status(403).body(null);
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(404).body(null);
 		} catch (IllegalArgumentException e) {
@@ -100,6 +103,8 @@ public class ProductController {
 		try {
 			productService.cancelReservation(id, eventId);
 			return ResponseEntity.noContent().build();
+		} catch (AccessDeniedException e) {
+			return ResponseEntity.status(403).body(e.toString());
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.toString());
 		}
