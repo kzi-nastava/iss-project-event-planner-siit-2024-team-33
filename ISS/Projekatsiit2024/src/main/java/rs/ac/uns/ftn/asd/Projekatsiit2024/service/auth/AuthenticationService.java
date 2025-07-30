@@ -29,7 +29,7 @@ public class AuthenticationService implements UserDetailsService {
 
 	public Boolean isEmailAvailable(String email) {
 		AuthentifiedUser user = aUserRepository.findByEmail(email);
-		if (user == null) {
+		if (user == null || user.getIsVerified() == false) {
 			return false;
 		}
 		else {

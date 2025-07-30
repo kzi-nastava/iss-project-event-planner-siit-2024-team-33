@@ -78,7 +78,7 @@ public class TokenUtils {
 		// Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 		System.out.println("Authorization header: " + request.getHeader("Authorization"));
 		System.out.println("Authorization: " + request);
-
+		//Cepi 7 karaktera ispred sto cini 'Bearer ', ostane token.
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 			return authHeader.substring(7);
 		}
@@ -133,7 +133,7 @@ public class TokenUtils {
 	        throw ex;
 	    } catch (Exception e) {
 	        System.err.println("JWT parsing failed:");
-	        e.printStackTrace(); // <- ADD THIS
+	        e.printStackTrace();
 	        throw new RuntimeException("Token parsing failed", e); // Optional: propagate real cause
 	    }
 	}
