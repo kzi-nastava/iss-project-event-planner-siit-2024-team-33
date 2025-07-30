@@ -162,7 +162,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
 		        
 		        //product
-		        .requestMatchers(HttpMethod.GET, "/api/products/*/reservations/**").hasAnyAuthority("ORGANIZER_ROLE")
+		        .requestMatchers("/api/products/*/reservations/**").hasAnyAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
 
 		        //Budget
@@ -170,6 +170,7 @@ public class WebSecurityConfig {
 
 		        //Prices
 		        .requestMatchers("/api/offers/mine/prices/**").hasAnyAuthority("PROVIDER_ROLE")
+		        
 		        //Invitations
 		        .requestMatchers(HttpMethod.POST, "/api/events/invitations").hasAnyAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.PATCH, "/api/events/invitations/**").authenticated()
