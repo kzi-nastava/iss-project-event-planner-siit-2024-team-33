@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -26,4 +27,15 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
     List<Event> findByOrganizerId(@Param("organizerId") Integer organizerId);
     
     Page<Event> findByOrganizer(Organizer organizer, Pageable pageable);
+    
+    @Query("SELECT e FROM Event e WHERE e.organizer.id = :id AND e.dateOfEvent <= :endOfDay AND e.endOfEvent >= :startOfDay")
+    List<Event> findByCreatorAndDate(@Param("id") Integer id,
+                                     @Param("startOfDay") LocalDateTime startOfDay,
+                                     @Param("endOfDay") LocalDateTime endOfDay);
+    
+    @Query("SELECT e FROM Event e JOIN e.listOfAttendees p " +
+    	       "WHERE p.id = :userId AND e.dateOfEvent <= :endOfDay AND e.endOfEvent >= :startOfDay")
+    	List<Event> findByParticipantAndDate(@Param("userId") Integer userId,
+    	                                     @Param("startOfDay") LocalDateTime startOfDay,
+    	                                     @Param("endOfDay") LocalDateTime endOfDay);
 }

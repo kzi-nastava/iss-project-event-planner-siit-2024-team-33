@@ -124,6 +124,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/statistics").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/statistics").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/me").authenticated()
 		        
 		        //favorites
 		        .requestMatchers(HttpMethod.GET, "/api/favorites/events").authenticated()
