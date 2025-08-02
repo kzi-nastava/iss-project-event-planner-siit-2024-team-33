@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.HandleSuggestionDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.PostOfferCategoryDTO;
@@ -78,6 +79,8 @@ public class OfferCategoryController {
 			return ResponseEntity.noContent().build();
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(e.toString());
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(404).body(e.toString());
 		}
 	}
 	
@@ -93,6 +96,8 @@ public class OfferCategoryController {
 			return ResponseEntity.noContent().build();
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(e.toString());
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(404).body(e.toString());
 		}
 	}
 	
@@ -107,6 +112,8 @@ public class OfferCategoryController {
 		} catch (DataIntegrityViolationException e) {
 			//Conflict
 			return ResponseEntity.status(409).body(e.toString());
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(404).body(e.toString());
 		}
 	}
 }
