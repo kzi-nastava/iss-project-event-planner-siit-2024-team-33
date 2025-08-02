@@ -65,7 +65,7 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
 VALUES 
-('user@gmail.com', 
+('mirkodjukic718@gmail.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Basic', 'User', 'default.jpg', 
  false, true, NULL, 
@@ -205,8 +205,8 @@ INSERT INTO EVENT (
 ) VALUES 
 -- Paris
 (
-    CAST('2025-08-01 01:35:00' AS TIMESTAMP),
-    CAST('2025-08-01 23:00:00' AS TIMESTAMP),
+    CAST('2025-08-05 01:35:00' AS TIMESTAMP),
+    CAST('2025-08-05 23:00:00' AS TIMESTAMP),
     FALSE,
     48.8566,
     2.3522,

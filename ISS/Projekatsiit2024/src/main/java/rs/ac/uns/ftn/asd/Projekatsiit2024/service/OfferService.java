@@ -187,7 +187,12 @@ public class OfferService {
             return true;
         }
 
-        return !provider.getBlockedUsers().contains(user);
+        // If user is Organizer and has blocked the provider — hide the offer
+        if (user instanceof Organizer organizer) {
+            return !organizer.getBlockedUsers().contains(provider);
+        }
+
+        return true;
     }
     
     public void editOfferPrice(Integer OfferId, double newPrice, double newDiscount) throws BadRequestException, AccessDeniedException {

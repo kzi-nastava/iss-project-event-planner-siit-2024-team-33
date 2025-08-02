@@ -35,6 +35,7 @@ public class ReportController {
     private AuthentifiedUserRepository userRepo;
     @Autowired
     private ReportRepository reportRepo;
+    
     @PostMapping
     public ResponseEntity<GetReportDTO> submitReport(@RequestBody PostReportDTO postReportDTO, @AuthenticationPrincipal UserPrincipal userPrincipal) {
         AuthentifiedUser user = userPrincipal.getUser();
