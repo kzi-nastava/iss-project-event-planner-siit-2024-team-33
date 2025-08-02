@@ -60,9 +60,12 @@ public class invitationService {
             invitationRepo.saveAndFlush(invitation);
 
             String subject = "Invitation to " + event.getName();
+            String universalLink = "https://yourdomain.com/invitation?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+            String deepLink = "myapp://invitation?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+
             String body = invitedUser != null
-                ? "You are invited to join the event. Please log in to accept the invitation. \n\n http://localhost:4200/authentication/signin"
-                : "You are invited to join the event. Click here to register and accept the invitation. \n\n http://localhost:4200/authentication/quick-register?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+                ? "You are invited to join the event. Please log in to accept the invitation. \n\n" + deepLink
+                : "You are invited to join the event. Click here to register and accept the invitation. \n\n " + universalLink;
 
             sendEmail(inviter.getEmail(), inviter.getPassword(), email, subject, body);
         }
