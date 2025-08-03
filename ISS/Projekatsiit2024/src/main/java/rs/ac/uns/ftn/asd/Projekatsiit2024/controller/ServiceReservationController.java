@@ -141,7 +141,7 @@ public class ServiceReservationController {
 
         OfferReservation reservation = oRR.findById(reservationId).orElse(null);
 
-        if (reservation == null || !reservation.getOffer().getId().equals(serviceID)) {
+        if (reservation == null || !reservation.getOffer().getOfferID().equals(serviceID)) {
             return ResponseEntity.notFound().build();
         }
 

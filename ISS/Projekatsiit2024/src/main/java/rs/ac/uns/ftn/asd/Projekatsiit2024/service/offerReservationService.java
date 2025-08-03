@@ -136,7 +136,7 @@ public class offerReservationService {
     	Event event = getEventByID(eventId);
     	Offer offer = getOfferByID(offerId);
     	
-        List<OfferReservation> reservations = offerReservationRepo.findByOfferId(offer.getId());
+        List<OfferReservation> reservations = offerReservationRepo.findByOfferId(offer.getOfferID());
 
         LocalDateTime eventStartTime = event.getDateOfEvent();
         LocalDateTime eventEndTime = event.getEndOfEvent();
@@ -175,7 +175,7 @@ public class offerReservationService {
         }
 
 
-        return createOfferReservation(event.getDateOfEvent().toLocalDate(),offer.getOfferID(),event.getId(),offerStartTime.toLocalTime(),offerEndTime.toLocalTime());
+        return createOfferReservation(event.getDateOfEvent().toLocalDate(),offer.getId(),event.getId(),offerStartTime.toLocalTime(),offerEndTime.toLocalTime());
     }
 
     private boolean isTimeColliding(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2) {
@@ -186,7 +186,7 @@ public class offerReservationService {
         rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service service = (rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service) reservation.getOffer();
 //        long timeUntilCancellation = reservation.getDateOfReservation().minus(LocalDate.now());
         long timeUntilCancellation = ChronoUnit.MILLIS.between(LocalDate.now().atStartOfDay(), reservation.getDateOfReservation().atStartOfDay());
-        long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000 * 10;
+        long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000;
 
         if (timeUntilCancellation < cancellationDeadline) {
             throw new IllegalArgumentException("Cannot cancel the service less than " + service.getCancellationInHours() + " hours before the reservation.");
