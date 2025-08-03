@@ -227,6 +227,8 @@ public class offerReservationService {
 	}
 	
 	public List<OfferReservation> getReservationsForServiceByOrganizer(Integer serviceID, String organizerEmail) {
+		System.out.println("Getting reservations for serviceID = " + serviceID + ", organizerEmail = " + organizerEmail);
+
 	    return offerReservationRepo.findAllByOffer_IdAndEvent_Organizer_Email(serviceID, organizerEmail);
 	}
 
