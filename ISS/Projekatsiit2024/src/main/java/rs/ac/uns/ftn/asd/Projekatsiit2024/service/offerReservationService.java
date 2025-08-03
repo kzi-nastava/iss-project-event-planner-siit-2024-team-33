@@ -15,6 +15,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
@@ -108,7 +109,7 @@ public class offerReservationService {
         offerReservation.setEndTime(LocalDateTime.of(dateOfReservation, endTime));
         
         Provider provider = offer.getProvider();
-        Organizer organizer = event.getOrganizer();
+        AuthentifiedUser organizer = event.getOrganizer();
         String providerStr = "Your offer: " + offer.getName() + ", got reserved for " + dateOfReservation+ ", for an evet: " +event.getName()+ ". by Organizer: " + organizer.getEmail();
         String organizerStr = "You successfully reserved an offer: " +offer.getName() +", for an event: "+ event.getName() + "\n Offer you reserved is owned by provider: " +provider.getEmail()+".";
         invitationService.sendEmail(null, null, provider.getEmail(), "Your offer has been reserved", providerStr);
