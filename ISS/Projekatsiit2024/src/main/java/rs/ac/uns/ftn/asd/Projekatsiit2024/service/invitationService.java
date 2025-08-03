@@ -10,9 +10,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
@@ -60,13 +63,17 @@ public class invitationService {
             invitationRepo.saveAndFlush(invitation);
 
             String subject = "Invitation to " + event.getName();
-            String loginLink = "myapp://invitation/login?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
-            String registerLink = "myapp://invitation/register?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+            String loginLink = "myapp://invitationlogin?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+            String registerLink = "myapp://invitationregister?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
 
-
-            String body = invitedUser != null
-                ? "You are invited to join the event. Please log in to accept the invitation. \n\n" + loginLink
-                : "You are invited to join the event. Click here to register and accept the invitation. \n\n " + registerLink;
+            String body;
+            if (invitedUser != null) {
+                body = "<p>You are invited to join the event.</p>"
+                     + "<p><a href=\"" + loginLink + "\">" + loginLink + "</a></p>";
+            } else {
+                body = "<p>You are invited to join the event.</p>"
+                     + "<p><a href=\"" + registerLink + "\">" + registerLink + "</a></p>";
+            }
 
             sendEmail(inviter.getEmail(), inviter.getPassword(), email, subject, body);
         }
@@ -132,18 +139,21 @@ public class invitationService {
     public void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
         JavaMailSender mailSender = DynamicMailSender.createMailSender("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");
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("hogridersunited@gmail.com");
-        message.setTo(recipientEmail);
-        message.setSubject(subject);
-        message.setText(body);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper;
+		try {
+			helper = new MimeMessageHelper(message, true, "UTF-8");
+	        helper.setFrom("hogridersunited@gmail.com");
+	        helper.setTo(recipientEmail);
+	        helper.setSubject(subject);
+	        helper.setText(body, true);
 
-        try {
             mailSender.send(message);
             System.out.println("Email sent successfully!");
-        } catch (Exception e) {
+		} catch (MessagingException e) {
             System.err.println("Failed to send email: " + e.getMessage());
-        }
+			e.printStackTrace();
+		}
     }
 
     public List<Invitation> getInvitationsByForEvent(Integer id){

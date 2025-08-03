@@ -83,6 +83,17 @@ VALUES
  'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
  'Provider');
 
+ -- Plain AuthentifiedUser (no subtype like Admin, Organizer, or Provider)
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
+VALUES 
+('senjare2@gmail.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Basic', 'User', 'default.jpg', 
+ false, true, NULL, 
+ 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'AuthentifiedUser');
+
 INSERT INTO OFFER_CATEGORY (IS_ACCEPTED, IS_ENABLED, DESCRIPTION, NAME, OFFER_TYPE)
 VALUES
 (TRUE, TRUE, 'Fun music', 'Music', 'SERVICE'),
