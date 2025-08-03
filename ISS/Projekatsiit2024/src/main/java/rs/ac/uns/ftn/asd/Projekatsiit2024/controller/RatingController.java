@@ -108,7 +108,17 @@ public class RatingController {
         return ResponseEntity.ok(dtos);
     }
     
-    
+    @PutMapping("/events/approve/{ratingId}")
+    public ResponseEntity<Void> approveEventRating(@PathVariable int ratingId) {
+        ratingService.approveRating(ratingId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/events/{ratingId}")
+    public ResponseEntity<Void> deleteEventRating(@PathVariable int ratingId) {
+        ratingService.deleteRating(ratingId);
+        return ResponseEntity.noContent().build();
+    }
 
     @PutMapping("/approve/{commentId}")
     public ResponseEntity<Void> approveRating(@PathVariable int commentId) {
