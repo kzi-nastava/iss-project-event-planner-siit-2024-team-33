@@ -65,7 +65,7 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
 VALUES 
-('mirkodjukic718@gmail.com', 
+('user@gmail.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Basic', 'User', 'default.jpg', 
  false, true, NULL, 
