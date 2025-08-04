@@ -18,6 +18,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.UnverifiedUserUpgrade;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.OrganizerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
@@ -40,7 +41,8 @@ public class UserUpgradeService {
 	
 	@Autowired
 	ProviderRepository providerRepository;
-	
+	@Autowired
+	EventRepository eventRepository;
 	
 	//creates upgrade user request which waits for verification
 	public UnverifiedUserUpgrade createUpgradeUserRequest(UserPrincipal userPrincipal, UpgradeUser upgradeUser) 
@@ -116,66 +118,94 @@ public class UserUpgradeService {
 
 
 	private Organizer upgradeToOrganizer(AuthentifiedUser userForUpgrade, UnverifiedUserUpgrade uuu) {
-		Set<Offer> favoriteOffers = userForUpgrade.getFavoriteOffers();
-		Set<Event> favoriteEvents = userForUpgrade.getFavoriteEvents();
-		List<AuthentifiedUser> blockedUsers = userForUpgrade.getBlockedUsers();
-		
-        Organizer organizer = new Organizer();
-        organizer.setId(userForUpgrade.getId()); // reuse ID
-        organizer.setEmail(userForUpgrade.getEmail());
-        organizer.setPassword(userForUpgrade.getPassword());
-        organizer.setName(userForUpgrade.getName());
-        organizer.setSurname(userForUpgrade.getSurname());
-        organizer.setDateOfCreation(userForUpgrade.getDateOfCreation());
-        organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
-        organizer.setResidency(uuu.getResidency());
-        organizer.setPhoneNumber(uuu.getPhoneNumber());
-        organizer.setIsVerified(true);
-        organizer.setIsDeleted(false);
-        organizer.setFavoriteEvents(favoriteEvents);
-        organizer.setFavoriteOffers(favoriteOffers);
-        organizer.setBlockedUsers(blockedUsers);
-        
-        uuuRepository.delete(uuu);
-        uuuRepository.flush();
+	    Set<Offer> favoriteOffers = userForUpgrade.getFavoriteOffers();
+	    Set<Event> favoriteEvents = userForUpgrade.getFavoriteEvents();
+	    List<AuthentifiedUser> blockedUsers = userForUpgrade.getBlockedUsers();
 
-        userRepository.delete(userForUpgrade);
-        userRepository.flush();
+	    List<Event> eventsUserAttended = eventRepository.findAllByListOfAttendeesContaining(userForUpgrade);
+	    for (Event e : eventsUserAttended) {
+	        e.getListOfAttendees().remove(userForUpgrade);
+	        eventRepository.save(e);  
+	    }
 
-        return organizerRepository.save(organizer);
+	    Organizer organizer = new Organizer();
+	    organizer.setId(userForUpgrade.getId());
+	    organizer.setEmail(userForUpgrade.getEmail());
+	    organizer.setPassword(userForUpgrade.getPassword());
+	    organizer.setName(userForUpgrade.getName());
+	    organizer.setSurname(userForUpgrade.getSurname());
+	    organizer.setDateOfCreation(userForUpgrade.getDateOfCreation());
+	    organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
+	    organizer.setResidency(uuu.getResidency());
+	    organizer.setPhoneNumber(uuu.getPhoneNumber());
+	    organizer.setIsVerified(true);
+	    organizer.setIsDeleted(false);
+	    organizer.setFavoriteEvents(favoriteEvents);
+	    organizer.setFavoriteOffers(favoriteOffers);
+	    organizer.setBlockedUsers(blockedUsers);
+
+	    uuuRepository.delete(uuu);
+	    uuuRepository.flush();
+
+	    userRepository.delete(userForUpgrade);
+	    userRepository.flush();
+
+	    Organizer savedOrganizer = organizerRepository.save(organizer);
+
+	    for (Event e : eventsUserAttended) {
+	        e.getListOfAttendees().add(savedOrganizer);
+	        eventRepository.save(e);
+	    }
+
+	    return savedOrganizer;
 	}
+
 	
 
 	private Provider upgradeToProvider(AuthentifiedUser userForUpgrade, UnverifiedUserUpgrade uuu) {
-		Set<Offer> favoriteOffers = userForUpgrade.getFavoriteOffers();
-		Set<Event> favoriteEvents = userForUpgrade.getFavoriteEvents();
-		List<AuthentifiedUser> blockedUsers = userForUpgrade.getBlockedUsers();
-		
-        Provider provider = new Provider();
-        provider.setId(userForUpgrade.getId()); // reuse ID
-        provider.setEmail(userForUpgrade.getEmail());
-        provider.setPassword(userForUpgrade.getPassword());
-        provider.setName(userForUpgrade.getName());
-        provider.setSurname(userForUpgrade.getSurname());
-        provider.setDateOfCreation(userForUpgrade.getDateOfCreation());
-        provider.setRole(roleRepository.findByName("PROVIDER_ROLE"));
-        provider.setResidency(uuu.getResidency());
-        provider.setPhoneNumber(uuu.getPhoneNumber());
-        provider.setProviderName(uuu.getProviderName());
-        provider.setDescription(uuu.getDescription());
-        provider.setIsVerified(true);
-        provider.setIsDeleted(false);
-        provider.setFavoriteEvents(favoriteEvents);
-        provider.setFavoriteOffers(favoriteOffers);
-        provider.setBlockedUsers(blockedUsers);
+	    Set<Offer> favoriteOffers = userForUpgrade.getFavoriteOffers();
+	    Set<Event> favoriteEvents = userForUpgrade.getFavoriteEvents();
+	    List<AuthentifiedUser> blockedUsers = userForUpgrade.getBlockedUsers();
 
-        uuuRepository.delete(uuu);
-        uuuRepository.flush();
+	    List<Event> eventsUserAttended = eventRepository.findAllByListOfAttendeesContaining(userForUpgrade);
+	    for (Event e : eventsUserAttended) {
+	        e.getListOfAttendees().remove(userForUpgrade);
+	        eventRepository.save(e);
+	    }
 
-        userRepository.delete(userForUpgrade);
-        userRepository.flush();
-        
-        return providerRepository.save(provider); // save new version
-		
+	    uuuRepository.delete(uuu);
+	    uuuRepository.flush();
+	    
+	    userRepository.delete(userForUpgrade);
+	    userRepository.flush();  
+
+
+	    Provider provider = new Provider();
+	    provider.setId(userForUpgrade.getId()); // reuse ID
+	    provider.setEmail(userForUpgrade.getEmail());
+	    provider.setPassword(userForUpgrade.getPassword());
+	    provider.setName(userForUpgrade.getName());
+	    provider.setSurname(userForUpgrade.getSurname());
+	    provider.setDateOfCreation(userForUpgrade.getDateOfCreation());
+	    provider.setRole(roleRepository.findByName("PROVIDER_ROLE"));
+	    provider.setResidency(uuu.getResidency());
+	    provider.setPhoneNumber(uuu.getPhoneNumber());
+	    provider.setProviderName(uuu.getProviderName());
+	    provider.setDescription(uuu.getDescription());
+	    provider.setIsVerified(true);
+	    provider.setIsDeleted(false);
+	    provider.setFavoriteEvents(favoriteEvents);
+	    provider.setFavoriteOffers(favoriteOffers);
+	    provider.setBlockedUsers(blockedUsers);
+
+	    Provider savedProvider = providerRepository.save(provider);
+
+	    for (Event e : eventsUserAttended) {
+	        e.getListOfAttendees().add(savedProvider);
+	        eventRepository.save(e);
+	    }
+
+	    return savedProvider;
 	}
+
 }
