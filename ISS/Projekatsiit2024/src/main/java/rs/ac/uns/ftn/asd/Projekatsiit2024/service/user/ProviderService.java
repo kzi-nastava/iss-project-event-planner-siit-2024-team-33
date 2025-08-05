@@ -17,8 +17,11 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserDeletionException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
@@ -35,6 +38,12 @@ public class ProviderService {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private OfferReservationRepository offerReservationRepository;
+	
+	@Autowired
+	private OfferRepository offerRepository;
 	
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 	
@@ -164,7 +173,7 @@ public class ProviderService {
 		return true;
 	}
 	
-	
+	@Transactional
 	public void deleteProvider(Integer userId) {
 		Optional<Provider> optionalProvider = providerRepository.findById(userId);
 		
@@ -173,5 +182,16 @@ public class ProviderService {
 		Provider provider = optionalProvider.get();
 		
 		//does provider have any services in the future
+		if (offerReservationRepository.existsUpcomingServiceReservationsByProviderId(userId)) {
+	        throw new UserDeletionException("Cannot delete provider with upcoming or ongoing service reservations.");
+	    }
+	    
+	    provider.setIsDeleted(true);
+	    providerRepository.save(provider);
+
+	    for (Offer offer : provider.getOffers()) {
+	        offer.setIsDeleted(true);
+	        offerRepository.save(offer);
+	    }
 	}
 }

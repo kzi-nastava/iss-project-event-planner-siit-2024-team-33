@@ -40,6 +40,7 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
     	                                     @Param("startOfDay") LocalDateTime startOfDay,
     	                                     @Param("endOfDay") LocalDateTime endOfDay);
     
+    
     @Query("""
             SELECT COUNT(e) > 0
             FROM Event e

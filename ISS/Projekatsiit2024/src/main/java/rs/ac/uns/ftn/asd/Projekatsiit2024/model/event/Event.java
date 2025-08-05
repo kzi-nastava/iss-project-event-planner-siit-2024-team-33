@@ -11,7 +11,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -21,7 +20,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventRating;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
-
 
 @Entity
 @Getter
@@ -45,8 +43,7 @@ public class Event {
     
     //event logistics
     @ManyToOne
-    @JoinColumn(name = "organizer_id")
-    private AuthentifiedUser organizer;
+    private Organizer organizer;
     @ManyToOne
     private EventType eventType;
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)

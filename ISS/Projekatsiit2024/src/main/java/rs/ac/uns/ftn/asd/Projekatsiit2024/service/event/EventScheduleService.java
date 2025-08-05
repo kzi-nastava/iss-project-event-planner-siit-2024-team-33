@@ -17,6 +17,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserValidat
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
@@ -27,6 +28,8 @@ public class EventScheduleService {
 	AuthentifiedUserRepository userRepository;
 	@Autowired
 	EventRepository eventRepository;
+	@Autowired
+	OfferReservationRepository offerReservationRepository;
 
 	public List<MinimalEventDTO> getUserEventsByDate(UserPrincipal userPrincipal, LocalDate date) {
 		Optional<AuthentifiedUser> optionalUser = userRepository.findById(userPrincipal.getUser().getId());
@@ -42,7 +45,7 @@ public class EventScheduleService {
 		else if (user.getRole().getName().equals("ORGANIZER_ROLE"))
 			return this.getOrganizerEventsByDate(user, date);
 		else if (user.getRole().getName().equals("PROVIDER_ROLE"))
-			return null;
+			return this.getProviderEventsByDate(user, date);
 		
 		throw new AuthentifiedUserValidationException("No such user can access events.");
 	}
@@ -77,5 +80,22 @@ public class EventScheduleService {
 	                   .map(MinimalEventDTO::new)
 	                   .collect(Collectors.toList());
 	}
+	
+	
+	private List<MinimalEventDTO> getProviderEventsByDate(AuthentifiedUser user, LocalDate date) {
+		LocalDateTime startOfDay = date.atStartOfDay();
+		LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+		
+		List<Event> eventsWithReservations = 
+				offerReservationRepository.findEventsWithProviderServiceReservationsOnDate(user.getId(), startOfDay, endOfDay);
+	    List<Event> joinedEvents = eventRepository.findByParticipantAndDate(user.getId(), startOfDay, endOfDay);
 
+	    Set<Event> combined = new HashSet<>();
+	    combined.addAll(eventsWithReservations);
+	    combined.addAll(joinedEvents);
+
+	    return combined.stream()
+	                   .map(MinimalEventDTO::new)
+	                   .collect(Collectors.toList());
+	}
 }

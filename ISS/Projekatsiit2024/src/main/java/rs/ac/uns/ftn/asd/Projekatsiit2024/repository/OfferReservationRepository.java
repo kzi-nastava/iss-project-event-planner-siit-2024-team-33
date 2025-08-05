@@ -1,7 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.repository;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,5 +39,32 @@ public interface OfferReservationRepository extends JpaRepository<OfferReservati
 
     @Query("SELECT res FROM OfferReservation res WHERE res.offer.offerID=:offerId AND res.event.organizer.email=:email")
     List<OfferReservation> findAllByOffer_IdAndEvent_Organizer_Email(Integer offerId, String email);
+    
+    @Query("""
+    	    SELECT DISTINCT r.event
+    	    FROM OfferReservation r
+    	    WHERE r.offer.type = 'SERVICE'
+    	      AND r.offer.provider.id = :providerId
+    	      AND (
+    	          (r.startTime BETWEEN :startOfDay AND :endOfDay)
+    	          OR
+    	          (r.endTime BETWEEN :startOfDay AND :endOfDay)
+    	      )
+    	""")
+	List<Event> findEventsWithProviderServiceReservationsOnDate(
+	    @Param("providerId") Integer providerId,
+	    @Param("startOfDay") LocalDateTime startOfDay,
+	    @Param("endOfDay") LocalDateTime endOfDay
+	);
+    
+    
+    @Query("""
+    	    SELECT COUNT(r) > 0
+    	    FROM OfferReservation r
+    	    WHERE TYPE(r.offer) = Service
+    	      AND r.offer.provider.id = :providerId
+    	      AND r.endTime > CURRENT_TIMESTAMP
+    	""")
+    boolean existsUpcomingServiceReservationsByProviderId(@Param("providerId") Integer providerId);
 
 }
