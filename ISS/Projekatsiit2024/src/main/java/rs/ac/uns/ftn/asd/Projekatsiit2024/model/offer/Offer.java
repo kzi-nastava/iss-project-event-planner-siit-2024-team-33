@@ -27,8 +27,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Setter
 @Getter
-public class Offer
-{
+public class Offer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

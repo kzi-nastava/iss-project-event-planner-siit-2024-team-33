@@ -1,26 +1,22 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.controller.NotificationController;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Admin;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AdminRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.NotificationService;
 
 @Service
 public class OfferCategoryService {
@@ -108,6 +104,17 @@ public class OfferCategoryService {
 		return oc;
 	}
 	
+	public List<OfferCategory> getSpecificAvailableOffers(Boolean isAccepted, 
+			Boolean isEnabled, OfferType type) {
+		if (type == null) {
+			return this.getOffers(isAccepted, isEnabled);
+		}
+		else {
+			return offerCategoryRepo.findAvailableProductCategories(type);
+		}
+	}
+	
+	
 	public List<OfferCategory> getOffers(Boolean isAccepted, Boolean isEnabled){
 		return offerCategoryRepo.getCategories(isAccepted, isEnabled);
 	}
@@ -166,5 +173,9 @@ public class OfferCategoryService {
 		offerCategoryRepo.deleteById(id);
 		
 		return newOC.get();
+	}
+
+	public boolean existsByName(String name) {
+		return offerCategoryRepo.existsByNameIgnoreCase(name.trim());
 	}
 }

@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.offer;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -23,8 +23,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.prices.PutPriceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.PriceService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.PriceService;
 
 @RestController
 @RequestMapping("/api/offers/mine/prices")

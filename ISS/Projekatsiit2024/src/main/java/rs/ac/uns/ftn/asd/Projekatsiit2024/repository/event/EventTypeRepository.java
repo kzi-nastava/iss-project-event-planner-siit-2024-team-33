@@ -18,4 +18,7 @@ public interface EventTypeRepository extends JpaRepository<EventType, Integer>{
 	
 	@Query("SELECT COUNT(et) > 0 FROM EventType et WHERE LOWER(et.name) = LOWER(:name)")
 	boolean existsByNameIgnoreCase(@Param("name") String name);
+	
+	@Query("SELECT e FROM EventType e WHERE e.id IN :ids AND e.isActive = true")
+	List<EventType> findActiveEventsByIds(@Param("ids") List<Integer> ids);
 }

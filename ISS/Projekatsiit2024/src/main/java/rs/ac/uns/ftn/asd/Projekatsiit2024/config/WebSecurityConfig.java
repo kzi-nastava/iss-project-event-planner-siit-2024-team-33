@@ -84,13 +84,7 @@ public class WebSecurityConfig {
       );
         
         http.authorizeHttpRequests(request -> {
-            request//.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
-                   //.requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
-//                   .requestMatchers(new AntPathRequestMatcher("/api/events/**")).permitAll()
-//                   .requestMatchers(new AntPathRequestMatcher("/api/offers/**")).permitAll()
-                   //.requestMatchers(new AntPathRequestMatcher("/api/services/**")).permitAll()
-                   //.requestMatchers(new AntPathRequestMatcher("/api/whoami")).hasRole("USER")
-            
+            request
             	//authentication
 		        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/auth/check-email").permitAll()
@@ -110,16 +104,15 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/activation").hasAuthority("ADMIN_ROLE")
 		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/deactivation").hasAuthority("ADMIN_ROLE")
-		        .requestMatchers(HttpMethod.GET, "api/eventTypes/active").permitAll()
-		        .requestMatchers(HttpMethod.GET, "api/eventTypes/exists").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/eventTypes/active").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/eventTypes/exists").hasAuthority("ADMIN_ROLE")
 		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*").hasAuthority("ADMIN_ROLE")
-		        .requestMatchers(HttpMethod.GET, "api/eventTypes").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/eventTypes").hasAuthority("ADMIN_ROLE")
 		        .requestMatchers(HttpMethod.POST, "/api/eventTypes").hasAuthority("ADMIN_ROLE")
 		        
 		        //events
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.POST, "/api/events/*/join").authenticated()
-		        .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/details").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/statistics").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
@@ -135,6 +128,7 @@ public class WebSecurityConfig {
 		        
 		        //offer categories
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/exists").hasAuthority("PROVIDER_ROLE")
 		        .requestMatchers("/api/offerCategories/**").hasAnyAuthority("ADMIN_ROLE")
 		        
 		        
@@ -149,7 +143,6 @@ public class WebSecurityConfig {
 		        
 		        //offers
 		        .requestMatchers("/api/offers/mine/**").authenticated()
-		        .requestMatchers("/api/offers/**").permitAll()
 
 	            //OfferReservation
 	            .requestMatchers(HttpMethod.POST, "/api/services/*/reservations").hasAnyAuthority("ORGANIZER_ROLE")
@@ -165,8 +158,13 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
 		        
 		        //product
-		        .requestMatchers(HttpMethod.GET, "/api/products/*/reservations/**").hasAnyAuthority("ORGANIZER_ROLE")
-		        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/products/*/reservations/**").authenticated()
+		        .requestMatchers("/api/products/*/reservations/**").hasAnyAuthority("ORGANIZER_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/products/*").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/products/me").hasAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.POST, "/api/products").hasAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/products/*").hasAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/products/*").hasAuthority("PROVIDER_ROLE")
 
 		        //Budget
 		        .requestMatchers("/api/events/*/budget/**").hasAnyAuthority("ORGANIZER_ROLE")
@@ -193,28 +191,8 @@ public class WebSecurityConfig {
 	            .requestMatchers(HttpMethod.GET, "/api/reports/suspension-time/**").authenticated()
 	            .requestMatchers(HttpMethod.GET, "/api/reports/**").hasAnyAuthority("ADMIN_ROLE")
 		        
-
-
-		        .requestMatchers("/api/images/**").permitAll()
-		        .requestMatchers("/api/providers/**").permitAll()
-		        .requestMatchers("/api/users/signup").permitAll()
-		        .requestMatchers("/api/users/me").authenticated()
-		        .requestMatchers("/api/users/update/profile").authenticated()
-		        .requestMatchers("/api/users/update/password").authenticated()
-		        .requestMatchers("/api/users/terminate/profile").authenticated()
+	            .requestMatchers("/api/images/**").permitAll()
 		        .requestMatchers("/h2-console/**").permitAll()
-		        .requestMatchers("/api/events/*/budget/**").permitAll()
-		        .requestMatchers("/api/chat/*/**").permitAll()
-		        .requestMatchers("/api/offers/*/**").permitAll()
-		        .requestMatchers("/api/events/**").permitAll()
-		        .requestMatchers("api/events/paginated").permitAll()
-		        .requestMatchers("/api/events/types/**").permitAll()
-		        .requestMatchers("/api/offerCategories/**").permitAll()
-		        .requestMatchers("/api/offers/**").permitAll()
-		        .requestMatchers("/api/user/*/offer-prices/**").permitAll()
-		        .requestMatchers("/api/products/**").permitAll()
-		        .requestMatchers("/api/ratings/**").permitAll()
-		        .requestMatchers("/api/services/**").permitAll()
 		        .anyRequest().permitAll();
         });
         http.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService()), UsernamePasswordAuthenticationFilter.class);

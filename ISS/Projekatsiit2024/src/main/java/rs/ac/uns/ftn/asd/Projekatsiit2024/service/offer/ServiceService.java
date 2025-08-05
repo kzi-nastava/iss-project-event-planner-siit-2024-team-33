@@ -1,11 +1,10 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -23,6 +22,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ServiceRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
@@ -34,6 +34,8 @@ public class ServiceService {
 	private ServiceRepository serviceRepo;
 	@Autowired
 	private OfferCategoryRepository offerCategoryRepo;
+	@Autowired
+	private OfferRepository offerRepo;
 	@Autowired
 	private ProviderRepository providerRepo;
 	@Autowired
@@ -190,7 +192,7 @@ public class ServiceService {
 
 	    List<String> imagePaths = picturesDataURI.stream().map(imageData -> ImageManager.saveAsFile(imageData)).toList();
 	    
-	    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, category.get(), provider, validEvents, city, availability, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+	    Service service = new Service(offerRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, category.get(), provider, validEvents, city, availability, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 	    service = serviceRepo.saveAndFlush(service);
 	    
 		return service;
@@ -234,7 +236,7 @@ public class ServiceService {
 
 		    List<String> imagePaths = picturesDataURI.stream().map(imageData -> ImageManager.saveAsFile(imageData)).toList();
 		    
-		    Service service = new Service(serviceRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, oc, provider, validEvents, city, availability, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
+		    Service service = new Service(offerRepo.getMaxOfferID()+1,name, description, price, discount, imagePaths, oc, provider, validEvents, city, availability, reservationInHours, cancellationInHours, isAutomatic, minLengthInMins, maxLengthInMins);
 		    service = serviceRepo.save(service);
 		    
 			return service;

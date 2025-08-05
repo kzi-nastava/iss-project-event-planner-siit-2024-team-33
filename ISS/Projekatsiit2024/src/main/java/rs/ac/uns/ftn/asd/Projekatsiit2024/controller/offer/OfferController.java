@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.offer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,8 +42,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ServiceService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.ServiceService;
 
 
 @RestController

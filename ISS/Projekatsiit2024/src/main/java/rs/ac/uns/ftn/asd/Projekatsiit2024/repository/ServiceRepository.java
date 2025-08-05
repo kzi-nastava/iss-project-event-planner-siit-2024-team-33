@@ -11,8 +11,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Integer>{
-	@Query("SELECT nvl(max(o.offerID),0) from Offer o")
-	public Integer getMaxOfferID();
 	
 	@Query("SELECT s FROM Service s WHERE s.id=(SELECT max(s2.id) FROM Service s2 WHERE s2.offerID=:offerId)")
 	public Service getLatestServiceVersion(@Param("offerId") Integer offerId);

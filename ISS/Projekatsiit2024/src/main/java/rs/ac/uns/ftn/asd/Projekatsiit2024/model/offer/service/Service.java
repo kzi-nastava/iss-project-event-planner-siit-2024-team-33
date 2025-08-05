@@ -1,7 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service;
 
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
