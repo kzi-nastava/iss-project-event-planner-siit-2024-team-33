@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
@@ -57,12 +58,11 @@ public class OfferCategoryService {
 	}
 	
 	public OfferCategory editCategory(Integer id, String name, String description, Boolean isEnabled) {
-		//TODO: Notify PUP about changes
 		validateData(name, description);
 		
 		Optional<OfferCategory> optionalOc = offerCategoryRepo.findById(id);
 		if(optionalOc.isEmpty())
-			throw new IllegalArgumentException("Invalid argument, no offer category with ID " + id + " exists.");
+			throw new EntityNotFoundException("Invalid argument, no offer category with ID " + id + " exists.");
 		
 		List<Provider> providers = offerCategoryRepo.getProvidersWithCategory(id);
 		providers.forEach(p -> {
@@ -81,7 +81,7 @@ public class OfferCategoryService {
 	public void deleteCategory(Integer id) throws IllegalArgumentException, DataIntegrityViolationException {
 		Optional<OfferCategory> optionalOc = offerCategoryRepo.findById(id);
 		if(optionalOc.isEmpty())
-			throw new IllegalArgumentException("Invalid argument, no offer category with ID " + id + " exists.");
+			throw new EntityNotFoundException("Invalid argument, no offer category with ID " + id + " exists.");
 		
 		//Check for conflict
 		if(offerRepo.existsByCategoryID(id))

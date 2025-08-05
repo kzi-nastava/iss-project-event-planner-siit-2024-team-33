@@ -15,6 +15,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
@@ -109,7 +110,7 @@ public class OfferReservationService {
         offerReservation.setEndTime(LocalDateTime.of(dateOfReservation, endTime));
         
         Provider provider = offer.getProvider();
-        Organizer organizer = event.getOrganizer();
+        AuthentifiedUser organizer = event.getOrganizer();
         String providerStr = "Your offer: " + offer.getName() + ", got reserved for " + dateOfReservation+ ", for an evet: " +event.getName()+ ". by Organizer: " + organizer.getEmail();
         String organizerStr = "You successfully reserved an offer: " +offer.getName() +", for an event: "+ event.getName() + "\n Offer you reserved is owned by provider: " +provider.getEmail()+".";
         invitationService.sendEmail(null, null, provider.getEmail(), "Your offer has been reserved", providerStr);
@@ -137,7 +138,7 @@ public class OfferReservationService {
     	Event event = getEventByID(eventId);
     	Offer offer = getOfferByID(offerId);
     	
-        List<OfferReservation> reservations = offerReservationRepo.findByOfferId(offer.getId());
+        List<OfferReservation> reservations = offerReservationRepo.findByOfferId(offer.getOfferID());
 
         LocalDateTime eventStartTime = event.getDateOfEvent();
         LocalDateTime eventEndTime = event.getEndOfEvent();
@@ -176,7 +177,7 @@ public class OfferReservationService {
         }
 
 
-        return createOfferReservation(event.getDateOfEvent().toLocalDate(),offer.getOfferID(),event.getId(),offerStartTime.toLocalTime(),offerEndTime.toLocalTime());
+        return createOfferReservation(event.getDateOfEvent().toLocalDate(),offer.getId(),event.getId(),offerStartTime.toLocalTime(),offerEndTime.toLocalTime());
     }
 
     private boolean isTimeColliding(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2) {
@@ -187,7 +188,7 @@ public class OfferReservationService {
         rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service service = (rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service) reservation.getOffer();
 //        long timeUntilCancellation = reservation.getDateOfReservation().minus(LocalDate.now());
         long timeUntilCancellation = ChronoUnit.MILLIS.between(LocalDate.now().atStartOfDay(), reservation.getDateOfReservation().atStartOfDay());
-        long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000 * 10;
+        long cancellationDeadline = service.getCancellationInHours() * 60 * 60 * 1000;
 
         if (timeUntilCancellation < cancellationDeadline) {
             throw new IllegalArgumentException("Cannot cancel the service less than " + service.getCancellationInHours() + " hours before the reservation.");
@@ -232,6 +233,8 @@ public class OfferReservationService {
 	}
 	
 	public List<OfferReservation> getReservationsForServiceByOrganizer(Integer serviceID, String organizerEmail) {
+		System.out.println("Getting reservations for serviceID = " + serviceID + ", organizerEmail = " + organizerEmail);
+
 	    return offerReservationRepo.findAllByOffer_IdAndEvent_Organizer_Email(serviceID, organizerEmail);
 	}
 

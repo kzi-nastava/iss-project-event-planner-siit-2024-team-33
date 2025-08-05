@@ -54,6 +54,15 @@ public class reportService {
         user.setSuspensionEndDate(LocalDateTime.now().plusDays(3));
         userRepository.save(user);
     }
+    
+    public void unbanUser(Integer userId) {
+        AuthentifiedUser user = userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("User not found."));
+
+        user.setSuspensionEndDate(null);
+        userRepository.save(user);
+    	
+    }
 
     public long getSuspensionTimeRemaining(Integer userId) {
         AuthentifiedUser user = userRepository.findById(userId)

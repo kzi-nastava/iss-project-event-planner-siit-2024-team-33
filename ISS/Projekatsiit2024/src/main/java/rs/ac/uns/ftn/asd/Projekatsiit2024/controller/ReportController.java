@@ -35,6 +35,7 @@ public class ReportController {
     private AuthentifiedUserRepository userRepo;
     @Autowired
     private ReportRepository reportRepo;
+    
     @PostMapping
     public ResponseEntity<GetReportDTO> submitReport(@RequestBody PostReportDTO postReportDTO, @AuthenticationPrincipal UserPrincipal userPrincipal) {
         AuthentifiedUser user = userPrincipal.getUser();
@@ -65,7 +66,13 @@ public class ReportController {
     @PostMapping("/suspend/{userId}")
     public ResponseEntity<String> suspendUser(@PathVariable Integer userId) {
             reportService.suspendUser(userId);
-            return ResponseEntity.ok("");
+            return ResponseEntity.ok("Banned");
+    }
+    
+    @PostMapping("/unsuspend/{userId}")
+    public ResponseEntity<String> unbanUser(@PathVariable Integer userId) {
+            reportService.unbanUser(userId);
+            return ResponseEntity.ok("Unbanned");
     }
     
     @GetMapping("/suspension-time/{userId}")
