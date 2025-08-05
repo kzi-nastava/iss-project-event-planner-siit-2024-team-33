@@ -1,7 +1,6 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.offer;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,10 +20,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.HandleSuggestionDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.PostOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.PutOfferCategoryDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferCategoryService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferType;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferCategoryService;
 
 @RestController
 @RequestMapping("/api/offerCategories")
@@ -45,10 +44,18 @@ public class OfferCategoryController {
 	
 	
 	@GetMapping("/available")
-	public ResponseEntity<List<MinimalOfferCategoryDTO>> getCategories() {
-		List<OfferCategory> ocs = offerCategoryService.getOffers(true, true);
+	public ResponseEntity<List<MinimalOfferCategoryDTO>> getCategories(
+			@RequestParam(name = "type", required = false) OfferType type) {
+		List<OfferCategory> ocs = offerCategoryService.getSpecificAvailableOffers(true, true, type);
 		List<MinimalOfferCategoryDTO> miniOcs = ocs.stream().map(oc -> new MinimalOfferCategoryDTO(oc)).toList();
 		return ResponseEntity.ok(miniOcs);
+	}
+	
+	
+	@GetMapping("/exists")
+	public ResponseEntity<Boolean> checkIfExists(@RequestParam String name) {
+		boolean exists = offerCategoryService.existsByName(name);
+		return ResponseEntity.ok(exists);
 	}
 	
 	
@@ -63,7 +70,7 @@ public class OfferCategoryController {
 	public ResponseEntity createNewCategory(@RequestBody PostOfferCategoryDTO data,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		try {
-			OfferCategory oc = offerCategoryService.createAndFlush(data.name, data.description);
+			OfferCategory oc = offerCategoryService.createAndFlush(data.getName(), data.getDescription());
 			return ResponseEntity.status(201).body(new MinimalOfferCategoryDTO(oc));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(e.toString());

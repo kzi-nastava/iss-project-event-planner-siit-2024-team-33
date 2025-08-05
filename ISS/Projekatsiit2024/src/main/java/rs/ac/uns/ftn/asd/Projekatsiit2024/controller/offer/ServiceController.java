@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.offer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -28,8 +28,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PostServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PutServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ServiceService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.ServiceService;
 
 
 @RestController
