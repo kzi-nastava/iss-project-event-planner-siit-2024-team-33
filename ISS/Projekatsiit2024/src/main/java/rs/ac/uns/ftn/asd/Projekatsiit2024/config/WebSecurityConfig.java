@@ -169,6 +169,7 @@ public class WebSecurityConfig {
 
 		        //Prices
 		        .requestMatchers("/api/offers/mine/prices/**").hasAnyAuthority("PROVIDER_ROLE")
+		        
 		        //Invitations
 		        .requestMatchers(HttpMethod.POST, "/api/events/invitations").hasAnyAuthority("ORGANIZER_ROLE")
 		        .requestMatchers(HttpMethod.PATCH, "/api/events/invitations/**").authenticated()

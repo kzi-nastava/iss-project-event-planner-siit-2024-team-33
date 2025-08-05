@@ -145,7 +145,7 @@ public class RatingService {
         rating.setAccepted(true);
         
         Event event = rating.getEvent();
-        Organizer org = event.getOrganizer();
+        AuthentifiedUser org = event.getOrganizer();
         
         notificationervice.createNotification(org.getId(), "Your event  " + event.getName() + " got rated with a: " +rating.getRatingValue()+ "\n"
         		+ rating.getComment());

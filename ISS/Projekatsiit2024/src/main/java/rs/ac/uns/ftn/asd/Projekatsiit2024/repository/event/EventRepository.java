@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 
 import java.util.List;
@@ -26,4 +27,7 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
     List<Event> findByOrganizerId(@Param("organizerId") Integer organizerId);
     
     Page<Event> findByOrganizer(Organizer organizer, Pageable pageable);
+    
+    List<Event> findAllByListOfAttendeesContaining(AuthentifiedUser user);
+
 }

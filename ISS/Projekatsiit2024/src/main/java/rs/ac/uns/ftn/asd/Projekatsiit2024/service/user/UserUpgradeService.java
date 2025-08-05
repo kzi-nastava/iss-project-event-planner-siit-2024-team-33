@@ -43,7 +43,6 @@ public class UserUpgradeService {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	
 	//creates upgrade user request which waits for verification
 	public UnverifiedUserUpgrade createUpgradeUserRequest(UserPrincipal userPrincipal, UpgradeUser upgradeUser) 
 			throws UserUpgradeException {
@@ -145,6 +144,7 @@ public class UserUpgradeService {
 
 	    return entityManager.merge(organizer);
 	}
+
 	
 
 	private Provider upgradeToProvider(AuthentifiedUser userForUpgrade, UnverifiedUserUpgrade uuu) {
@@ -174,6 +174,6 @@ public class UserUpgradeService {
 	    provider.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
 
         return entityManager.merge(provider);
-		
 	}
+
 }

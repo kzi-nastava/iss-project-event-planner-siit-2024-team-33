@@ -355,6 +355,7 @@ public class EventService {
 
 	    AuthentifiedUser user = optionalUser.get();
 	    List<Invitation> invitations = invitationRepo.findAll();
+	    List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
 	    String residency = null;
 	    if (user instanceof Organizer organizer) {
@@ -368,6 +369,7 @@ public class EventService {
 	    return allEvents.stream()
 	        .filter(event -> !Boolean.TRUE.equals(event.isOver()))
 	        .filter(event -> finalResidency == null || finalResidency.equalsIgnoreCase(event.getPlace()))
+	        .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
 	        .filter(event -> isEventVisibleForUser(user, event))
 	        .filter(event -> canUserSeeEvent(user, event, invitations))
 	        .sorted(Comparator.comparingInt(Event::getNumOfAttendees).reversed())

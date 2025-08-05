@@ -28,7 +28,7 @@ public interface OfferReservationRepository extends JpaRepository<OfferReservati
         @Param("endTime") LocalDateTime endTime
     );
     
-    @Query("SELECT r FROM OfferReservation r WHERE r.offer.id = :offerId")
+    @Query("SELECT r FROM OfferReservation r WHERE r.offer.offerID = :offerId")
     List<OfferReservation> findByOfferId(@Param("offerId") Integer offerId);
     
     @Query("SELECT res.offer FROM OfferReservation res WHERE res.offer.category=:#{#bi.budgetCategory} AND res.event=:#{#bi.event}")
@@ -39,6 +39,7 @@ public interface OfferReservationRepository extends JpaRepository<OfferReservati
     
     List<OfferReservation> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 
+    @Query("SELECT res FROM OfferReservation res WHERE res.offer.offerID=:offerId AND res.event.organizer.email=:email")
     List<OfferReservation> findAllByOffer_IdAndEvent_Organizer_Email(Integer offerId, String email);
 
 }

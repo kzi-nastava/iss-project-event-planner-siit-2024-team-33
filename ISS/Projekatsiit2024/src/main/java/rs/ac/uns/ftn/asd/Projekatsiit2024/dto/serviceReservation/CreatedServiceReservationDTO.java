@@ -21,7 +21,7 @@ public class CreatedServiceReservationDTO {
     
     public CreatedServiceReservationDTO(OfferReservation OR) {
         this.reservationId = OR.getId();
-        this.ServiceName = ((Service) OR.getOffer()).getName();
+        this.ServiceName = OR.getOffer().getName();
         this.EventName = OR.getEvent().getName();
         this.ReservationDate = OR.getDateOfReservation();
         this.StartTime = OR.getStartTime().toLocalTime();

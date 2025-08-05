@@ -24,7 +24,7 @@ public class Scheduler {
     @Scheduled(fixedRate = 60000)
     public void checkUpcomingReservations() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime oneHourFromNow = now.plusHours(1);
+        LocalDateTime oneHourFromNow = now.plusHours(1*24*10);
 
         List<OfferReservation> upcomingReservations = reservationRepository.findByStartTimeBetween(now, oneHourFromNow);
 
