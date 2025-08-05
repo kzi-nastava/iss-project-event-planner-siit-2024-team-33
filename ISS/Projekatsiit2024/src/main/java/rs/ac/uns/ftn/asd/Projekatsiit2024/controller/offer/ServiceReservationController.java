@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.offer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +17,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.ServiceService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerReservationService;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.OfferService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.ServiceService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferReservationService;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -38,7 +38,7 @@ public class ServiceReservationController {
 	@Autowired
 	private ServiceService serviceService;
 	@Autowired
-	private offerReservationService oRS;
+	private OfferReservationService oRS;
 	@Autowired
 	private OfferReservationRepository oRR;
 	@Autowired

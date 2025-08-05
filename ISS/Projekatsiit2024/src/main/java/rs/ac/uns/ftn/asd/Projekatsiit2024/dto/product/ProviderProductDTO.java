@@ -11,7 +11,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
 @Getter
 @Setter
-public class CreatedProductDTO {
+public class ProviderProductDTO {
 	private Integer id;
 	private String name;
 	private String description;
@@ -24,10 +24,10 @@ public class CreatedProductDTO {
 	private Integer offerCategoryId;
 	private List<Integer> eventTypeIds;
 	
-	public CreatedProductDTO() {
+	public ProviderProductDTO() {
 	}
 	
-	public CreatedProductDTO(Product product) {
+	public ProviderProductDTO(Product product) {
 		this.id = product.getId();
 		this.name = product.getName();
 		this.description = product.getDescription();

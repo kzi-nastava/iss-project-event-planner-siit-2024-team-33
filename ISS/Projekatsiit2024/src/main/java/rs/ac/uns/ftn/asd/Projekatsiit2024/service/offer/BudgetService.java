@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer;
 
 import java.util.ArrayList;
 import java.util.HashSet;

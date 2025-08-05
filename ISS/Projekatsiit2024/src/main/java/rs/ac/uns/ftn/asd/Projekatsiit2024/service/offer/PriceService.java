@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer;
 
 import java.nio.file.AccessDeniedException;
 import java.util.function.Function;

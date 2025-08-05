@@ -1,15 +1,9 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product;
 
-import java.sql.Date;
 import java.util.List;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;

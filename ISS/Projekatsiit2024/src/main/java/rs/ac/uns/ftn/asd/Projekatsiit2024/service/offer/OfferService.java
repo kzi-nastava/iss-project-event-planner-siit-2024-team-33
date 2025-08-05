@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;

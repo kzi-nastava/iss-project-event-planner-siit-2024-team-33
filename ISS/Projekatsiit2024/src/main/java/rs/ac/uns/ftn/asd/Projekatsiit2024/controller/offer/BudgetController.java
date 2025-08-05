@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024.controller;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.offer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,7 +23,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.MinimalBudgetItemDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.PostBudgetItemDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.PutBudgetItemDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.BudgetItem;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.BudgetService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.BudgetService;
 
 @RestController
 @RequestMapping("/api/events/{eventID}/budget")
