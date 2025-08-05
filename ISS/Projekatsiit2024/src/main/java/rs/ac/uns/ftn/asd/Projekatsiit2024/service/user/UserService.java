@@ -21,6 +21,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.InvalidPasswordFormatEx
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserDeletionException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
@@ -167,38 +168,24 @@ public class UserService {
 	}
 	
 	
-	@Transactional(propagation = Propagation.REQUIRED)
-	public AuthentifiedUser terminateUser(AuthentifiedUser user) throws UserUpdateException {
-		AuthentifiedUser updatedUser = null;
+	public void terminateUser(AuthentifiedUser user) throws UserUpdateException {
 		
 		if (user.getRole() == null) {
-			throw new UserUpdateException("The user with such role doesn't exist.");
+			throw new UserDeletionException("The user with such role doesn't exist.");
 		}
 		
 		switch(user.getRole().toString()) {
-		case "AUSER_ROLE":
-			AuthentifiedUser aUser = user;
-			aUser.setIsDeleted(true);
-			updatedUser = userRepo.save(aUser);
-			break;
-
 		case "ORGANIZER_ROLE":
-			Organizer organizer = (Organizer) user;
-			organizer.setIsDeleted(true);
-			updatedUser = userRepo.save(organizer);
+			organizerService.deleteOrganizer(user.getId());
 			break;
 
 		case "PROVIDER_ROLE":
-			Provider provider = (Provider) user;
-			provider.setIsDeleted(true);
-			updatedUser = userRepo.save(provider);
+			providerService.deleteProvider(user.getId());
 			break;
 
 		default:
-			throw new UserUpdateException("The user with such role doesn't exist.");
+			throw new UserDeletionException("The user with such role can't terminate his account.");
 		}
-		
-		return updatedUser;
 	}
 	
 		

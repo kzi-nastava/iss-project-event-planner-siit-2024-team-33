@@ -10,10 +10,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.BudgetItem;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 
 public interface OfferReservationRepository extends JpaRepository<OfferReservation,Integer>{
 

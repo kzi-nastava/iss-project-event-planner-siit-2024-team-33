@@ -16,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserDeletionException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
@@ -161,5 +162,16 @@ public class ProviderService {
 		}
 		
 		return true;
+	}
+	
+	
+	public void deleteProvider(Integer userId) {
+		Optional<Provider> optionalProvider = providerRepository.findById(userId);
+		
+		if (optionalProvider.isEmpty())
+			throw new UserDeletionException("There is no such provider to delete.");
+		Provider provider = optionalProvider.get();
+		
+		//does provider have any services in the future
 	}
 }

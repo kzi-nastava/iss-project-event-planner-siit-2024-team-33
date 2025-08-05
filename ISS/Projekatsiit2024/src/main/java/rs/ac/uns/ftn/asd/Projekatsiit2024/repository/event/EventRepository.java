@@ -38,4 +38,12 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
     	List<Event> findByParticipantAndDate(@Param("userId") Integer userId,
     	                                     @Param("startOfDay") LocalDateTime startOfDay,
     	                                     @Param("endOfDay") LocalDateTime endOfDay);
+    
+    @Query("""
+            SELECT COUNT(e) > 0
+            FROM Event e
+            WHERE e.organizer.id = :organizerId
+            AND e.endOfEvent > CURRENT_TIMESTAMP
+        """)
+    boolean existsFutureOrOngoingEventsByOrganizerId(@Param("organizerId") Integer organizerId);
 }

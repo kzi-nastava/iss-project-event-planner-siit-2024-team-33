@@ -1,4 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.offer;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;

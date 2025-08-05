@@ -155,7 +155,7 @@ public class FavoritesService {
 	
 	public Page<MinimalOfferDTO> getFavoriteOffers(UserPrincipal userPrincipal, Pageable pageable) {
 	    Integer userId = userPrincipal.getUser().getId();
-	    return userRepository.findFavoriteOffersByUserId(userId, pageable)
+	    return offerRepository.findLatestFavoriteOffersByUserId(userId, pageable)
 	    		.map(MinimalOfferDTO::new);
 	}
 	

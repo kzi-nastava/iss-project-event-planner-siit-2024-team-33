@@ -22,6 +22,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.InvalidPasswordFormatEx
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserDeletionException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpgradeException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.verification.VerificationTokenException;
@@ -59,6 +60,11 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(UserUpdateException.class)
     public ResponseEntity<ErrorMessages> handleException(UserUpdateException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
+    }
+    
+    @ExceptionHandler(UserDeletionException.class)
+    public ResponseEntity<ErrorMessages> handleException(UserDeletionException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
     }
 	
