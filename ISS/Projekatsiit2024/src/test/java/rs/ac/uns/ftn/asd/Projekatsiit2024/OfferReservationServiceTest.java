@@ -21,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;

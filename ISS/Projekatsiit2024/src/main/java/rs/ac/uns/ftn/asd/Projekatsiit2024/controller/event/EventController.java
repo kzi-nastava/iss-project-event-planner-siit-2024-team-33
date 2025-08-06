@@ -1,12 +1,14 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.event;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.event.EventScheduleService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.event.EventService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.reportPDF.ReportPDFService;
 
@@ -51,6 +54,8 @@ public class EventController {
 	AuthentifiedUserRepository userRepo;
 	@Autowired
 	ReportPDFService reportPDFService;
+	@Autowired
+	EventScheduleService eventScheduleService;
 	
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -127,6 +132,16 @@ public class EventController {
 		            .header("Content-Disposition", "attachment; filename=event-details.pdf")
 		            .contentType(MediaType.APPLICATION_PDF)
 		            .body(pdfBytes);
+	}
+	
+	
+	@GetMapping("/me")
+	public ResponseEntity<List<MinimalEventDTO>> getUserEventsByDate(
+	    @AuthenticationPrincipal UserPrincipal userPrincipal,
+	    @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+	    List<MinimalEventDTO> events = eventScheduleService.getUserEventsByDate(userPrincipal, date);
+	    return ResponseEntity.ok(events);
 	}
 	
 	

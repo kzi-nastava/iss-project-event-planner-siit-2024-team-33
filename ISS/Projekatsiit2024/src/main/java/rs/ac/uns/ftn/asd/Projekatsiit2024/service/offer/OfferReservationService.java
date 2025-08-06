@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.offerReservation.ServiceBookingException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
@@ -223,7 +223,11 @@ public class OfferReservationService {
 
 	    reservation.setDateOfReservation(reservationDate);
 	    reservation.setStartTime(LocalDateTime.of(reservationDate, startTime));
-	    reservation.setEndTime(LocalDateTime.of(reservationDate, endTime));
+	    if (endTime.isAfter(startTime)){
+	    	  reservation.setEndTime(LocalDateTime.of(reservationDate,endTime));
+    	}else{
+    	  reservation.setEndTime(LocalDateTime.of(reservationDate.plusDays(1),endTime));
+    	}
 
 	    return offerReservationRepo.save(reservation);
 	}

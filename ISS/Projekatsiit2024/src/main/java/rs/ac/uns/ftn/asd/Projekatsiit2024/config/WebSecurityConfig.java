@@ -109,6 +109,7 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*").hasAuthority("ADMIN_ROLE")
 		        .requestMatchers(HttpMethod.GET, "/api/eventTypes").hasAuthority("ADMIN_ROLE")
 		        .requestMatchers(HttpMethod.POST, "/api/eventTypes").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/eventTypes/me").hasAuthority("PROVIDER_ROLE")
 		        
 		        //events
 		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
@@ -117,16 +118,19 @@ public class WebSecurityConfig {
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/statistics").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/events/*/statistics").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/me").authenticated()
 		        
 		        //favorites
 		        .requestMatchers(HttpMethod.GET, "/api/favorites/events").authenticated()
 		        .requestMatchers(HttpMethod.GET, "/api/favorites/events/*/exists").permitAll()
 		        .requestMatchers(HttpMethod.POST, "/api/favorites/events/*").authenticated()
 		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/offers").authenticated()
 		        
 		        //offer categories
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
 		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/exists").hasAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/me").hasAuthority("PROVIDER_ROLE")
 		        .requestMatchers("/api/offerCategories/**").hasAnyAuthority("ADMIN_ROLE")
 		        
 		        

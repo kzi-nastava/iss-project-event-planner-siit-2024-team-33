@@ -117,13 +117,12 @@ public class UserController {
 	
 	
 	@PreAuthorize("isAuthenticated()")
-	@DeleteMapping(value = "/terminate/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> terminateUser(@AuthenticationPrincipal UserPrincipal userPrincipal) throws UserUpdateException {
-		
+	@DeleteMapping(value = "/terminate/profile")
+	public ResponseEntity<Void> terminateUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		AuthentifiedUser user = userPrincipal.getUser();
-		AuthentifiedUser updatedUser = userService.terminateUser(user);
+		userService.terminateUser(user);
 		
-		return ResponseEntity.ok(updatedUser.getIsDeleted());
+		return ResponseEntity.noContent().build();
 	}
 	
 	

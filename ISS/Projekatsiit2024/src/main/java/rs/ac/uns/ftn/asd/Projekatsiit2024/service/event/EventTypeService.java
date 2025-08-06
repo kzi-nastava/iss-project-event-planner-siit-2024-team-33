@@ -17,6 +17,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.CreateEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.GetEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.UpdateEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
@@ -36,8 +37,12 @@ public class EventTypeService {
 	public Page<GetEventTypeDTO> readEventTypes(Pageable pageable) {
 		return eventTypeRepository.findAll(pageable).map(GetEventTypeDTO::new);
 	}
-
 	
+	
+	public Page<GetEventTypeDTO> readProviderEventTypes(UserPrincipal userPrincipal, Pageable pageable) {
+		return eventTypeRepository.findDistinctByProviderId(userPrincipal.getUser().getId(), pageable).map(GetEventTypeDTO::new);
+	}
+
 	
 	@Transactional(propagation = Propagation.REQUIRED)
     public EventType createEventType(CreateEventTypeDTO eventTypeDTO) throws EventTypeValidationException {

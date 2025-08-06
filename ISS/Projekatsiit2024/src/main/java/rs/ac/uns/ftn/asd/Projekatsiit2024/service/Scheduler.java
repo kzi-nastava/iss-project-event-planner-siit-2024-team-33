@@ -4,7 +4,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 
 import java.time.LocalDateTime;

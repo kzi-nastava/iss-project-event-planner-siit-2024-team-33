@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.RegisterUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpdateUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserDeletionException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.OrganizerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
@@ -29,6 +32,9 @@ public class OrganizerService {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private EventRepository eventRepository;
 	
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 	
@@ -122,5 +128,24 @@ public class OrganizerService {
 		}
 		
 		return true;
+	}
+	
+	
+	
+	@Transactional
+	public void deleteOrganizer(Integer userId) {
+		Optional<Organizer> optionalOrganizer = organizerRepository.findById(userId);
+		
+		if (optionalOrganizer.isEmpty())
+			throw new UserDeletionException("There is no such organizer to delete.");
+		Organizer organizer = optionalOrganizer.get();
+		
+		//does organizer have any organized events in the future
+		if (eventRepository.existsFutureOrOngoingEventsByOrganizerId(userId)) {
+	        throw new UserDeletionException("Cannot delete organizer with ongoing or future events.");
+	    }
+		
+		organizer.setIsDeleted(true);
+	    organizerRepository.save(organizer);
 	}
 }

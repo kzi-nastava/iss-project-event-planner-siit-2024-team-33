@@ -3,6 +3,8 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,4 +42,11 @@ public interface OfferCategoryRepository extends JpaRepository<OfferCategory,Int
 	
 	@Query("SELECT COUNT(oc) > 0 FROM OfferCategory oc WHERE LOWER(oc.name) = LOWER(:name)")
 	boolean existsByNameIgnoreCase(@Param("name") String name);
+	
+	@Query("""
+		    SELECT DISTINCT oc FROM OfferCategory oc
+		    JOIN oc.offers o
+		    WHERE o.provider.id = :providerId
+		""")
+	Page<OfferCategory> findDistinctByOffersProviderId(@Param("providerId") Integer providerId, Pageable pageable);
 }

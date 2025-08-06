@@ -55,12 +55,6 @@ public class ProductController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
 	@GetMapping("/me")
 	public ResponseEntity<Page<ProviderProductDTO>> getProvidersProducts(
 			@AuthenticationPrincipal UserPrincipal userPrincipal, 

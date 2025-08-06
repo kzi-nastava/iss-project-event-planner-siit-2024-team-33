@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.HandleSuggestionDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.OfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.PostOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.PutOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
@@ -43,7 +46,6 @@ public class OfferCategoryController {
 		return ResponseEntity.ok(miniOcs);
 	}
 	
-	
 	@GetMapping("/available")
 	public ResponseEntity<List<MinimalOfferCategoryDTO>> getCategories(
 			@RequestParam(name = "type", required = false) OfferType type) {
@@ -52,12 +54,21 @@ public class OfferCategoryController {
 		return ResponseEntity.ok(miniOcs);
 	}
 	
+	@GetMapping("/me")
+	public ResponseEntity<Page<OfferCategoryDTO>> providerOfferCategories(
+			@AuthenticationPrincipal UserPrincipal userPrincipal, 
+			@PageableDefault(size = 10, sort = "id") Pageable pageable) {
+		Page<OfferCategoryDTO> offerCategories = offerCategoryService.getProviderOfferCategories(userPrincipal, pageable);
+		return ResponseEntity.ok(offerCategories);
+	}
 	
 	@GetMapping("/exists")
 	public ResponseEntity<Boolean> checkIfExists(@RequestParam String name) {
 		boolean exists = offerCategoryService.existsByName(name);
 		return ResponseEntity.ok(exists);
 	}
+	
+	
 	
 	
 	@GetMapping("/pending")

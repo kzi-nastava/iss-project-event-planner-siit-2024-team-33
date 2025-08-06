@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -41,6 +43,22 @@ public interface OfferRepository extends JpaRepository<Offer,Integer>{
     	    ORDER BY o.offerID ASC
     	""")
     	List<Offer> findLatestOffersByOfferID();
+    
+    
+    @Query("""
+    		SELECT o FROM Offer o
+    		WHERE o.id IN (
+    		    SELECT MAX(o2.id)
+    		    FROM AuthentifiedUser u
+    		    JOIN u.favoriteOffers o1
+    		    JOIN Offer o2 ON o2.offerID = o1.offerID
+    		    WHERE u.id = :userId
+    		    GROUP BY o2.offerID
+    		)
+    		AND o.isDeleted = false
+    		AND o.availability <> 'INVISIBLE'
+    		""")
+    Page<Offer> findLatestFavoriteOffersByUserId(@Param("userId") Integer userId, Pageable pageable);
     
 	@Query("SELECT o FROM Offer o WHERE o.id=(SELECT max(o2.id) FROM Offer o2 WHERE o2.offerID=:offerId)")
 	public Offer getLatestOfferVersion(@Param("offerId") Integer offerId);

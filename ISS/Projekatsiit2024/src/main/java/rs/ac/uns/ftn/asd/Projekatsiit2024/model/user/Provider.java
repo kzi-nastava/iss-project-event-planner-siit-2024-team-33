@@ -21,8 +21,8 @@ public class Provider extends AuthentifiedUser {
     private List<String> pictures = new ArrayList<>();
 
     @OneToMany(mappedBy = "provider")
-    private List<Offer> offers;
+    private List<Offer> offers = new ArrayList<>();
 
     @OneToMany(mappedBy = "provider")
-    private List<ProviderRating> ratings;
+    private List<ProviderRating> ratings = new ArrayList<>();
 }
