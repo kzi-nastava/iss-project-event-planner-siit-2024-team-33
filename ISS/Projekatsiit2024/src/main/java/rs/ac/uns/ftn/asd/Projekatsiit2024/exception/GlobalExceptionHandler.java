@@ -45,12 +45,6 @@ public class GlobalExceptionHandler {
 	    		"Invalid email or password."));
 	}
 	
-    @ExceptionHandler(ServiceBookingException.class)
-    public ResponseEntity<Map<String, String>> handleServiceBookingException(ServiceBookingException ex) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("message", ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
 	//user exception
 	
 	@ExceptionHandler(UserCreationException.class)
@@ -126,6 +120,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessages(ex.getMessage()));
     }
 	
+	
+	//service
+
+    @ExceptionHandler(ServiceBookingException.class)
+    public ResponseEntity<Map<String, String>> handleServiceBookingException(ServiceBookingException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 	
 	
 	//verification and upgrade

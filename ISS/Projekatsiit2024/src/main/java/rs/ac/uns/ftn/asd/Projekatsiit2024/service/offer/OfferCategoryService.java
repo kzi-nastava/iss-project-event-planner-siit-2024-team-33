@@ -5,11 +5,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.OfferCategoryDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferType;
@@ -177,5 +180,10 @@ public class OfferCategoryService {
 
 	public boolean existsByName(String name) {
 		return offerCategoryRepo.existsByNameIgnoreCase(name.trim());
+	}
+
+	
+	public Page<OfferCategoryDTO> getProviderOfferCategories(UserPrincipal userPrincipal, Pageable pageable) {
+		return offerCategoryRepo.findDistinctByOffersProviderId(userPrincipal.getUser().getId(), pageable).map(OfferCategoryDTO::new);
 	}
 }
