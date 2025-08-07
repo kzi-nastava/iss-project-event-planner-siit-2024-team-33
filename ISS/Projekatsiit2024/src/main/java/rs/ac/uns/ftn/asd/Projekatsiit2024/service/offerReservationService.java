@@ -148,7 +148,7 @@ public class offerReservationService {
             }
         }
 
-        return createOfferReservation(event.getDateOfEvent().toLocalDate(),offerId,eventId,offerStartTime.toLocalTime(),offerEndTime.toLocalTime());
+        return createOfferReservation(event.getDateOfEvent().toLocalDate(),offer.getId(),event.getId(),offerStartTime.toLocalTime(),offerEndTime.toLocalTime());
     }
 
     private boolean isTimeColliding(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2) {
