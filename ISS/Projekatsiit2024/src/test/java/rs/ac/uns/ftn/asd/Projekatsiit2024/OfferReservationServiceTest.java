@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,8 +20,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.*;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerReservationService;
 
 public class OfferReservationServiceTest {
 
@@ -41,7 +42,49 @@ public class OfferReservationServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
     @Test
+    @DisplayName("createOfferReservation - throws error when offer does not exist")
+    public void TestCreationWithoutProvidedOffer() {
+    	LocalDate date = LocalDate.now();
+    	LocalTime startTime = LocalTime.of(12, 0);
+    	LocalTime endTime = LocalTime.of(14, 0);
+    	Event event = new Event();
+    	int offerId = 0;
+    	int eventId = 99999;
+    	event.setId(eventId);
+    	
+    	when(eventRepo.findById(0)).thenReturn(Optional.of(event));
+    	
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            reservationService.createOfferReservation(date, offerId, eventId, startTime, endTime);
+        });
+        
+        assertEquals("No offer with the given ID exists.", thrown.getMessage());
+    }
+    
+    @Test
+    @DisplayName("createOfferReservation - throws error when event does not exist")
+    public void TestCreationWithoutProvidedEvent() {
+    	LocalDate date = LocalDate.now();
+    	LocalTime startTime = LocalTime.of(12, 0);
+    	LocalTime endTime = LocalTime.of(14, 0);
+    	Offer offer = new Offer();
+    	int offerId = 0;
+    	int eventId = 99999;
+    	offer.setId(offerId);
+    	
+    	when(offerRepo.findById(0)).thenReturn(Optional.of(offer));
+    	
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            reservationService.createOfferReservation(date, offerId, eventId, startTime, endTime);
+        });
+        
+        assertEquals("No event with the given ID exists.", thrown.getMessage());
+    }
+    
+    @Test
+    @DisplayName("createOfferReservation - should create offer reservation")
     public void testCreateOfferReservation_Success() {
         Offer offer = new Offer();
         offer.setOfferID(1);
@@ -70,6 +113,7 @@ public class OfferReservationServiceTest {
     }
     	//--------------------------------------START OF VALIDATION TESTS----------------------------------------------------------------
     @Test
+    @DisplayName("createOfferReservation - throws error when date of reservation hasn't been provided.")
     public void testCreateOfferReservationInvalidArgumentsDate() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             reservationService.createOfferReservation(null, 1, 2, LocalTime.now(), LocalTime.now());
@@ -77,7 +121,9 @@ public class OfferReservationServiceTest {
 
         assertTrue(exception.getMessage().contains("Date of reservation cannot be null"));
     }
+    
     @Test
+    @DisplayName("createOfferReservation - throws error when offer has not been provided")
     public void testCreateOfferReservationInvalidArgumentsOfferId() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             reservationService.createOfferReservation(LocalDate.now(), null, 2, LocalTime.now(), LocalTime.now());
@@ -85,7 +131,9 @@ public class OfferReservationServiceTest {
 
         assertTrue(exception.getMessage().contains("Invalid argument: Offer ID cannot be null."));
     }
+    
     @Test
+    @DisplayName("createOfferReservation - throws error when event has not been provided")
     public void testCreateOfferReservationInvalidArgumentsEventId() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             reservationService.createOfferReservation(LocalDate.now(), 0, null, LocalTime.now(), LocalTime.now());
@@ -93,7 +141,9 @@ public class OfferReservationServiceTest {
 
         assertTrue(exception.getMessage().contains("Invalid argument: Event ID cannot be null."));
     }
+    
     @Test
+    @DisplayName("createOfferReservation - throws error when starting time of reservation is not provided")
     public void testCreateOfferReservationInvalidArgumentsStartTime() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             reservationService.createOfferReservation(LocalDate.now(), 0, 2, null, LocalTime.now());
@@ -101,6 +151,9 @@ public class OfferReservationServiceTest {
 
         assertTrue(exception.getMessage().contains("Invalid argument: Start time cannot be null."));
     }
+    
+    @Test
+    @DisplayName("createOfferReservation - throws error if reservation end time is before start time")
     public void testCreateOfferReservationInvalidArgumentsEndTime() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             reservationService.createOfferReservation(LocalDate.now(), 0, 2, LocalTime.now(), null);
@@ -108,15 +161,18 @@ public class OfferReservationServiceTest {
 
         assertTrue(exception.getMessage().contains("Invalid argument: End time cannot be null."));
     }
+    
     @Test
+    @DisplayName("createOfferReservation - throws error if reservation end time is before start time")
     public void testCreateOfferReservationInvalidArgumentsEndTimeBeforeStartTime() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            reservationService.createOfferReservation(LocalDate.now(), 0, 2, LocalTime.now(), LocalTime.now().minusHours(1));
+            reservationService.createOfferReservation(LocalDate.now().plusDays(3), 0, 2, LocalTime.now(), LocalTime.now().minusHours(1));
         });
 
         assertTrue(exception.getMessage().contains("Invalid argument: End time cannot be earlier than start time."));
     }
     @Test
+    @DisplayName("createOfferReservation - throws error if reservation date is before today")
     public void testCreateOfferReservationInvalidArgumentsReservationDateBeforeNow() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             reservationService.createOfferReservation(LocalDate.now().minusDays(1), 0, 2, LocalTime.now(), LocalTime.now());
@@ -125,49 +181,39 @@ public class OfferReservationServiceTest {
         assertTrue(exception.getMessage().contains("Invalid argument: Given date cannot be before current date."));
     }
     	//--------------------------------------END OF VALIDATION TESTS----------------------------------------------------------------
-    @Test
-    public void testUpdateReservation_ServiceMismatch_ThrowsException() {
-        Offer offer = new Offer();
-        offer.setId(10);
-
-        OfferReservation reservation = new OfferReservation();
-        reservation.setId(1);
-        reservation.setOffer(offer);
-        reservation.setEvent(new Event());
-
-        when(offerReservationRepo.findById(1)).thenReturn(Optional.of(reservation));
-
-        Exception ex = assertThrows(IllegalArgumentException.class, () -> {
-            reservationService.updateReservation(1, 99, LocalDate.now(), LocalTime.of(12, 0), LocalTime.of(13, 0));
-        });
-
-        assertEquals("Service mismatch.", ex.getMessage());
-    }
+    
     //This test checks if this offer is already reserved for this or another event.
     @Test
+    @DisplayName("bookAService - throws error if reservation for 1 offer is already booked for THIS or ANOTHER service")
     public void testReserveAlreadyReservedOffer() {
         Offer offer = new Offer();
         offer.setId(10);
 
         Event event = new Event();
         event.setId(1);
-        event.setDateOfEvent(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)));
-        event.setEndOfEvent(LocalDateTime.of(LocalDate.now(), LocalTime.of(20, 0)));
+        event.setDateOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0)));
+        event.setEndOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(20, 0)));
+        
+        Event eventSecond = new Event();
+        event.setId(2);
+        event.setDateOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0)));
+        event.setEndOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(20, 0)));
         
         OfferReservation existingReservation = new OfferReservation();
         existingReservation.setId(1);
         existingReservation.setOffer(offer);
-        existingReservation.setEvent(event);
-        existingReservation.setDateOfReservation(LocalDate.now());
-        existingReservation.setStartTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0)));
-        existingReservation.setEndTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(14, 0)));
+        existingReservation.setEvent(eventSecond);
+        existingReservation.setDateOfReservation(LocalDate.now().plusDays(3));
+        existingReservation.setStartTime(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0)));
+        existingReservation.setEndTime(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(14, 0)));
         
         //Overlapping reservation time
-        LocalDateTime requestedStart = LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0));
-        LocalDateTime requestedEnd = LocalDateTime.of(LocalDate.now(), LocalTime.of(14, 0));
+        LocalDateTime requestedStart = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0));
+        LocalDateTime requestedEnd = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(14, 0));
         
         when(offerRepo.findById(10)).thenReturn(Optional.of(offer));
         when(eventRepo.findById(1)).thenReturn(Optional.of(event));
+        when(eventRepo.findById(2)).thenReturn(Optional.of(eventSecond));
         when(offerReservationRepo.findByOfferId(10)).thenReturn(List.of(existingReservation));
         
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -183,18 +229,19 @@ public class OfferReservationServiceTest {
     }
     //This test checks if the offer's start and end time is out of bounds for the event
     @Test
+    @DisplayName("bookAService - throws error if offer start-end time is out of bonds of event start-end time")
     public void testTimeOutOfEventTimeBounds() {
         Offer offer = new Offer();
         offer.setId(10);
 
         Event event = new Event();
         event.setId(1);
-        event.setDateOfEvent(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 0)));
-        event.setEndOfEvent(LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0)));
+        event.setDateOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(16, 0)));
+        event.setEndOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(18, 0)));
         
         //Reservation time out of bounds ----EVENT 16~18----     ----OfferReservation 12:17----
-        LocalDateTime requestedStart = LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0));
-        LocalDateTime requestedEnd = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 0));
+        LocalDateTime requestedStart = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0));
+        LocalDateTime requestedEnd = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(17, 0));
         
         when(offerRepo.findById(10)).thenReturn(Optional.of(offer));
         when(eventRepo.findById(1)).thenReturn(Optional.of(event));
@@ -214,37 +261,38 @@ public class OfferReservationServiceTest {
     
     //This test checks if the 1 offer we have collides with the OFFERS OF THE EVENT
     @Test
+    @DisplayName("bookAService - Should throw exception when booking offer overlaps with fully booked event")
     public void testOfferReservationWithAlreadyReservedEvent() {
         Offer offer = new Offer();
         offer.setId(1);
         
         //These two offers will take all the time of the event
         Offer offerReserved1 = new Offer();
-        offer.setId(2);
+        offerReserved1.setId(2);
         Offer offerReserved2 = new Offer();
-        offer.setId(3);
+        offerReserved2.setId(3);
         
         Event event = new Event();
         event.setId(1);
-        event.setDateOfEvent(LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0)));
-        event.setEndOfEvent(LocalDateTime.of(LocalDate.now(), LocalTime.of(20, 0)));
+        event.setDateOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0)));
+        event.setEndOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(20, 0)));
         
         
         OfferReservation existingReservation1 = new OfferReservation();
         existingReservation1.setId(1);
         existingReservation1.setOffer(offerReserved1);
         existingReservation1.setEvent(event);
-        existingReservation1.setDateOfReservation(LocalDate.now());
-        existingReservation1.setStartTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0)));
-        existingReservation1.setEndTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 0)));
+        existingReservation1.setDateOfReservation(LocalDate.now().plusDays(3));
+        existingReservation1.setStartTime(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0)));
+        existingReservation1.setEndTime(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(16, 0)));
         
         OfferReservation existingReservation2 = new OfferReservation();
         existingReservation2.setId(2);
         existingReservation2.setOffer(offerReserved2);
         existingReservation2.setEvent(event);
-        existingReservation2.setDateOfReservation(LocalDate.now());
-        existingReservation2.setStartTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 0)));
-        existingReservation2.setEndTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(20, 0)));
+        existingReservation2.setDateOfReservation(LocalDate.now().plusDays(3));
+        existingReservation2.setStartTime(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(16, 0)));
+        existingReservation2.setEndTime(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(20, 0)));
         
         List<OfferReservation> reservations = new ArrayList<OfferReservation>();
         reservations.add(existingReservation2);
@@ -252,16 +300,15 @@ public class OfferReservationServiceTest {
         
         event.setReservations(reservations);
         
-        //Reservation time out of bounds ----EVENT 16~18----     ----OfferReservation 12:17----
-        LocalDateTime requestedStart = LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0));
-        LocalDateTime requestedEnd = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 0));
+        LocalDateTime requestedStart = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0));
+        LocalDateTime requestedEnd = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(17, 0));
         
         when(offerRepo.findById(1)).thenReturn(Optional.of(offer));
         when(offerRepo.findById(2)).thenReturn(Optional.of(offerReserved1));
         when(offerRepo.findById(3)).thenReturn(Optional.of(offerReserved2));
         when(eventRepo.findById(1)).thenReturn(Optional.of(event));
         when(offerReservationRepo.findById(1)).thenReturn(Optional.of(existingReservation1));
-        when(offerReservationRepo.findById(2)).thenReturn(Optional.of(existingReservation1));
+        when(offerReservationRepo.findById(2)).thenReturn(Optional.of(existingReservation2));
         
         
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -277,49 +324,56 @@ public class OfferReservationServiceTest {
     }
     
     @Test
+    @DisplayName("bookAService- shouldn't throw error, no time collision at all.")
     public void BookAServiceSuccess() {
-    	
-    }
-    
-    @Test
-    public void TestCreationWithoutProvidedEvent() {
-    	LocalDate date = LocalDate.now();
-    	LocalTime startTime = LocalTime.of(12, 0);
-    	LocalTime endTime = LocalTime.of(14, 0);
+    	//We use this one to reserve service with
     	Offer offer = new Offer();
-    	int offerId = 0;
-    	int eventId = 99999;
-    	offer.setId(offerId);
-    	
-    	when(offerRepo.findById(0)).thenReturn(Optional.of(offer));
-    	
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            reservationService.createOfferReservation(date, offerId, eventId, startTime, endTime);
-        });
+        offer.setId(1);
         
-        assertEquals("No event with the given ID exists.", thrown.getMessage());
+        //Already reserved one
+        Offer offerReserved1 = new Offer();
+        offerReserved1.setId(2);
+        
+        Event event = new Event();
+        event.setId(1);
+        event.setDateOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0)));
+        event.setEndOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(20, 0)));
+        
+        
+        OfferReservation existingReservation1 = new OfferReservation();
+        existingReservation1.setId(1);
+        existingReservation1.setOffer(offerReserved1);
+        existingReservation1.setEvent(event);
+        existingReservation1.setDateOfReservation(LocalDate.now().plusDays(3));
+        existingReservation1.setStartTime(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0)));
+        existingReservation1.setEndTime(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(16, 0)));
+     
+        List<OfferReservation> reservations = new ArrayList<OfferReservation>();
+        reservations.add(existingReservation1);
+        
+        event.setReservations(reservations);
+        
+        //Reservation time out of bounds ----EVENT 16~18----     ----OfferReservation 12:17----
+        LocalDateTime requestedStart = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(16, 15));
+        LocalDateTime requestedEnd = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(17, 15));
+        
+        when(offerRepo.findById(1)).thenReturn(Optional.of(offer));
+        when(eventRepo.findById(1)).thenReturn(Optional.of(event));
+        
+        OfferReservation saved = new OfferReservation();
+        when(offerReservationRepo.save(any())).thenReturn(saved);
+        
+        OfferReservation result = reservationService.bookAService(1, 1, requestedStart, requestedEnd);
+        
+        assertNotNull(result);
+        verify(offerReservationRepo, times(1)).save(any());
     }
     
-    @Test
-    public void TestCreationWithoutProvidedOffer() {
-    	LocalDate date = LocalDate.now();
-    	LocalTime startTime = LocalTime.of(12, 0);
-    	LocalTime endTime = LocalTime.of(14, 0);
-    	Event event = new Event();
-    	int offerId = 0;
-    	int eventId = 99999;
-    	event.setId(eventId);
-    	
-    	when(eventRepo.findById(0)).thenReturn(Optional.of(event));
-    	
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            reservationService.createOfferReservation(date, offerId, eventId, startTime, endTime);
-        });
-        
-        assertEquals("No offer with the given ID exists.", thrown.getMessage());
-    }
+    
+    
     
     @Test
+    @DisplayName("cancelService - throws error when we try to cancel service after possible cancelation time passed.")
     public void testServiceCancellationThrowsExceptionWhenTooLate() {
         OfferReservation reservation = new OfferReservation();
         reservation.setDateOfReservation(LocalDate.now().plusDays(1)); 
@@ -337,6 +391,7 @@ public class OfferReservationServiceTest {
     }
     
     @Test
+    @DisplayName("cancelService - succeeds because we cancel the reservation before cancelation ticks down")
     public void testServiceCancellationSuccess() {
         // Given
         OfferReservation reservation = new OfferReservation();
@@ -373,6 +428,7 @@ public class OfferReservationServiceTest {
     }
 
     @Test
+    @DisplayName("findReservationByIdAndService - suceeds if provided the correct ids")
     public void testfindReservationByIdAndService() {
         int reservationId = 1;
         int serviceId = 100;
@@ -389,10 +445,12 @@ public class OfferReservationServiceTest {
         assertNotNull(result);
         assertEquals(reservation, result);
         verify(offerReservationRepo, times(1)).findById(reservationId);
-    }
+    }    
     
-    //Update Reservation
+    //Update reservations
+    
     @Test
+    @DisplayName("updateReservation - throws error if no reservations were selected")
     public void updateReservationThrowsExceptionNotFound() {
     	int reservationId = 0;
     	when(offerReservationRepo.findById(reservationId)).thenReturn(Optional.empty());
@@ -405,6 +463,7 @@ public class OfferReservationServiceTest {
     }
     
     @Test
+    @DisplayName("updateReservation - throws error if we've been provided wrong service id")
     public void updateReservationThrowsExceptionMismatch() {
     	int reservationId =0;
     	int correctServiceId =1;
@@ -428,6 +487,7 @@ public class OfferReservationServiceTest {
     }
     
     @Test
+    @DisplayName("updateReservation - succeeds when we've been provided correct IDs and correct reservations")
     public void testUpdateReservationSuccess() {
         int reservationId = 0;
         int serviceId = 1;
@@ -454,6 +514,5 @@ public class OfferReservationServiceTest {
         assertEquals(LocalDateTime.of(date, end), updated.getEndTime());
         verify(offerReservationRepo, times(1)).save(reservation);
     }
-    
     
 }
