@@ -23,12 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.InvitationStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventActivity;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.InvitationStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
