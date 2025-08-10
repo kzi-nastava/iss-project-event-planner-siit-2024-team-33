@@ -17,14 +17,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth.RestAuthenticationEntryPoint;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth.TokenAuthenticationFilter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.auth.AuthenticationService;
@@ -46,14 +45,9 @@ public class WebSecurityConfig {
 		return new AuthenticationService();
 	}
 	
-	/*@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}*/
-	
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-	    return NoOpPasswordEncoder.getInstance(); // Not for production!
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(12);
 	}
 	
 	@Bean
@@ -75,40 +69,133 @@ public class WebSecurityConfig {
 		http.cors(Customizer.withDefaults());
 		http.csrf((csrf) -> csrf.disable());
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(restAuthenticationEntryPoint));
+        
+        http.exceptionHandling(exception -> exception
+          .authenticationEntryPoint((request, response, authException) -> {
+              response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+              response.setContentType("application/json");
+              response.getWriter().write("{\"error\": \"Unauthorized\"}");
+          })
+          .accessDeniedHandler((request, response, accessDeniedException) -> {
+              response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+              response.setContentType("application/json");
+              response.getWriter().write("{\"error\": \"Access Denied\"}");
+          })
+      );
         
         http.authorizeHttpRequests(request -> {
-            request//.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
-                   //.requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
-//                   .requestMatchers(new AntPathRequestMatcher("/api/events/**")).permitAll()
-//                   .requestMatchers(new AntPathRequestMatcher("/api/offers/**")).permitAll()
-                   //.requestMatchers(new AntPathRequestMatcher("/api/services/**")).permitAll()
-                   //.requestMatchers(new AntPathRequestMatcher("/api/whoami")).hasRole("USER")
-		        .requestMatchers("/api/auth/login").permitAll()
-		        .requestMatchers("/api/auth/check-email").permitAll()
-		        .requestMatchers("/api/images/**").permitAll()
-		        .requestMatchers("/api/providers/**").permitAll()
-		        .requestMatchers("/api/users/signup").permitAll()
-		        .requestMatchers("/h2-console/**").permitAll()
-		        .requestMatchers("/api/events/*/budget/**").permitAll()
-		        .requestMatchers("/api/chat/*/**").permitAll()
-		        .requestMatchers("/api/offers/*/**").permitAll()
-		        .requestMatchers("/api/events/**").permitAll()
-		        .requestMatchers("api/events/paginated").permitAll()
-		        .requestMatchers("/api/events/types/**").permitAll()
-		        .requestMatchers("/api/events/*/invitations/**").permitAll()
-		        .requestMatchers("/api/notifications/**").permitAll()
-		        .requestMatchers("/api/offers/categories/**").permitAll()
-		        .requestMatchers("/api/offers/**").permitAll()
-		        .requestMatchers("/api/user/*/offer-prices/**").permitAll()
-		        .requestMatchers("/api/products/**").permitAll()
-		        .requestMatchers("/api/ratings/**").permitAll()
-		        .requestMatchers("/api/reports/**").permitAll()
-		        .requestMatchers("/api/services/**").permitAll()
-		        .requestMatchers("/api/services/*/reservations/**").permitAll()
-		        .requestMatchers("/api/events/filter/unauthentified").permitAll()
+            request
+            	//authentication
+		        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/auth/check-email").permitAll()
+		        
+		        //users
+		        .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+		        .requestMatchers(HttpMethod.PUT, "/api/users/update/profile").authenticated()
+		        .requestMatchers(HttpMethod.PUT, "/api/users/update/password").authenticated()
+		        .requestMatchers(HttpMethod.DELETE, "/api/users/terminate/profile").authenticated()
+		        .requestMatchers(HttpMethod.POST, "/api/users/me/upgrade").hasAuthority("AUSER_ROLE")
+		        
+		        //verification
+		        .requestMatchers(HttpMethod.GET, "/api/users/verification").permitAll()
+
+		        //event types
+		        .requestMatchers(HttpMethod.GET, "/api/event-types/*/offer-categories").hasAuthority("ORGANIZER_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/activation").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*/deactivation").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/eventTypes/active").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/eventTypes/exists").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/eventTypes/*").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/eventTypes").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.POST, "/api/eventTypes").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/eventTypes/me").hasAuthority("PROVIDER_ROLE")
+		        
+		        //events
+		        .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ORGANIZER_ROLE")
+		        .requestMatchers(HttpMethod.POST, "/api/events/*/join").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/details").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/events/*/reports/statistics").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/*/statistics").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/me").authenticated()
+		        
+		        //favorites
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/events").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/events/*/exists").permitAll()
+		        .requestMatchers(HttpMethod.POST, "/api/favorites/events/*").authenticated()
+		        .requestMatchers(HttpMethod.DELETE, "/api/favorites/events/*").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/favorites/offers").authenticated()
+		        
+		        //offer categories
+		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/available").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/exists").hasAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/offerCategories/me").hasAuthority("PROVIDER_ROLE")
+		        .requestMatchers("/api/offerCategories/**").hasAnyAuthority("ADMIN_ROLE")
+		        
+		        
+		        //Reviews
+		        .requestMatchers(HttpMethod.GET, "/api/ratings/**").permitAll() // anyone can read ratings
+		        .requestMatchers(HttpMethod.POST, "/api/ratings/events/**").hasAnyAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.POST, "/api/ratings/**").hasAnyAuthority("ORGANIZER_ROLE") 
+		        .requestMatchers(HttpMethod.PUT, "/api/ratings/events/approve/**").hasAnyAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/ratings/approve/**").hasAnyAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/ratings/events/**").hasAnyAuthority("ADMIN_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/ratings/**").hasAnyAuthority("ADMIN_ROLE")
+		        
+		        //offers
+		        .requestMatchers("/api/offers/mine/**").authenticated()
+
+	            //OfferReservation
+	            .requestMatchers(HttpMethod.POST, "/api/services/*/reservations").hasAnyAuthority("ORGANIZER_ROLE")
+	            .requestMatchers(HttpMethod.DELETE, "/api/services/*/reservations/*").hasAnyAuthority("ORGANIZER_ROLE")
+	            .requestMatchers(HttpMethod.PUT, "/api/services/*/reservations/*").hasAnyAuthority("ORGANIZER_ROLE")
+	            .requestMatchers(HttpMethod.GET, "/api/services/*/reservations/*").authenticated()
+	            
+		        //service
+//		        .requestMatchers("/api/services/*/reservations/**").permitAll()
+		        .requestMatchers(HttpMethod.POST, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
+		        .requestMatchers(HttpMethod.PUT, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAnyAuthority("PROVIDER_ROLE")
+		        
+		        //product
+		        .requestMatchers(HttpMethod.GET, "/api/products/*/reservations/**").authenticated()
+		        .requestMatchers("/api/products/*/reservations/**").hasAnyAuthority("ORGANIZER_ROLE")
+		        .requestMatchers(HttpMethod.GET, "/api/products/*").permitAll()
+		        .requestMatchers(HttpMethod.GET, "/api/products/me").hasAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.POST, "/api/products").hasAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.PUT, "/api/products/*").hasAuthority("PROVIDER_ROLE")
+		        .requestMatchers(HttpMethod.DELETE, "/api/products/*").hasAuthority("PROVIDER_ROLE")
+
+		        //Budget
+		        .requestMatchers("/api/events/*/budget/**").hasAnyAuthority("ORGANIZER_ROLE")
+
+		        //Prices
+		        .requestMatchers("/api/offers/mine/prices/**").hasAnyAuthority("PROVIDER_ROLE")
+		        
+		        //Invitations
+		        .requestMatchers(HttpMethod.POST, "/api/events/invitations").hasAnyAuthority("ORGANIZER_ROLE")
+		        .requestMatchers(HttpMethod.PATCH, "/api/events/invitations/**").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/invitations/pending").authenticated()
+		        .requestMatchers(HttpMethod.GET, "/api/events/*/invitations/**").authenticated()
+		        
+		        .requestMatchers(HttpMethod.PUT, "/api/events").hasAuthority("ADMIN_ROLE")
+		        .requestMatchers("/api/events/invitations/pending").authenticated()
+		        .requestMatchers("/api/events/top5/authentified").authenticated()
 		        .requestMatchers("/api/events/filter/authentified").authenticated()
-		        .requestMatchers("/api/events/filter/unauthentified").permitAll()
+		        
+		        //Notifications
+		        .requestMatchers("/api/notifications/**").authenticated()
+		        
+		        //Reports
+	            .requestMatchers(HttpMethod.POST, "/api/reports").authenticated()
+	            .requestMatchers(HttpMethod.POST, "/api/reports/suspend/**").hasAnyAuthority("ADMIN_ROLE")
+	            .requestMatchers(HttpMethod.GET, "/api/reports/suspension-time/**").authenticated()
+	            .requestMatchers(HttpMethod.GET, "/api/reports/**").hasAnyAuthority("ADMIN_ROLE")
+		        
+	            .requestMatchers("/api/images/**").permitAll()
+		        .requestMatchers("/h2-console/**").permitAll()
 		        .anyRequest().permitAll();
         });
         http.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService()), UsernamePasswordAuthenticationFilter.class);

@@ -1,14 +1,13 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventActivity.CreatedEventActivityDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 
 @Getter
 @Setter
@@ -19,14 +18,18 @@ public class CreatedEventDTO {
     private int numOfAttendees;
     private Boolean isPrivate;
     private String place;
-    private Double latitude;
-    private Double longitude;
     private LocalDateTime dateOfEvent;
     private LocalDateTime endOfEvent;
-    private String picture;
-    private Integer price;
-    private Organizer organizer;
-    private List<EventType> eventTypes;
+    private Integer eventTypeId;
+    
+    private Double latitude;
+    private Double longitude;
+    
+    private Set<CreatedEventActivityDTO> eventActivities;
+    
+    
+    //TODO: add for private list of people in event if needed
+    //TODO: add for budget and organization if needed
     
     public CreatedEventDTO(Event event) {
     	this.setId(event.getId());
@@ -39,9 +42,8 @@ public class CreatedEventDTO {
     	this.setLongitude(event.getLongitude());
     	this.setDateOfEvent(event.getDateOfEvent());
     	this.setEndOfEvent(event.getEndOfEvent());
-    	this.setPicture(event.getPicture());
-    	this.setPrice(event.getPrice());
-    	this.setOrganizer(event.getOrganizer());
-    	this.setEventTypes(event.getEventTypes());
+    	this.setEventTypeId(event.getEventType().getId());
+    	this.setEventActivities(event.getEventActivities().stream()
+    			.map(CreatedEventActivityDTO::new).collect(Collectors.toSet()));
     }
 }

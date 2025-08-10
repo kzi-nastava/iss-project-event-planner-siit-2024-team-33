@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Invitation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
 
 @Getter
 @Setter

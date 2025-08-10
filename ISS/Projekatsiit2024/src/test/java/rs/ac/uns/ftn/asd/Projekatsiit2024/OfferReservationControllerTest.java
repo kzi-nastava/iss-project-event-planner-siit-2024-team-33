@@ -11,15 +11,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.PostServiceReservationDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Offer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ServiceRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -2,7 +2,6 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
 @Entity
 public class VerificationToken {
@@ -13,8 +12,8 @@ public class VerificationToken {
     private String token;
     private Date expirationDate;
 
-    @OneToOne
-    private AuthentifiedUser user;
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
 
 	public String getToken() {
 		return token;
@@ -32,12 +31,12 @@ public class VerificationToken {
 		this.expirationDate = expirationDate;
 	}
 
-	public AuthentifiedUser getUser() {
-		return user;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUser(AuthentifiedUser user) {
-		this.user = user;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
     

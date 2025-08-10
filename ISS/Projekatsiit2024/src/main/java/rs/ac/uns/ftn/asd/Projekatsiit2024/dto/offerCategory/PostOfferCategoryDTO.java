@@ -1,8 +1,9 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
+import lombok.Getter;
 
+@Getter
 public class PostOfferCategoryDTO {
-	public String name;
-	public String description;
+	private String name;
+	private String description;
 }

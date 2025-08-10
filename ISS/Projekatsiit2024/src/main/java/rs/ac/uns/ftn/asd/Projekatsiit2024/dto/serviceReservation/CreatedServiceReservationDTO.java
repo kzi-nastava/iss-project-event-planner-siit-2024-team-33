@@ -7,8 +7,8 @@ import java.time.LocalTime;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 @Setter
 @Getter
 public class CreatedServiceReservationDTO {
@@ -21,7 +21,7 @@ public class CreatedServiceReservationDTO {
     
     public CreatedServiceReservationDTO(OfferReservation OR) {
         this.reservationId = OR.getId();
-        this.ServiceName = ((Service) OR.getOffer()).getName();
+        this.ServiceName = OR.getOffer().getName();
         this.EventName = OR.getEvent().getName();
         this.ReservationDate = OR.getDateOfReservation();
         this.StartTime = OR.getStartTime().toLocalTime();

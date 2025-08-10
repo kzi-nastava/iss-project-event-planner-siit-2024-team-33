@@ -2,58 +2,22 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 @Setter
 @Getter
 public class MinimalEventDTO {
 	private Integer id;
-    private String image;
     private String name;
     private String description;
-    private double cost;
-
-    
+    private MinimalEventTypeDTO validEvent;
     public MinimalEventDTO(Event event) {
-    	this.setId(event.getId());;
-        this.setImage(ImageManager.loadAsDataURI(event.getPicture()));
+        this.setId(event.getId());
         this.setName(event.getName());
         this.setDescription(event.getDescription());
-        this.setCost(event.getPrice());
-    }
-    
-    
-
-    
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getCost() {
-        return cost;
-    }
-
-    public void setCost(double cost) {
-        this.cost = cost;
+        if (event.getEventType() != null) {
+            this.setValidEvent(new MinimalEventTypeDTO(event.getEventType()));
+        }
     }
 }

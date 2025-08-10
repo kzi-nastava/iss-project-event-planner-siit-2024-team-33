@@ -5,8 +5,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Report;
 public class GetReportDTO {
     private Integer id;
     private String content;
-    private String author;
-    private String receiver;
+    private String reporter;
+    private String reported;
     private String dateOfSending;
     private Integer receiverId;
     
@@ -14,10 +14,10 @@ public class GetReportDTO {
     public GetReportDTO(Report report) {
         this.id = report.id;
         this.content = report.content;
-        this.author = report.author.getName();
-        this.receiver = report.receiver.getName();
+        this.reporter = report.reporter.getName();
+        this.reported = report.reported.getName();
         this.dateOfSending = report.dateOfSending.toString();
-        this.receiverId = report.receiver.getId();
+        this.receiverId = report.reported.getId();
     }
 
 
@@ -41,23 +41,23 @@ public class GetReportDTO {
 	}
 
 
-	public String getAuthor() {
-		return author;
+	public String getReporter() {
+		return reporter;
 	}
 
 
-	public void setAuthor(String author) {
-		this.author = author;
+	public void setReporter(String reporter) {
+		this.reporter = reporter;
 	}
 
 
-	public String getReceiver() {
-		return receiver;
+	public String getReported() {
+		return reported;
 	}
 
 
-	public void setReceiver(String receiver) {
-		this.receiver = receiver;
+	public void setReported(String reported) {
+		this.reported = reporter;
 	}
 
 

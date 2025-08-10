@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
-import java.sql.Date;
+import java.util.Date;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,16 +10,20 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.invitation.PostInvitationDTO;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Invitation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.InvitationStatus;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
 @Service
@@ -31,7 +37,7 @@ public class invitationService {
 
     @Autowired
     private InvitationRepository invitationRepo;
-
+    
 
     @Transactional
     public void createInvitations(
@@ -52,12 +58,21 @@ public class invitationService {
             invitation.setDate(invitationDate);
             invitation.setEvent(event);
             invitation.setInviter(inviter);
+            invitation.setInvitedUser(email);
             invitationRepo.saveAndFlush(invitation);
 
             String subject = "Invitation to " + event.getName();
-            String body = invitedUser != null
-                ? "You are invited to join the event. Please log in to accept the invitation. \n\n http://localhost:4200/authentication/signin"
-                : "You are invited to join the event. Click here to register and accept the invitation. \n\n http://localhost:4200/authentication/AK";
+            String loginLink = "myapp://invitationlogin?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+            String registerLink = "myapp://invitationregister?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+
+            String body;
+            if (invitedUser != null) {
+                body = "<p>You are invited to join the event.</p>"
+                     + "<p><a href=\"" + loginLink + "\">" + loginLink + "</a></p>";
+            } else {
+                body = "<p>You are invited to join the event.</p>"
+                     + "<p><a href=\"" + registerLink + "\">" + registerLink + "</a></p>";
+            }
 
             sendEmail(inviter.getEmail(), inviter.getPassword(), email, subject, body);
         }
@@ -65,20 +80,33 @@ public class invitationService {
     
     @Transactional
     public void acceptInvitation(Integer invitationId, AuthentifiedUser user) {
-        Invitation invitation = invitationRepo.findById(invitationId).orElseThrow(() -> new IllegalArgumentException("Invitation not found"));
+        Invitation invitation = invitationRepo.findById(invitationId)
+            .orElseThrow(() -> new IllegalArgumentException("Invitation not found"));
 
         if (invitation.getStatus() == InvitationStatus.ACCEPTED) {
             throw new IllegalStateException("Invitation already accepted");
         }
 
-        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().getId().equals(user.getId())) {
+        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().equals(user.getEmail())) {
             throw new IllegalArgumentException("This invitation is not for you.");
         }
 
+    
         invitation.setStatus(InvitationStatus.ACCEPTED);
-        invitation.setInvitedUser(user);
-        invitationRepo.save(invitation);
+        invitation.setInvitedUser(user.getEmail());
+
+        Event event = invitation.getEvent();
+        if (!event.getListOfAttendees().contains(user)) {
+        	if (event.getNumOfAttendees() == event.getListOfAttendees().size()) {
+        		throw new EventValidationException("There is no more place left to join event.", 
+        				"NO_PLACE");
+        	}
+        	invitationRepo.save(invitation);
+            event.getListOfAttendees().add(user);
+            eventRepo.save(event);
+        }
     }
+
     
     @Transactional
     public void denyInvitation(Integer invitationId, AuthentifiedUser user) {
@@ -93,12 +121,12 @@ public class invitationService {
             throw new IllegalStateException("Invitation already denied");
         }
 
-        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().getId().equals(user.getId())) {
+        if (invitation.getInvitedUser() != null && !invitation.getInvitedUser().equals(user.getEmail())) {
             throw new IllegalArgumentException("This invitation is not for you.");
         }
 
         invitation.setStatus(InvitationStatus.DENIED);
-        invitation.setInvitedUser(user);
+        invitation.setInvitedUser(user.getEmail());
         invitationRepo.save(invitation);
     }
 
@@ -107,21 +135,24 @@ public class invitationService {
 
 
 
-    private void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
-        JavaMailSender mailSender = DynamicMailSender.createMailSender("mirkodjukic718@gmail.com", "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");
+    public void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
+        JavaMailSender mailSender = DynamicMailSender.createMailSender("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");
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(senderEmail);
-        message.setTo(recipientEmail);
-        message.setSubject(subject);
-        message.setText(body);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper;
+		try {
+			helper = new MimeMessageHelper(message, true, "UTF-8");
+	        helper.setFrom("hogridersunited@gmail.com");
+	        helper.setTo(recipientEmail);
+	        helper.setSubject(subject);
+	        helper.setText(body, true);
 
-        try {
             mailSender.send(message);
             System.out.println("Email sent successfully!");
-        } catch (Exception e) {
+		} catch (MessagingException e) {
             System.err.println("Failed to send email: " + e.getMessage());
-        }
+			e.printStackTrace();
+		}
     }
 
     public List<Invitation> getInvitationsByForEvent(Integer id){
@@ -140,7 +171,7 @@ public class invitationService {
     	List<Invitation> allInvitations = invitationRepo.findAll();
     	List<Invitation> ret = new ArrayList<Invitation>(); 
     	for(Invitation invitation:allInvitations) {
-    		if(invitation.getInvitedUser().getId() == user.getId() && invitation.getStatus() == InvitationStatus.PENDING) {
+    		if(invitation.getInvitedUser()== user.getEmail() && invitation.getStatus() == InvitationStatus.PENDING) {
     			ret.add(invitation);
     		}
     	}

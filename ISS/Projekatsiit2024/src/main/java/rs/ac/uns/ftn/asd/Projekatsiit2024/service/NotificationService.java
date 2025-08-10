@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PostNotificationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.notification.PutNotificationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Notification;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
@@ -18,6 +20,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserReposi
 
 @Service
 public class NotificationService {
+	
+	@Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     private AuthentifiedUserRepository userRepo;
@@ -26,7 +31,7 @@ public class NotificationService {
     private NotificationRepository notifRepo;
     
     
-    public void createNotification(Integer receiverId, String content) {
+    public PostNotificationDTO createNotification(Integer receiverId, String content) {
         Optional<AuthentifiedUser> receiverOptional = userRepo.findById(receiverId);
 
         if (receiverOptional.isEmpty()) {
@@ -40,8 +45,20 @@ public class NotificationService {
         notification.setTimeOfSending(new Date());
         notification.setReceiver(receiver);
         notification.setIsRead(false);
-
+        
         notifRepo.save(notification);
+        PostNotificationDTO not = new PostNotificationDTO();
+        not.setReceiverId(receiverId);
+        not.setContent(content);
+        
+        not.setDateOfSending(new Date());
+        
+        messagingTemplate.convertAndSendToUser(
+                receiver.getEmail(),
+                "/queue/notifications",
+                not
+            );
+        return not;
     }
     
     public List<Notification> getAllNotificationsForUser(Integer userId) {

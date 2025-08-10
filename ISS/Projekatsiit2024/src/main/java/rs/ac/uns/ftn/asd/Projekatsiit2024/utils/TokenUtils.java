@@ -1,7 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.utils;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -41,27 +39,18 @@ public class TokenUtils {
 	private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 	
 	
-	public String generateToken(UserPrincipal user) {
-	    ZonedDateTime nowUtc = ZonedDateTime.now(ZoneOffset.UTC);
-	    Date issuedAt = Date.from(nowUtc.toInstant());
-	    Date expiration = Date.from(nowUtc.plusMinutes(EXPIRES_IN).toInstant());
-
-	    System.out.println("Generating token for user: " + user.getUsername());
-	    System.out.println("Issued at: " + issuedAt);
-	    System.out.println("Expires at: " + expiration);
-
-	    return Jwts.builder()
-	            .setIssuer(APP_NAME)
-	            .setSubject(user.getUsername())
-	            .setAudience(generateAudience())
-	            .setIssuedAt(issuedAt)
-	            .claim("role", user.getAuthorities().stream()
-	                    .map(GrantedAuthority::getAuthority)
-	                    .collect(Collectors.toList()))
-	            .setExpiration(expiration)
-	            .signWith(SIGNATURE_ALGORITHM, SECRET)
-	            .compact();
-	}
+	public String generateToken(UserPrincipal user, Date issuedAt) {
+		Date expiresAt = new Date(issuedAt.getTime() + EXPIRES_IN);
+		return Jwts.builder()
+				.setIssuer(APP_NAME)
+				.setSubject(user.getUsername())
+				.setAudience(generateAudience())
+				.setIssuedAt(issuedAt)
+				.claim("role", user.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toList()))
+				.setExpiration(expiresAt)
+				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();	}
 
 	
 	private String generateAudience() {
@@ -79,23 +68,19 @@ public class TokenUtils {
 		//		}
 		
 		return AUDIENCE_WEB;
-	}
-	
-	private Date generateExpirationDate() {
-		return new Date(new Date().getTime() + EXPIRES_IN);
-	}
-	
+	}	
 	
 	public String getToken(HttpServletRequest request) {
 		String authHeader = getAuthHeaderFromHeader(request);
+		
 		System.out.println(authHeader);
 		// JWT se prosledjuje kroz header 'Authorization' u formatu:
 		// Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 		System.out.println("Authorization header: " + request.getHeader("Authorization"));
 		System.out.println("Authorization: " + request);
-
+		//Cepi 7 karaktera ispred sto cini 'Bearer ', ostane token.
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
-			return authHeader.substring(7); // preuzimamo samo token (vrednost tokena je nakon "Bearer " prefiksa)
+			return authHeader.substring(7);
 		}
 
 		return null;
@@ -148,7 +133,7 @@ public class TokenUtils {
 	        throw ex;
 	    } catch (Exception e) {
 	        System.err.println("JWT parsing failed:");
-	        e.printStackTrace(); // <- ADD THIS
+	        e.printStackTrace();
 	        throw new RuntimeException("Token parsing failed", e); // Optional: propagate real cause
 	    }
 	}
@@ -165,7 +150,8 @@ public class TokenUtils {
 	}
 	
 	private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
-		return (lastPasswordReset != null && created.before(lastPasswordReset));
+		
+		return (lastPasswordReset != null && created.getTime() < lastPasswordReset.getTime());
 	}
 	
 	public String getAuthHeaderFromHeader(HttpServletRequest request) {

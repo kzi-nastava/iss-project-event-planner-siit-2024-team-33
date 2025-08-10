@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Report;
@@ -9,9 +11,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ReportRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
 import java.sql.Date;
+import java.time.Duration;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Service
 public class reportService {
@@ -31,16 +33,15 @@ public class reportService {
         Report report = new Report();
         report.content = content;
         report.dateOfSending = Date.valueOf(LocalDate.now());
-        report.author = author;
-        report.receiver = receiver;
+        report.reporter = author;
+        report.reported = receiver;
 
         return reportRepository.save(report);
     }
-
-    public List<Report> getAllReports() {
-        return reportRepository.findAll();
+    
+    public Page<Report> getAllReports(Pageable pageable) {
+        return reportRepository.findAll(pageable);
     }
-
     public Report getReportById(int reportId) {
         return reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("Report not found."));
@@ -50,8 +51,17 @@ public class reportService {
         AuthentifiedUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
-        user.setSuspensionEndDate(Date.valueOf(LocalDate.now().plusDays(3)));
+        user.setSuspensionEndDate(LocalDateTime.now().plusDays(3));
         userRepository.save(user);
+    }
+    
+    public void unbanUser(Integer userId) {
+        AuthentifiedUser user = userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("User not found."));
+
+        user.setSuspensionEndDate(null);
+        userRepository.save(user);
+    	
     }
 
     public long getSuspensionTimeRemaining(Integer userId) {
@@ -60,7 +70,15 @@ public class reportService {
 
         if (user.getSuspensionEndDate() == null) return 0;
 
-        long remainingTime = user.getSuspensionEndDate().getTime() - System.currentTimeMillis();
-        return Math.max(0, remainingTime / (1000 * 60 * 60 * 24));
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime suspensionEnd = user.getSuspensionEndDate();
+
+        if (suspensionEnd.isBefore(now)) return 0;
+
+        return Duration.between(now, suspensionEnd).toMillis();
     }
+
+
+    
+    
 }

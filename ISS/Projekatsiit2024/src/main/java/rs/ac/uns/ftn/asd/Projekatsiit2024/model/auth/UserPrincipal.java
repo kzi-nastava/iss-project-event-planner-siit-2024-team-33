@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -46,8 +47,8 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-    	Date now = Date.valueOf(LocalDate.now());
-        return this.user.getSuspensionEndDate() == null || this.user.getSuspensionEndDate().before(now);
+        return this.user.getSuspensionEndDate() == null 
+            || this.user.getSuspensionEndDate().isBefore(LocalDateTime.now());
     }
 
     @Override
@@ -57,7 +58,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !this.user.getIsDeleted();
+        return !this.user.getIsDeleted() && this.user.getIsVerified();
     }
 
 	public Timestamp getLastPasswordResetDate() {

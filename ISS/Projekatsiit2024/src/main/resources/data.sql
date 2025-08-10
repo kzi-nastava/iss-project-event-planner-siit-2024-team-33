@@ -3,32 +3,106 @@ INSERT INTO Role (id, name) VALUES (1, 'AUSER_ROLE');
 INSERT INTO Role (id, name) VALUES (2, 'ORGANIZER_ROLE');
 INSERT INTO Role (id, name) VALUES (3, 'PROVIDER_ROLE');
 
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
+-- Admin (no residency, phone number, provider name, or description)
+INSERT INTO authentified_user
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
 VALUES 
-('admin@example.com', 'pass123', 'Admin', 'User', 'Paris', 'milion.jpg', false,true, NULL, 0, NULL, 'Admin');
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
-VALUES 
-('organizer@example.com', 'hashedpassword6', 'John', 'Doe', 'Paris', 'jbl.jpg', false,true, NULL, 2, CURRENT_TIMESTAMP, 'Germany', '123-456-789', 'Organizer');
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, provider_name, description, DTYPE) 
-VALUES 
-('provider@example.com', 'hashedpassword7', 'Provider', 'Company', 'Paris', 'provider.jpg', false,true, NULL, 3, CURRENT_TIMESTAMP, 'France', '987-654-321', 'TechProvider', 'Provider of tech services', 'Provider');
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, DTYPE) 
-VALUES 
-('admin2@example.com', 'hashedpassword8', 'Alice', 'Johnson', 'Paris', 'admin2.jpg', false,true, NULL, 0, CURRENT_TIMESTAMP, 'Admin');
-INSERT INTO authentified_user 
-(email, password, name, surname, city, picture, is_deleted,is_verified, suspension_end_date, role_id, last_password_reset_date, residency, phone_number, DTYPE) 
-VALUES 
-('organizer2@example.com', 'hashedpassword9', 'Steve', 'Williams', 'Paris', 'organizer2.jpg', false,true, NULL, 2, CURRENT_TIMESTAMP, 'Spain', '321-654-987', 'Organizer');
+('admin@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Admin', 'User', 'milion.jpg', 
+ false, true, NULL, 
+ 0, NULL, CURRENT_TIMESTAMP, 
+ 'Admin');
 
-INSERT INTO OFFER_CATEGORY (IS_ACCEPTED, IS_ENABLED, DESCRIPTION, NAME)
+-- Organizer
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, DTYPE) 
+VALUES 
+('organizer@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'John', 'Doe', 'jbl.jpg', 
+ false, true, NULL, 
+ 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'Berlin, Germany', '123-456-789', 
+ 'Organizer');
+
+-- Provider
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, provider_name, description, DTYPE) 
+VALUES 
+('provider@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Provider', 'Company', 'Untitled.png', 
+ false, true, NULL, 
+ 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
+ 'Provider');
+
+-- Another Admin
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
+VALUES 
+('admin2@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Alice', 'Johnson', 'admin2.jpg', 
+ false, true, NULL, 
+ 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'Admin');
+
+-- Another Organizer
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, DTYPE) 
+VALUES 
+('organizer2@example.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Steve', 'Williams', 'organizer2.jpg', 
+ false, true, NULL, 
+ 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
+ 'Madrid, Spain', '321-654-987', 
+ 'Organizer');
+ 
+ -- Plain AuthentifiedUser (no subtype like Admin, Organizer, or Provider)
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
 VALUES
-(TRUE, TRUE, 'Fun music', 'Music'),
-(TRUE, TRUE, 'Best service', 'Catering'),
-(TRUE, TRUE, 'Delicious food', 'Food');
+('user@example.com',
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Basic', 'User', 'default.jpg',
+ false, true, NULL, 
+ 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'AuthentifiedUser');
+
+ INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, provider_name, description, DTYPE) 
+VALUES 
+('provider2@gmail.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Provider part 2', 'lethal company', 'Untitled.png', 
+ false, true, NULL, 
+ 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
+ 'Provider');
+
+ -- Plain AuthentifiedUser (no subtype like Admin, Organizer, or Provider)
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
+VALUES 
+('senjare2@gmail.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Basic', 'User', 'default.jpg', 
+ false, true, NULL, 
+ 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 'AuthentifiedUser');
+
+INSERT INTO OFFER_CATEGORY (IS_ACCEPTED, IS_ENABLED, DESCRIPTION, NAME, OFFER_TYPE)
+VALUES
+(TRUE, TRUE, 'Fun music', 'Music', 'SERVICE'),
+(TRUE, TRUE, 'Best service', 'Catering', 'SERVICE'),
+(TRUE, TRUE, 'Delicious food', 'Food', 'PRODUCT'),
+(TRUE, TRUE, 'Delicious food', 'Party', 'PRODUCT'),
+(TRUE, TRUE, 'Delicious food', 'Festival', 'PRODUCT'),
+(TRUE, TRUE, 'Delicious food', 'Picnic', 'PRODUCT'),
+(TRUE, TRUE, 'Delicious food', 'Sports Event', 'PRODUCT');
 
 INSERT INTO OFFER (
     CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, 
@@ -36,12 +110,29 @@ INSERT INTO OFFER (
     AVAILABILITY, PICTURES, CITY
 )
 VALUES
-(1, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 1, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'], 'Paris'),
-(2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 1, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', ARRAY['image2.png'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 1, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 4, 79.99, 1, 'PRODUCT', 'Product', 'More sour candies in stock', 'Candy Special', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 5, 79.99, 1, 'PRODUCT', 'Product', 'Delicious candy in Paris', 'Candy Box', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris'),
-(3, '2024-10-15', 20.0, FALSE, FALSE, 6, 79.99, 1, 'PRODUCT', 'Product', 'Colorful sweet candy packs', 'Candy Delight', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
+(1, '2024-12-05', 5.0, FALSE, FALSE, 5, 59.99, 3, 'PRODUCT', 'Product', 
+ 'High-quality noise-canceling headphones with 30-hour battery life.', 
+ 'Sony WH-1000XM4', 'AVAILABLE', ARRAY['sony1.jpg', 'sony2.jpg'], 'Paris');
+
+INSERT INTO OFFER (
+    CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, 
+    OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, CITY
+)
+VALUES
+(2, '2024-12-07', 12.0, FALSE, FALSE, 6, 19.99, 3, 'PRODUCT', 'Product', 
+ 'Elegant ceramic coffee mugs, set of 4.', 
+ 'Ceramic Coffee Mugs', 'AVAILABLE', ARRAY['mugs1.jpg'], 'Berlin');
+
+INSERT INTO OFFER (
+    CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, 
+    OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, CITY
+)
+VALUES
+(3, '2024-12-10', 18.0, FALSE, FALSE, 7, 39.50, 3, 'PRODUCT', 'Product', 
+ 'Assorted gourmet chocolates, perfect for gifts.', 
+ 'Gourmet Chocolate Box', 'AVAILABLE', ARRAY['choco1.jpg'], 'Paris');
 
 INSERT INTO OFFER (
     CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, 
@@ -49,25 +140,60 @@ INSERT INTO OFFER (
     RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME, 
     AVAILABILITY, PICTURES, TYPE, CITY
 )
-VALUES 
-(
-    24, 1, 10.0, TRUE, FALSE, FALSE, 
-    120, 5, 7, 99.99, 1, 
-    48, '2024-12-01', 'Service', 
-    'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991.',
-    'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
-),
-(
-    24, 1, 10.0, TRUE, FALSE, FALSE, 
-    120, 5, 8, 9.99, 1, 
-    48, '2024-12-01', 'Service', 
-    'Norwegian black metal again. For the fans.', 
-    'BURZUM Lite', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
+VALUES (
+    12, 4, 8.0, TRUE, FALSE, FALSE, 
+    90, 15, 8, 149.99, 3, 
+    24, '2024-12-12', 'Service', 
+    'Live acoustic guitar performance for private parties and small gatherings.', 
+    'Acoustic Live Performance', 'AVAILABLE', ARRAY['guitar1.jpg'], 'SERVICE', 'London'
 );
 
+INSERT INTO OFFER (
+    CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, 
+    MAX_LENGTH_IN_MINS, MIN_LENGTH_IN_MINS, OFFERID, PRICE, PROVIDER_ID, 
+    RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, TYPE, CITY
+)
+VALUES (
+    48, 5, 15.0, TRUE, FALSE, FALSE, 
+    180, 30, 9, 299.99, 3, 
+    72, '2024-12-13', 'Service', 
+    'Full wedding catering service including drinks, desserts, and staff.', 
+    'Wedding Catering Package', 'AVAILABLE', ARRAY['catering1.jpg', 'catering2.jpg'], 'SERVICE', 'Rome'
+);
+INSERT INTO OFFER (
+    CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING, 
+    OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, CITY
+)
+VALUES
+(6, '2024-12-01', 10.0, FALSE, FALSE, 1, 49.99, 3, 'PRODUCT', 'Product', 'Great chinese quality speaker', 'JBL Speaker', 'AVAILABLE', ARRAY['jbl.jpg'], 'Paris'),
+(2, '2024-11-30', 15.5, FALSE, FALSE, 2, 29.99, 3, 'PRODUCT', 'Product', 'Beautiful silver plates that will make you mega happy', 'Silver plates', 'AVAILABLE', ARRAY['image2.png'], 'Paris'),
+(3, '2024-10-15', 20.0, FALSE, FALSE, 3, 79.99, 3, 'PRODUCT', 'Product', 'Beautiful sour yummy candies', 'Candy', 'AVAILABLE', ARRAY['image3.jpg'], 'Paris');
 
+INSERT INTO OFFER (
+    CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING, 
+    MAX_LENGTH_IN_MINS, MIN_LENGTH_IN_MINS, OFFERID, PRICE, PROVIDER_ID, 
+    RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME, 
+    AVAILABILITY, PICTURES, TYPE, CITY
+)
+VALUES (
+    24, 1, 10.0, TRUE, FALSE, FALSE, 
+    120, 5, 4, 99.99, 3, 
+    48, '2024-12-01', 'Service', 
+    'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal''s history.',
+    'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
+);
+VALUES (
+    24, 1, 10.0, TRUE, FALSE, FALSE, 
+    120, 5, 4, 9.99, 3, 
+    48, '2024-12-01', 'Service', 
+    'Overrated Norwegian black metal. Burzum (/ˈbɜːrzəm/; Norwegian: [ˈbʉ̀rtsʉm]) is a Norwegian music project founded by Varg Vikernes in 1991. Although Burzum never played live performances, it became a staple of the early Norwegian black metal scene and is considered one of the most influential acts in black metal''s history.',
+    'BURZUM', 'AVAILABLE', ARRAY['zumzum.jpg', 'burzum.jpg'], 'SERVICE', 'New York'
+);
 
 INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
+(TRUE, 'A generic type of event.', 'All'),
 (TRUE, 'A formal event typically attended by professionals.', 'Conference'),
 (TRUE, 'A social gathering for celebration or networking.', 'Party'),
 (TRUE, 'A celebration of marriage.', 'Wedding'),
@@ -79,511 +205,178 @@ INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (TRUE, 'A community gathering or public fair.', 'Festival'),
 (TRUE, 'A casual outdoor gathering with food and entertainment.', 'Picnic');
 
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (2, 1);
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (3, 2);
+
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (1, 2);
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES (4, 3);
 INSERT INTO EVENT (
-    DATE_OF_EVENT, END_OF_EVENT, IS_PRIVATE, ITS_JOEVER, LATITUDE, LONGITUDE, NUM_OF_ATTENDEES, ORGANIZER_ID, PRICE, DESCRIPTION, NAME, PICTURE, PLACE
+    date_of_event, end_of_event, is_private, latitude, longitude, num_of_attendees,
+    organizer_id, event_type_id, description, name, place
 ) VALUES 
+-- Paris
 (
-    CAST('2025-07-13 07:00:00' AS TIMESTAMP), 
-    CAST('2025-07-13 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija sdjfksdjfksdjkfjsdkj
-sdfklsdfklsdlfkslkfklslkdfklsdf', 
-    'Winter Wonderlandsdafasdfasdfsdafdsa', 
-    '5b7ae507-975d-4de8-ad5e-dea8173c8dad.png', 
+    CAST('2025-08-09 01:35:00' AS TIMESTAMP),
+    CAST('2025-08-09 23:00:00' AS TIMESTAMP),
+    FALSE,
+    48.8566,
+    2.3522,
+    150,
+    5,
+    1,
+    'Neam pojma nesto pricam kao neka jaka deskripcija sdjfksdjfksdjkfjsdkj sdfklsdfklsdlfkslkfklslkdfklsdf',
+    'Winter Wonderlandsdafasdfasdfsdafdsa',
     'Paris'
 ),
+-- New York City
 (
-    CAST('2025-07-13 07:00:00' AS TIMESTAMP), 
-    CAST('2025-07-13 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2025-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2025-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    '7752c6aa-a0cc-475c-8c75-18ee110d3d3b.png', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Neam pojma nesto kenjam kao neka jaka deskripcija', 
-    'Alo najjaca zureza ikadas dfdskfdsk', 
-    'event1.jpg', 
-    'Jew York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    2,
+    'Neam pojma nesto pricam kao neka jaka deskripcija',
+    'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
 ),
 (
-	CAST('2025-07-13 07:00:00' AS TIMESTAMP), 
-    CAST('2025-07-13 19:00:00' AS TIMESTAMP),
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    3,
+    'Neam pojma nesto pricam kao neka jaka deskripcija',
+    'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    4,
+    'Neam pojma nesto pricam kao neka jaka deskripcija',
+    'Alo najjaca zureza ikadas dfdskfdsk',
+    'New York City'
+),
+-- Berlin
+(
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    52.5200,
+    13.4050,
+    150,
+    5,
+    5,
+    'Neam pojma nesto pricam kao neka jaka deskripcija',
+    'Alo najjaca zureza ikadas dfdskfdsk',
+    'Berlin, Germany'
+),
+-- New York City again
+(
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    2,
+    'Neam pojma nesto pricam kao neka jaka deskripcija',
+    'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    7,
+    'Neam pojma nesto pricam kao neka jaka deskripcija',
+    'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    2,
+    'Neam pojma nesto pricam kao neka jaka deskripcija',
+    'Alo najjaca zureza ikadas dfdskfdsk',
     'New York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
+    CAST('2025-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2025-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    3,
+    'Neam pojma nesto pricam kao neka jaka deskripcija',
+    'Alo najjaca zureza ikadas dfdskfdsk',
+    'New York City'
+),
+-- Winter Wonderland Events (New York)
+(
+    CAST('2024-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2024-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    4,
+    'Annual Winter Gala',
+    'Winter Wonderland',
     'New York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
+    CAST('2024-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2024-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    1,
+    'Annual Winter Gala',
+    'Winter Wonderland',
     'New York City'
 ),
 (
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event2.jpg', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    '7752c6aa-a0cc-475c-8c75-18ee110d3d3b.png', 
-    'New York City'
-),
-(
-    CAST('2024-12-15 07:00:00' AS TIMESTAMP), 
-    CAST('2024-12-15 19:00:00' AS TIMESTAMP), 
-    0, 
-    0, 
-    40.712776, 
-    -74.005974, 
-    150, 
-    5, 
-    50, 
-    'Annual Winter Gala', 
-    'Winter Wonderland', 
-    'event1.jpg', 
+    CAST('2024-12-15 07:00:00' AS TIMESTAMP),
+    CAST('2024-12-15 19:00:00' AS TIMESTAMP),
+    FALSE,
+    40.7128,
+    -74.0060,
+    150,
+    5,
+    2,
+    'Annual Winter Gala',
+    'Winter Wonderland',
     'New York City'
 );
 
-INSERT INTO authentified_user_blocked_users (AUTHENTIFIED_USER_ID, BLOCKED_USERS_ID)
-VALUES (2,1);
-
-INSERT INTO EVENT_TYPE_RECOMMENDED_CATEGORIES(EVENT_TYPE_ID, RECOMMENDED_CATEGORIES_ID) VALUES (1,1), (1,2), (1,3);
-INSERT INTO EVENT_EVENT_TYPES(EVENT_ID, EVENT_TYPES_ID) VALUES (1,1), (1,2);
+INSERT INTO EVENT_TYPE_RECOMMENDED_CATEGORIES(EVENT_TYPE_ID, RECOMMENDED_CATEGORIES_ID) VALUES (2,1), (2,2), (2,3);
 
 INSERT INTO notification (content, time_of_sending, is_read,is_selected, receiver_id)
 VALUES 
@@ -619,20 +412,143 @@ VALUES
 (5, 'Absolutely fantastic!', FALSE, FALSE, 1, 3),
 (2, 'Not worth the money.', FALSE, FALSE, 2, 2),
 (4, 'Pretty good but could be better.', TRUE, FALSE, 3, 3),
+(4, 'Pretty good but could be better.', TRUE, FALSE, 3, 4),
 (1, 'Terrible experience.', FALSE, FALSE, 1, 1),
 (5, 'Best deal I have ever found!', FALSE, FALSE, 2, 3);
 
-INSERT INTO report (content, date_of_sending, author_id, receiver_id) VALUES
+INSERT INTO event_rating (rating_value, comment, accepted, is_deleted, author_id, event_id) VALUES
+(5, 'Amazing event, had a great time!', TRUE, FALSE, 2, 1),
+(4, 'Really good overall.', TRUE, FALSE, 3, 1),
+(3, 'It was okay, some things could improve.', FALSE, FALSE, 4, 1),
+(2, 'Not what I expected.', FALSE, FALSE, 1, 1),
+(1, 'Very disappointing experience.', FALSE, FALSE, 5, 1);
+
+INSERT INTO report (content, date_of_sending, reporter_id, reported_id) VALUES
 ('This is a report about the annual meeting.', '2024-12-05', 1, 2),
 ('Report on the recent marketing strategy review.', '2024-12-06', 2, 1),
 ('Feedback on the event organization.', '2024-12-07', 1, 3),
 ('Summary of the last quarter performance.', '2024-12-08', 2, 3),
 ('Report concerning the new project updates.', '2024-12-09', 3, 1);
 
-INSERT INTO invitation (text, date, status, inviter_id, event_id, invited_user_id) VALUES 
-('Please join our Winter Gala event!', '2024-12-01', 'PENDING', 1, 1, 2),
-('You are invited to the Annual Winter Gala!', '2024-12-01', 'PENDING', 1, 1, 3),
-('Don''t miss the upcoming Conference event!', '2025-12-01', 'PENDING', 2, 2, 3),
-('Invitation to the Festival - Join us!', '2024-11-20', 'PENDING', 3, 3, 2),
-('You have a special invitation to our Workshop.', '2024-10-10', 'PENDING', 2, 4, 1);
+INSERT INTO invitation (text, date, status, inviter_id, event_id, invited_user) VALUES 
+('Please join our Winter Gala event!', '2024-12-01', 'PENDING', 1, 1, 'organizer@example.com'),
+('You are invited to the Annual Winter Gala!', '2024-12-01', 'PENDING', 1, 1, 'organizer@example.com'),
+('Don''t miss the upcoming Conference event!', '2025-12-01', 'PENDING', 2, 2, 'provider@example.com'),
+('Invitation to the Festival - Join us!', '2024-11-20', 'PENDING', 3, 3, 'user@example.com'),
+('You have a special invitation to our Workshop.', '2024-10-10', 'PENDING', 2, 4, 'organizer@example.com');
+-- Paris, France
+INSERT INTO EVENT (
+    date_of_event, end_of_event, is_private, latitude, longitude, num_of_attendees,
+    organizer_id, event_type_id, description, name, place
+) VALUES
+(
+    '2025-09-30 20:00:00', '2025-10-01 01:00:00', FALSE,
+    48.8566, 2.3522, 500,
+    5, 7,
+    'Paris Electronic Music Festival with top DJs.',
+    'Paris Electro Fest',
+    'Paris, France'
+),
+(
+    '2025-11-18 14:00:00', '2025-11-18 20:00:00', FALSE,
+    48.8566, 2.3522, 120,
+    5, 5,
+    'Art and photography exhibition featuring local Parisian artists.',
+    'Paris Art Expo',
+    'Paris, France'
+);
+-- Madrid, Spain
+INSERT INTO EVENT (
+    date_of_event, end_of_event, is_private, latitude, longitude, num_of_attendees,
+    organizer_id, event_type_id, description, name, place
+) VALUES
+(
+    '2025-08-20 19:00:00', '2025-08-21 02:00:00', FALSE,
+    40.4168, -3.7038, 300,
+    1, 3,
+    'Madrid Summer Festival with live music and food stands.',
+    'Madrid Summer Beats',
+    'Madrid, Spain'
+),
+(
+    '2025-12-05 09:00:00', '2025-12-05 18:00:00', FALSE,
+    40.4168, -3.7038, 150,
+    5, 2,
+    'A workshop for marketing professionals in Madrid.',
+    'Marketing Mastery Workshop',
+    'Madrid, Spain'
+);
+-- Berlin, Germany
+INSERT INTO EVENT (
+    date_of_event, end_of_event, is_private, latitude, longitude, num_of_attendees,
+    organizer_id, event_type_id, description, name, place
+) VALUES
+(
+    '2025-09-15 18:00:00', '2025-09-15 23:30:00', FALSE,
+    52.5200, 13.4050, 200,
+    5,3,
+    'Berlin Tech Meetup for software developers and startups.',
+    'Berlin Tech Night',
+    'Berlin, Germany'
+),
+(
+    '2025-11-10 10:00:00', '2025-11-10 16:00:00', FALSE,
+    52.5200, 13.4050, 80,
+    5, 4,
+    'A business conference discussing future of AI in Berlin.',
+    'AI Future Conference',
+    'Berlin, Germany'
+);
 
+INSERT INTO OFFER (
+    CATEGORY_ID, CREATION_DATE, DISCOUNT, IS_DELETED, IS_PENDING,
+    OFFERID, PRICE, PROVIDER_ID, TYPE, DTYPE, DESCRIPTION, NAME,
+    AVAILABILITY, PICTURES, CITY
+)
+VALUES
+(1, '2025-07-22', 8.0, FALSE, FALSE, 10, 79.99, 3, 'PRODUCT', 'Product',
+ 'Premium wireless earbuds with active noise cancellation.',
+ 'Parisian SoundBuds', 'AVAILABLE', ARRAY['soundbuds1.jpg'], 'Paris, France'),
+(6, '2025-07-22', 12.0, FALSE, FALSE, 11, 25.50, 3, 'PRODUCT', 'Product',
+ 'Handcrafted Parisian candles with lavender scent.',
+ 'Lavender Paris Candle', 'AVAILABLE', ARRAY['candle1.jpg'], 'Paris, France');
+
+-- Service-type offers
+INSERT INTO OFFER (
+    CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING,
+    MAX_LENGTH_IN_MINS, MIN_LENGTH_IN_MINS, OFFERID, PRICE, PROVIDER_ID,
+    RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME,
+    AVAILABILITY, PICTURES, TYPE, CITY
+)
+VALUES
+(
+    24, 5, 15.0, TRUE, FALSE, FALSE,
+    120, 30, 12, 199.99, 3,
+    48, '2025-07-22', 'Service',
+    'Private wine tasting tour in Paris with a professional sommelier.',
+    'Paris Wine Experience', 'AVAILABLE', ARRAY['wine1.jpg'], 'SERVICE', 'Paris, France'
+),
+(
+    48, 3, 10.0, TRUE, FALSE, FALSE,
+    90, 20, 13, 149.00, 3,
+    72, '2025-07-22', 'Service',
+    'Exclusive dinner prepared by a Michelin-star chef in Paris.',
+    'Paris Gourmet Dinner', 'AVAILABLE', ARRAY['dinner1.jpg'], 'SERVICE', 'Paris, France'
+);
+INSERT INTO OFFER (
+    CANCELLATION_IN_HOURS, CATEGORY_ID, DISCOUNT, IS_AUTOMATIC, IS_DELETED, IS_PENDING,
+    MAX_LENGTH_IN_MINS, MIN_LENGTH_IN_MINS, OFFERID, PRICE, PROVIDER_ID,
+    RESERVATION_IN_HOURS, CREATION_DATE, DTYPE, DESCRIPTION, NAME,
+    AVAILABILITY, PICTURES, TYPE, CITY
+)
+VALUES (
+    24, 4, 10.0, TRUE, FALSE, FALSE,
+    120, 30, 10, 199.99, 3,
+    48, '2025-07-22', 'Service',
+    'Professional event sound system rental with on-site technician, perfect for festivals and parties.',
+    'Premium Sound System Rental',
+    'AVAILABLE', ARRAY['sound1.jpg', 'sound2.jpg'], 'SERVICE', 'Berlin, Germany'
+);
+
+INSERT INTO offer_valid_events (offer_id, valid_events_id) VALUES 
+(5, 4), (6, 5), (7, 6), (8, 7), (9, 8), (10, 9), (11, 10), (12, 11);

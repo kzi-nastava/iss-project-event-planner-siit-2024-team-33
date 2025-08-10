@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Invitation;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 
 public interface InvitationRepository extends JpaRepository<Invitation, Integer> {
@@ -17,4 +17,6 @@ public interface InvitationRepository extends JpaRepository<Invitation, Integer>
     //List<Invitation> findByRecipientEmail(String recipientEmail);
     
     int countByEvent(Event event);
+
+    Optional<Invitation> findByEventAndInvitedUser(Event event, String invitedUser);
 }

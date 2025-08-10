@@ -1,15 +1,9 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product;
 
-import java.sql.Date;
 import java.util.List;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Availability;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Product;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.MinimalEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
@@ -26,6 +20,7 @@ public class GetProductDTO {
     public MinimalOfferCategoryDTO category;
     
     public Integer providerId;
+    public String providerEmail;
     public String providerName;
     
     public List<MinimalEventTypeDTO> validEvents;
@@ -41,6 +36,7 @@ public class GetProductDTO {
     	this.availability = p.getAvailability();
     	this.category = new MinimalOfferCategoryDTO(p.getCategory());
     	this.providerId = p.getProvider().getId();
+    	this.providerEmail = p.getProvider().getEmail();
     	this.providerName = p.getProvider().getProviderName();
     	this.validEvents = p.getValidEvents().stream().map(et -> new MinimalEventTypeDTO(et)).toList();
     }

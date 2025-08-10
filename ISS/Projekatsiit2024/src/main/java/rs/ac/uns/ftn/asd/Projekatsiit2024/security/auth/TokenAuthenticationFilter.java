@@ -1,7 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth;
 
 import java.io.IOException;
-import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,33 +31,42 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 	
 	@Override
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
-	        throws IOException, ServletException {
-
-	    String username;
-	    String authToken = tokenUtils.getToken(request);
-		System.out.println(new Date());
-
-	    try {
-	        if (authToken != null && !authToken.equals("")) {
-	            username = tokenUtils.getUsernameFromToken(authToken);
-
-	            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-	                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-	                if (tokenUtils.validateToken(authToken, userDetails)) {
-	                    TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
-	                    authentication.setToken(authToken);
-	                    authentication.setAuthenticated(true);
-	                    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-	                }
-	            }
-	        }
-	    } catch (ExpiredJwtException ex) {
-	        LOGGER.debug("Token expired!");
-	    }
-
-	    chain.doFilter(request, response);
+			throws IOException, ServletException {
+		String username;
+		//Extracts from TokenUtils
+		String authToken = tokenUtils.getToken(request);
+		
+		
+		try {
+			if (authToken != null && !authToken.equals("")) {
+				//Gets username from token, decodes from the enconding we did
+				username = tokenUtils.getUsernameFromToken(authToken);
+				
+				if (username != null) {
+					//If exists
+					UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+					
+					//account check
+					if (userDetails.isEnabled() || 
+					    userDetails.isAccountNonLocked() || 
+					    userDetails.isAccountNonExpired() || 
+					    userDetails.isCredentialsNonExpired()) {
+						if (tokenUtils.validateToken(authToken, userDetails)) {
+							//User je sad autentifikovan preko UserDetailsa
+							TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
+							authentication.setToken(authToken);
+							SecurityContextHolder.getContext().setAuthentication(authentication);
+						}
+					}
+					else {
+						LOGGER.warn("User account state invalid.");
+					}
+				}
+			}
+		}
+		catch(ExpiredJwtException ex) {
+			LOGGER.debug("Token expired!");
+		}
+		chain.doFilter(request, response);
 	}
-
 }

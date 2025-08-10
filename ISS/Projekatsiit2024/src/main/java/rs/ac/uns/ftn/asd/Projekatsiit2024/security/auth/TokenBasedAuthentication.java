@@ -1,9 +1,11 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.security.auth;
 
+import java.security.Principal;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class TokenBasedAuthentication extends AbstractAuthenticationToken {
+public class TokenBasedAuthentication extends AbstractAuthenticationToken implements Principal {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -32,5 +34,10 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken {
 	@Override
 	public UserDetails getPrincipal() {
 		return principal;
+	}
+	
+	@Override
+	public String getName() {
+	    return principal.getUsername();
 	}
 }
