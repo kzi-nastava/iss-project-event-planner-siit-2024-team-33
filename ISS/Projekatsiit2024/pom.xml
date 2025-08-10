@@ -104,13 +104,11 @@
         <version>4.23.0</version>
         <scope>test</scope>
     </dependency>
-
-    <dependency>
-        <groupId>org.seleniumhq.selenium</groupId>
-        <artifactId>selenium-chrome-driver</artifactId>
-        <version>4.23.0</version>
-        <scope>test</scope>
-    </dependency>
+	<dependency>
+	    <groupId>io.github.bonigarcia</groupId>
+	    <artifactId>webdrivermanager</artifactId>
+	    <version>5.8.0</version>
+	</dependency>
 
 	<dependency>
 	  <groupId>com.itextpdf</groupId>
