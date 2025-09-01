@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,7 @@ public class BudgetService {
 		return createItem(eventId, categoryId, 0.0);
 	}
 	
-	private Double getUsedBudget(BudgetItem bi) {
+	public Double getUsedBudget(BudgetItem bi) {
 		List<Offer> offers = offerReservationRepo.findByBudgetItem(bi);
 		return offers.stream().mapToDouble(offer -> offer.getPrice() - offer.getDiscount()).sum();
 	}
@@ -97,6 +98,10 @@ public class BudgetService {
 		if(maxBudget < getUsedBudget(bi))
 			throw new IllegalArgumentException("Budget can't be lower than the total spend money");
 		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    if(auth == null)
+	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
+		
 		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	    if(up == null)
 	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
@@ -113,6 +118,10 @@ public class BudgetService {
 		if(e.isEmpty())
 			throw new EntityNotFoundException("Nonexistent event");
 		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    if(auth == null)
+	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
+		
 		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	    if(up == null)
 	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
@@ -124,7 +133,9 @@ public class BudgetService {
 			throw new EntityNotFoundException("Nonexistent budget item");
 		
 		//Whether the selected budget item contains any reservations
-		Boolean hasReservations = e.get().getReservations().stream()
+		Boolean hasReservations = false;
+		if(e.get().getReservations() != null)
+			hasReservations = e.get().getReservations().stream()
 				.map(reservation -> reservation.getOffer()).anyMatch(offer -> offer.getCategoryId() == categoryId);
 
 		if(hasReservations)
