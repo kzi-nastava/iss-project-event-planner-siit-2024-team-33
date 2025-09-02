@@ -90,14 +90,6 @@ public class BudgetService {
 	}
 	
 	public BudgetItem editItem(Integer eventId, Integer categoryId, Double maxBudget) {
-		BudgetItem bi = budgetItemRepo.findByEventAndCategory(eventId, categoryId);
-		if (bi == null)
-			throw new EntityNotFoundException();
-		if(maxBudget < 0)
-			throw new IllegalArgumentException("Budget can't be negative");
-		if(maxBudget < getUsedBudget(bi))
-			throw new IllegalArgumentException("Budget can't be lower than the total spend money");
-		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	    if(auth == null)
 	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
@@ -105,8 +97,16 @@ public class BudgetService {
 		UserPrincipal up = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	    if(up == null)
 	    	throw new AuthenticationCredentialsNotFoundException("User not logged in");
+		
+		BudgetItem bi = budgetItemRepo.findByEventAndCategory(eventId, categoryId);
+		if (bi == null)
+			throw new EntityNotFoundException();
 	    if(bi.getEvent().getOrganizer().getId() != up.getUser().getId())
 	    	throw new AccessDeniedException("Wrong user");
+		if(maxBudget < 0)
+			throw new IllegalArgumentException("Budget can't be negative");
+		if(maxBudget < getUsedBudget(bi))
+			throw new IllegalArgumentException("Budget can't be lower than the total spend money");
 		
 		bi.setBudget(maxBudget);
 		bi = budgetItemRepo.saveAndFlush(bi);
