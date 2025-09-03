@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.ProviderRating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.ProviderRating;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 
 @Entity
@@ -21,8 +21,8 @@ public class Provider extends AuthentifiedUser {
     private List<String> pictures = new ArrayList<>();
 
     @OneToMany(mappedBy = "provider")
-    private List<Offer> offers;
+    private List<Offer> offers = new ArrayList<>();
 
     @OneToMany(mappedBy = "provider")
-    private List<ProviderRating> ratings;
+    private List<ProviderRating> ratings = new ArrayList<>();
 }

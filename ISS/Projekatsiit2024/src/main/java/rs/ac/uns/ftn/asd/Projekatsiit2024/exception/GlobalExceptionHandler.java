@@ -22,6 +22,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.InvalidPasswordFormatEx
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.OrganizerValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.ProviderValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserCreationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserDeletionException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpdateException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpgradeException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.verification.VerificationTokenException;
@@ -44,12 +45,6 @@ public class GlobalExceptionHandler {
 	    		"Invalid email or password."));
 	}
 	
-    @ExceptionHandler(ServiceBookingException.class)
-    public ResponseEntity<Map<String, String>> handleServiceBookingException(ServiceBookingException ex) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("message", ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
 	//user exception
 	
 	@ExceptionHandler(UserCreationException.class)
@@ -59,6 +54,11 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(UserUpdateException.class)
     public ResponseEntity<ErrorMessages> handleException(UserUpdateException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
+    }
+    
+    @ExceptionHandler(UserDeletionException.class)
+    public ResponseEntity<ErrorMessages> handleException(UserDeletionException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
     }
 	
@@ -121,12 +121,21 @@ public class GlobalExceptionHandler {
     }
 	
 	
+	//service
+
+    @ExceptionHandler(ServiceBookingException.class)
+    public ResponseEntity<Map<String, String>> handleServiceBookingException(ServiceBookingException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+	
 	
 	//verification and upgrade
 	
 	@ExceptionHandler(VerificationTokenException.class)
     public ResponseEntity<ErrorMessages> handleException(VerificationTokenException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessages(ex.getMessage(), ex.getErrorCode()));
     }
 	
 	@ExceptionHandler(UserUpgradeException.class)

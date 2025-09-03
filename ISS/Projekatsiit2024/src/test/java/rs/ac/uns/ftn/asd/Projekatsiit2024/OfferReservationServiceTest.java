@@ -21,10 +21,13 @@ import org.mockito.MockitoAnnotations;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offerReservationService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferReservationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferReservationService;
 
 public class OfferReservationServiceTest {
 
@@ -38,7 +41,7 @@ public class OfferReservationServiceTest {
     private OfferReservationRepository offerReservationRepo;
 
     @InjectMocks
-    private offerReservationService reservationService;
+    private OfferReservationService reservationService;
 
     @BeforeEach
     public void setup() {

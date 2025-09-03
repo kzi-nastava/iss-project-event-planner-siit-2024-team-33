@@ -17,13 +17,13 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpgradeUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpgradeException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.verification.EmailSendingException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.verification.VerificationTokenException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.VerificationToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.VerificationToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.UnverifiedUserUpgrade;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.VerificationTokenRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.communication.VerificationTokenRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.DynamicMailSender;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.communication.DynamicMailSender;
 
 @Service
 public class VerificationService {
@@ -60,7 +60,8 @@ public class VerificationService {
             verificationToken.setExpirationDate(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));
             tokenRepo.save(verificationToken);
 
-            String verificationUrl = "http://localhost:8080/api/verify?token=" + token;
+            String verificationUrl = "http://localhost:4200/authentication/verification?token=" + token;
+            //String verificationUrl = "http://192.168.2.8:8080/api/verify?token=" + token;
             
             JavaMailSender mailSender = DynamicMailSender.createMailSender(sendGridApiKey);
             
@@ -76,6 +77,8 @@ public class VerificationService {
         }
     }
     
+    
+    
     @Transactional
     public void verifyUser(String decodedToken) {
     	
@@ -86,7 +89,7 @@ public class VerificationService {
         }
         VerificationToken verificationToken = optionalToken.get();
         if (verificationToken.getExpirationDate().before(new Date())) {
-        	throw new VerificationTokenException("Token expired.");
+        	throw new VerificationTokenException("Token expired.", "EXPIRED");
         }
 
         //user verification
@@ -97,6 +100,11 @@ public class VerificationService {
         }
         AuthentifiedUser user = userOpt.get();
         
+        if ((user.getRole().getName().equals("ORGANIZER_ROLE") || 
+        		user.getRole().getName().equals("PROVIDER_ROLE")) 
+        		&& user.getIsVerified().equals(true))
+        	throw new VerificationTokenException("You have already verified your account.", 
+        			"ALREADY_VERIFIED");
         
         
         //upgrade user or just verify him

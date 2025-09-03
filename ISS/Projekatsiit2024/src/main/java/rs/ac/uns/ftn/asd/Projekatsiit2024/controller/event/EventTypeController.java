@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.CreateEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.CreatedEventTypeDTO;
@@ -27,6 +28,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.UpdateEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.UpdatedEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offerCategory.MinimalOfferCategoryDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
@@ -53,6 +55,16 @@ public class EventTypeController {
 	public ResponseEntity<Page<GetEventTypeDTO>> readEventTypes(
 			@PageableDefault(size = 10, sort = "id") Pageable pageable) {
 		Page<GetEventTypeDTO> eventTypes = eventTypeService.readEventTypes(pageable);
+
+		return new ResponseEntity<Page<GetEventTypeDTO>>(eventTypes, HttpStatus.OK);
+	}
+	
+	
+	@GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Page<GetEventTypeDTO>> readProviderEventTypes(
+			@AuthenticationPrincipal UserPrincipal userPrincipal,
+			@PageableDefault(size = 10) Pageable pageable) {
+		Page<GetEventTypeDTO> eventTypes = eventTypeService.readProviderEventTypes(userPrincipal, pageable);
 
 		return new ResponseEntity<Page<GetEventTypeDTO>>(eventTypes, HttpStatus.OK);
 	}

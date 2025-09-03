@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.report;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Report;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.Report;
 
 public class GetReportDTO {
     private Integer id;

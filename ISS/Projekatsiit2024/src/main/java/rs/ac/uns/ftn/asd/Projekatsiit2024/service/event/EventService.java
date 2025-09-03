@@ -24,19 +24,19 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.InvitationStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventActivity;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Invitation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.InvitationStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.InvitationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.communication.InvitationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.invitationService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.communication.invitationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.CreateEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventActivity.CreateEventActivityDTO;
@@ -69,13 +69,13 @@ public class EventService {
 		//putting essential data into event
 		Event event = this.createSimpleEvent(organizer, eventDTO);
         
-        //TODO:for budget and reservations
-        //TODO:for private invitations
-        
         //making activities for an event
         Set<EventActivity> eventActivities = new HashSet<>();
+        Set<CreateEventActivityDTO> createEventActivities = eventDTO.getEventActivities();
+        if (createEventActivities == null)
+        	createEventActivities = new HashSet<CreateEventActivityDTO>();
         EventActivity eventActivity = new EventActivity();
-        for (CreateEventActivityDTO eventActivityDTO : eventDTO.getEventActivities()) {
+        for (CreateEventActivityDTO eventActivityDTO : createEventActivities) {
         	eventActivity = this.createEventActivity(eventActivityDTO, event);
         	eventActivities.add(eventActivity);
         }
@@ -103,6 +103,9 @@ public class EventService {
     private Event createSimpleEvent(Organizer organizer, CreateEventDTO eventDTO) throws 
     	EventValidationException {
     	
+    	if (eventDTO == null)
+    		throw new EventValidationException("Event has to have data.");
+    	
     	Event event = new Event();
         event.setName(eventDTO.getName());
         event.setDescription(eventDTO.getDescription());
@@ -116,6 +119,8 @@ public class EventService {
 		event.setOrganizer(organizer);
 		
         //event type for event
+		if (eventDTO.getEventTypeId() == null)
+			throw new EventValidationException("No such event type can be used to create an event.");
         Optional<EventType> eventType = eventTypeRepository.findById(eventDTO.getEventTypeId());
         if (eventType.isEmpty() && !eventType.get().getIsActive())
         	throw new EventValidationException("No such event type can be used to create an event.");
@@ -129,17 +134,23 @@ public class EventService {
     
     
     private boolean isEventDataCorrect(Event event) throws EventValidationException {
-    	if (!Pattern.matches("^.{5,50}$", event.getName()))
+    	if (event.getName() == null || !Pattern.matches("^.{5,50}$", event.getName()))
 			throw new EventValidationException("Name can't be less than 5 or over 50 characters long.");
     	
-    	if (!Pattern.matches("^.{5,250}$", event.getDescription()))
+    	if (event.getDescription() == null || !Pattern.matches("^.{5,250}$", event.getDescription()))
 			throw new EventValidationException("Description can't be less than 5 or over 250 characters long.");
     	
-    	if (event.getNumOfAttendees() < 0)
+    	if (event.getNumOfAttendees() == null || event.getNumOfAttendees() < 0)
     		throw new EventValidationException("Number of attendees can't be less than 0.");
     	
-    	if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", event.getPlace()) || event.getPlace().length() > 150)
+    	if (event.getPlace() == null || !Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", event.getPlace()) || event.getPlace().length() > 150)
     	    throw new EventValidationException("Place must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
+    	
+    	if (event.getIsPrivate() == null)
+    		throw new EventValidationException("Event has to have type of accessibility.");
+    	
+    	if (event.getDateOfEvent() == null || event.getEndOfEvent() == null)
+    		throw new EventValidationException("Event has to have time when it starts and when it ends.");
     	
     	if (event.getDateOfEvent().isBefore(LocalDateTime.now()) && 
     			event.getEndOfEvent().isBefore(LocalDateTime.now()))
@@ -148,7 +159,6 @@ public class EventService {
     	if (event.getDateOfEvent().isAfter(event.getEndOfEvent())) {
     		throw new EventValidationException("Event starting time can't be after ending time.");
     	}
-    	
     	//TODO:latitude and longtitude validation
     	
     	return true;
@@ -157,6 +167,9 @@ public class EventService {
     
     private EventActivity createEventActivity(CreateEventActivityDTO eventActivityDTO, Event event) 
     		throws EventActivityValidationException {
+    	
+    	if (eventActivityDTO == null)
+    		throw new EventActivityValidationException("Event activity has to have data.");
     	
     	EventActivity eventActivity = new EventActivity();
     	eventActivity.setName(eventActivityDTO.getName());
@@ -173,11 +186,14 @@ public class EventService {
     
     
     private boolean isEventActivityDataCorrect(EventActivity eventActivity) throws EventActivityValidationException {
-    	if (!Pattern.matches("^.{5,50}$", eventActivity.getName()))
+    	if (eventActivity.getName() == null || !Pattern.matches("^.{5,50}$", eventActivity.getName()))
 			throw new EventActivityValidationException("Name can't be less than 5 or over 50 characters long.");
     	
-    	if (!Pattern.matches("^.{5,80}$", eventActivity.getDescription()))
+    	if (eventActivity.getDescription() == null || !Pattern.matches("^.{5,80}$", eventActivity.getDescription()))
 			throw new EventActivityValidationException("Description can't be less than 5 or over 80 characters long.");
+    	
+    	if (eventActivity.getStartingTime() == null || eventActivity.getEndingTime() == null)
+    		throw new EventActivityValidationException("Event activity has to have starting and ending time.");
     	
     	if (eventActivity.getEvent().getDateOfEvent().isAfter(eventActivity.getStartingTime()) || 
     			eventActivity.getEvent().getEndOfEvent().isBefore(eventActivity.getStartingTime())) 
@@ -193,7 +209,7 @@ public class EventService {
     		throw new EventActivityValidationException("Starting time can't be before"
     				+ " the ending time of an event activity.");
     	
-    	if (!Pattern.matches("^.{2,50}$", eventActivity.getName()))
+    	if (eventActivity.getLocation() == null || !Pattern.matches("^.{2,50}$", eventActivity.getLocation()))
 			throw new EventActivityValidationException("Location can't be less than 2 or over 50 characters long.");
     	
     	return true;
@@ -202,41 +218,41 @@ public class EventService {
     
     
     
-	    @Transactional(propagation = Propagation.REQUIRED)
-	    public Event joinEvent(Integer eventId, AuthentifiedUser user) 
-	    		throws EventValidationException {
-	    	Optional<Event> optionalEvent = eventRepository.findById(eventId);
-	    	
-	    	if (optionalEvent.isEmpty())
-	    		throw new EventValidationException("No event exists with such id.");
-	    	
-	    	Event event = optionalEvent.get();
-	    	isJoiningEventPossible(user, event);
-	    	
-	    	//So if user ignores the invitation on mainpage, he can still join an event, if so, the status of invitation must go to ACCEPTED
-	    	//If he ever denied it, he won't be able to see the event.
-	    	if (Boolean.TRUE.equals(event.getIsPrivate())) {
-	            Optional<Invitation> invitationOpt = invitationRepo
-	                .findByEventAndInvitedUser(event, user.getEmail());
-
-	            if (invitationOpt.isPresent()) {
-	                Invitation invitation = invitationOpt.get();
-	                if (invitation.getStatus() == InvitationStatus.PENDING) {
-	                    invitation.setStatus(InvitationStatus.ACCEPTED);
-	                    invitation.setInvitedUser(user.getEmail());
-	                    invitationRepo.save(invitation);
-	                } else if (invitation.getStatus() == InvitationStatus.DENIED) {
-	                    throw new EventValidationException("You have rejected this invitation.");
-	                }
-	            } else {
-	                throw new EventValidationException("You cannot join a private event without an invitation.");
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Event joinEvent(Integer eventId, AuthentifiedUser user) 
+			throws EventValidationException {
+		Optional<Event> optionalEvent = eventRepository.findById(eventId);
+		
+		if (optionalEvent.isEmpty())
+			throw new EventValidationException("No event exists with such id.");
+		
+		Event event = optionalEvent.get();
+		isJoiningEventPossible(user, event);
+		
+		//So if user ignores the invitation on mainpage, he can still join an event, if so, the status of invitation must go to ACCEPTED
+		//If he ever denied it, he won't be able to see the event.
+		if (Boolean.TRUE.equals(event.getIsPrivate())) {
+	        Optional<Invitation> invitationOpt = invitationRepo
+	            .findByEventAndInvitedUser(event, user.getEmail());
+	
+	        if (invitationOpt.isPresent()) {
+	            Invitation invitation = invitationOpt.get();
+	            if (invitation.getStatus() == InvitationStatus.PENDING) {
+	                invitation.setStatus(InvitationStatus.ACCEPTED);
+	                invitation.setInvitedUser(user.getEmail());
+	                invitationRepo.save(invitation);
+	            } else if (invitation.getStatus() == InvitationStatus.DENIED) {
+	                throw new EventValidationException("You have rejected this invitation.");
 	            }
+	        } else {
+	            throw new EventValidationException("You cannot join a private event without an invitation.");
 	        }
-	    	
-	    	event.getListOfAttendees().add(user);
-	    	
-	    	return eventRepository.save(event);
-		}
+	    }
+		
+		event.getListOfAttendees().add(user);
+		
+		return eventRepository.save(event);
+	}
     
     private boolean isJoiningEventPossible(AuthentifiedUser user, Event event) 
     		throws EventValidationException {
@@ -355,6 +371,7 @@ public class EventService {
 
 	    AuthentifiedUser user = optionalUser.get();
 	    List<Invitation> invitations = invitationRepo.findAll();
+	    List<AuthentifiedUser> blockedUsers = user.getBlockedUsers();
 
 	    String residency = null;
 	    if (user instanceof Organizer organizer) {
@@ -368,6 +385,7 @@ public class EventService {
 	    return allEvents.stream()
 	        .filter(event -> !Boolean.TRUE.equals(event.isOver()))
 	        .filter(event -> finalResidency == null || finalResidency.equalsIgnoreCase(event.getPlace()))
+	        .filter(event -> event.getOrganizer() == null || !blockedUsers.contains(event.getOrganizer()))
 	        .filter(event -> isEventVisibleForUser(user, event))
 	        .filter(event -> canUserSeeEvent(user, event, invitations))
 	        .sorted(Comparator.comparingInt(Event::getNumOfAttendees).reversed())
@@ -572,6 +590,5 @@ public class EventService {
                                  user.getEmail().equalsIgnoreCase(inv.getInvitedUser()) &&
                                  inv.getStatus() != InvitationStatus.DENIED);
     }
-
     
 }

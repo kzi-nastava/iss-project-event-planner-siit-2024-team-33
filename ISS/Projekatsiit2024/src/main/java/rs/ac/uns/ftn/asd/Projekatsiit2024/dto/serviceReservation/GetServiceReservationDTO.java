@@ -7,32 +7,32 @@ import java.time.LocalTime;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 @Setter
 @Getter
 public class GetServiceReservationDTO {
     private int reservationId;
-    private String ServiceName;
-    private String EventName;
-    private String ProviderName;
-    private LocalDate ReservationDate;
-    private LocalTime StartTime;
-    private LocalTime EndTime;
+    private String serviceName;
+    private String eventName;
+    private String providerName;
+    private LocalDate reservationDate;
+    private LocalTime startTime;
+    private LocalTime endTime;
     //status either String or Availibility enum
-    private Availability Status;
+    private Availability status;
     
     
     public GetServiceReservationDTO(OfferReservation OR) {
         this.reservationId = OR.getId();
-        this.ServiceName = ((Service) OR.getOffer()).getName();
-        this.EventName = OR.getEvent().getName();
-        this.ProviderName = ((Service) OR.getOffer()).getProvider().getName();
-        this.ReservationDate = OR.getDateOfReservation();
-        this.StartTime = OR.getStartTime().toLocalTime();
-        this.EndTime = OR.getEndTime().toLocalTime();
-        this.Status =Availability.AVAILABLE; 
+        this.serviceName = ((Service) OR.getOffer()).getName();
+        this.eventName = OR.getEvent().getName();
+        this.providerName = ((Service) OR.getOffer()).getProvider().getName();
+        this.reservationDate = OR.getDateOfReservation();
+        this.startTime = OR.getStartTime().toLocalTime();
+        this.endTime = OR.getEndTime().toLocalTime();
+        this.status =Availability.AVAILABLE; 
     }
     
     

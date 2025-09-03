@@ -1,37 +1,54 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.product;
 
-import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
+import lombok.Getter;
+import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
+@Getter
+@Setter
 public class CreatedProductDTO {
-	public Integer Id;
-	public String Name;
-	public String Description;
-	public Double Price;
-	public Double Discount;
-	public List<String> Pictures;
-	public Availability Availability;
-    public Date CreationDate;
-    public Boolean IsPending;
-    public Boolean IsDeleted;
-    public OfferCategory Category;
-    public Provider Provider;
-    public List<EventType> ValidEvents;
-    public List<OfferReservation> OfferReservations;
-    public List<Rating> Ratings;
+	private Integer id;
+	private String name;
+	private String description;
+	private Double price;
+	private Double discount;
+	private List<String> pictures;
+	private Availability availability;
+	private Boolean isPending;
+	private Boolean isDeleted;
+	private Integer offerCategoryId;
+	private List<Integer> eventTypeIds;
+	
+	public CreatedProductDTO() {
+	}
+	
+	public CreatedProductDTO(Product product) {
+		this.id = product.getId();
+		this.name = product.getName();
+		this.description = product.getDescription();
+		this.price = product.getPrice();
+		this.discount = product.getDiscount();
+		if (product.getPictures() == null)
+			product.setPictures(new ArrayList<>());
+		this.setPictures(
+				product.getPictures().stream()
+			        .map(ImageManager::loadAsDataURI)
+			        .filter(img -> img != null)
+			        .toList());
+		this.availability = product.getAvailability();
+		this.isPending = product.getIsPending();
+		this.isDeleted = product.getIsDeleted();
+		this.offerCategoryId = product.getCategoryId();
+		if (product.getValidEvents() == null)
+			product.setValidEvents(new ArrayList<>());
+		this.eventTypeIds = product.getValidEvents()
+				.stream()
+			    .map(eventType -> eventType.getId())
+			    .toList();
+	}
 }

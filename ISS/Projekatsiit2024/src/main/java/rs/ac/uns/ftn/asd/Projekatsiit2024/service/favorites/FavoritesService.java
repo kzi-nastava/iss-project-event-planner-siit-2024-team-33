@@ -13,14 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.event.MinimalEventDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.offer.MinimalOfferDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Availability;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
 @Service
@@ -106,8 +107,6 @@ public class FavoritesService {
 
 	
 	
-	
-	
 	@Transactional(propagation = Propagation.REQUIRED)
 	public Event removeFavoriteEvent(Integer eventId, UserPrincipal userPrincipal) 
 			throws EventValidationException {
@@ -148,6 +147,16 @@ public class FavoritesService {
     	}
 		
 		return true;
+	}
+	
+	
+	
+	
+	
+	public Page<MinimalOfferDTO> getFavoriteOffers(UserPrincipal userPrincipal, Pageable pageable) {
+	    Integer userId = userPrincipal.getUser().getId();
+	    return offerRepository.findLatestFavoriteOffersByUserId(userId, pageable)
+	    		.map(MinimalOfferDTO::new);
 	}
 	
 	public boolean isOfferFavorited(UserPrincipal user, int offerId) {

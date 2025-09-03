@@ -1,18 +1,17 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.user;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpgradeUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpgradeException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
@@ -41,6 +40,8 @@ public class UserUpgradeService {
 	@Autowired
 	ProviderRepository providerRepository;
 	
+	@PersistenceContext
+	private EntityManager entityManager;
 	
 	//creates upgrade user request which waits for verification
 	public UnverifiedUserUpgrade createUpgradeUserRequest(UserPrincipal userPrincipal, UpgradeUser upgradeUser) 
@@ -93,6 +94,10 @@ public class UserUpgradeService {
 	
 	
 	
+	
+	
+	
+	
 	//called after opening verification link
 	public void upgradeUserFinal(AuthentifiedUser userForUpgrade) {
 		UnverifiedUserUpgrade uuu = uuuRepository.findByUser(userForUpgrade);
@@ -113,43 +118,41 @@ public class UserUpgradeService {
 	}
 
 
-
-
 	private Organizer upgradeToOrganizer(AuthentifiedUser userForUpgrade, UnverifiedUserUpgrade uuu) {
-		Set<Offer> favoriteOffers = userForUpgrade.getFavoriteOffers();
-		Set<Event> favoriteEvents = userForUpgrade.getFavoriteEvents();
-		List<AuthentifiedUser> blockedUsers = userForUpgrade.getBlockedUsers();
-		
-        Organizer organizer = new Organizer();
-        organizer.setId(userForUpgrade.getId()); // reuse ID
-        organizer.setEmail(userForUpgrade.getEmail());
-        organizer.setPassword(userForUpgrade.getPassword());
-        organizer.setName(userForUpgrade.getName());
-        organizer.setSurname(userForUpgrade.getSurname());
-        organizer.setDateOfCreation(userForUpgrade.getDateOfCreation());
-        organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
-        organizer.setResidency(uuu.getResidency());
-        organizer.setPhoneNumber(uuu.getPhoneNumber());
-        organizer.setIsVerified(true);
-        organizer.setIsDeleted(false);
-        organizer.setFavoriteEvents(favoriteEvents);
-        organizer.setFavoriteOffers(favoriteOffers);
-        organizer.setBlockedUsers(blockedUsers);
-        
-        uuuRepository.delete(uuu);
-        uuuRepository.flush();
+	    entityManager.detach(userForUpgrade);
 
-        userRepository.delete(userForUpgrade);
-        userRepository.flush();
+	    entityManager.createNativeQuery("UPDATE AUTHENTIFIED_USER SET dtype = 'Organizer' WHERE id = :id")
+	                 .setParameter("id", userForUpgrade.getId())
+	                 .executeUpdate();
 
-        return organizerRepository.save(organizer);
+	    Organizer organizer = new Organizer();
+	    organizer.setId(userForUpgrade.getId());
+	    organizer.setEmail(userForUpgrade.getEmail());
+	    organizer.setPassword(userForUpgrade.getPassword());
+	    organizer.setName(userForUpgrade.getName());
+	    organizer.setSurname(userForUpgrade.getSurname());
+	    organizer.setDateOfCreation(userForUpgrade.getDateOfCreation());
+	    organizer.setRole(roleRepository.findByName("ORGANIZER_ROLE"));
+	    organizer.setResidency(uuu.getResidency());
+	    organizer.setPhoneNumber(uuu.getPhoneNumber());
+	    organizer.setIsVerified(true);
+	    organizer.setIsDeleted(false);
+	    organizer.setFavoriteEvents(userForUpgrade.getFavoriteEvents());
+	    organizer.setFavoriteOffers(userForUpgrade.getFavoriteOffers());
+	    organizer.setBlockedUsers(userForUpgrade.getBlockedUsers());
+	    organizer.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
+
+	    return entityManager.merge(organizer);
 	}
+
 	
 
 	private Provider upgradeToProvider(AuthentifiedUser userForUpgrade, UnverifiedUserUpgrade uuu) {
-		Set<Offer> favoriteOffers = userForUpgrade.getFavoriteOffers();
-		Set<Event> favoriteEvents = userForUpgrade.getFavoriteEvents();
-		List<AuthentifiedUser> blockedUsers = userForUpgrade.getBlockedUsers();
+		entityManager.detach(userForUpgrade);
+
+	    entityManager.createNativeQuery("UPDATE AUTHENTIFIED_USER SET dtype = 'Provider' WHERE id = :id")
+	                 .setParameter("id", userForUpgrade.getId())
+	                 .executeUpdate();
 		
         Provider provider = new Provider();
         provider.setId(userForUpgrade.getId()); // reuse ID
@@ -165,17 +168,12 @@ public class UserUpgradeService {
         provider.setDescription(uuu.getDescription());
         provider.setIsVerified(true);
         provider.setIsDeleted(false);
-        provider.setFavoriteEvents(favoriteEvents);
-        provider.setFavoriteOffers(favoriteOffers);
-        provider.setBlockedUsers(blockedUsers);
+        provider.setFavoriteEvents(userForUpgrade.getFavoriteEvents());
+	    provider.setFavoriteOffers(userForUpgrade.getFavoriteOffers());
+	    provider.setBlockedUsers(userForUpgrade.getBlockedUsers());
+	    provider.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
 
-        uuuRepository.delete(uuu);
-        uuuRepository.flush();
-
-        userRepository.delete(userForUpgrade);
-        userRepository.flush();
-        
-        return providerRepository.save(provider); // save new version
-		
+        return entityManager.merge(provider);
 	}
+
 }

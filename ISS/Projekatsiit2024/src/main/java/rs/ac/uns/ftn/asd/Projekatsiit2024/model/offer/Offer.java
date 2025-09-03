@@ -18,8 +18,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.OfferReservation;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Rating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.Rating;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 
@@ -27,8 +26,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Setter
 @Getter
-public class Offer
-{
+public class Offer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

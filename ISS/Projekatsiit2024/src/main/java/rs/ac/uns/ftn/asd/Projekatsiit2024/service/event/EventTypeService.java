@@ -17,10 +17,11 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.CreateEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.GetEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventType.UpdateEventTypeDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationException;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferCategoryRepository;
 
 @Service
 public class EventTypeService {
@@ -36,8 +37,12 @@ public class EventTypeService {
 	public Page<GetEventTypeDTO> readEventTypes(Pageable pageable) {
 		return eventTypeRepository.findAll(pageable).map(GetEventTypeDTO::new);
 	}
-
 	
+	
+	public Page<GetEventTypeDTO> readProviderEventTypes(UserPrincipal userPrincipal, Pageable pageable) {
+		return eventTypeRepository.findDistinctByProviderId(userPrincipal.getUser().getId(), pageable).map(GetEventTypeDTO::new);
+	}
+
 	
 	@Transactional(propagation = Propagation.REQUIRED)
     public EventType createEventType(CreateEventTypeDTO eventTypeDTO) throws EventTypeValidationException {
@@ -49,7 +54,10 @@ public class EventTypeService {
         
         //adding offer categories which are recommended for event type
         Set<OfferCategory> offerCategories = new HashSet<>();
-        for (Integer id : eventTypeDTO.getRecommendedCategoriesIds()) {
+        Set<Integer> recommendedCategoriesIds = eventTypeDTO.getRecommendedCategoriesIds();
+        if (recommendedCategoriesIds == null)
+        	recommendedCategoriesIds = new HashSet<Integer>();
+        for (Integer id : recommendedCategoriesIds) {
         	
         	Optional<OfferCategory> offerCategory = offerCategoryRepository.getAvailableOfferCategory(id);
         	if (offerCategory.isEmpty())
@@ -68,13 +76,13 @@ public class EventTypeService {
 	
 	private boolean isCreatedEventTypeValid(EventType eventType) throws EventTypeValidationException {
 		
-		if (!Pattern.matches("^.{5,24}$", eventType.getName()))
+		if (eventType.getName() == null || !Pattern.matches("^.{5,24}$", eventType.getName()))
 			throw new EventTypeValidationException("Name can't be under 5 or over 24 characters long.");
 		
 		if (eventTypeRepository.findByName(eventType.getName()).isPresent())
             throw new EventTypeValidationException("That event type name is already taken.");
     	
-    	if (!Pattern.matches("^.{5,80}$", eventType.getDescription()))
+    	if (eventType.getDescription() == null || !Pattern.matches("^.{5,80}$", eventType.getDescription()))
 			throw new EventTypeValidationException("Description can't be under 5 or over 80 characters long.");
 		
 		return true;
@@ -99,7 +107,10 @@ public class EventTypeService {
         eventType.setDescription(eventTypeDTO.getDescription());
         //adding offer categories which are recommended for event type
         Set<OfferCategory> offerCategories = new HashSet<>();
-        for (Integer id : eventTypeDTO.getRecommendedCategoriesIds()) {
+        Set<Integer> recommendedCategoriesIds = eventTypeDTO.getRecommendedCategoriesIds();
+        if (recommendedCategoriesIds == null)
+        	recommendedCategoriesIds = new HashSet<Integer>();
+        for (Integer id : recommendedCategoriesIds) {
         	
         	Optional<OfferCategory> offerCategory = offerCategoryRepository.getAvailableOfferCategory(id);
         	if (offerCategory.isEmpty())

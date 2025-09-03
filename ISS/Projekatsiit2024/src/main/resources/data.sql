@@ -22,7 +22,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'John', 'Doe', 'jbl.jpg', 
  false, true, NULL, 
- 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 2, NULL, CURRENT_TIMESTAMP, 
  'Berlin, Germany', '123-456-789', 
  'Organizer');
 
@@ -30,11 +30,11 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, provider_name, description, DTYPE) 
 VALUES 
-('mirkodjukic314@gmail.com', 
+('provider@example.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Provider', 'Company', 'Untitled.png', 
  false, true, NULL, 
- 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 3, NULL, CURRENT_TIMESTAMP, 
  'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
  'Provider');
 
@@ -46,30 +46,30 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Alice', 'Johnson', 'admin2.jpg', 
  false, true, NULL, 
- 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 0, NULL, CURRENT_TIMESTAMP, 
  'Admin');
 
 -- Another Organizer
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, DTYPE) 
 VALUES 
-('mirkodjukic23@gmail.com', 
+('organizer2@example.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Steve', 'Williams', 'organizer2.jpg', 
  false, true, NULL, 
- 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 2, NULL, CURRENT_TIMESTAMP,
  'Madrid, Spain', '321-654-987', 
  'Organizer');
  
  -- Plain AuthentifiedUser (no subtype like Admin, Organizer, or Provider)
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
-VALUES 
-('user@gmail.com', 
+VALUES
+('user@example.com',
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
- 'Basic', 'User', 'default.jpg', 
+ 'Basic', 'User', 'default.jpg',
  false, true, NULL, 
- 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 1, NULL, CURRENT_TIMESTAMP, 
  'AuthentifiedUser');
 
  INSERT INTO authentified_user 
@@ -79,9 +79,20 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Provider part 2', 'lethal company', 'Untitled.png', 
  false, true, NULL, 
- 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 3, NULL, CURRENT_TIMESTAMP, 
  'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
  'Provider');
+
+ -- Plain AuthentifiedUser (no subtype like Admin, Organizer, or Provider)
+INSERT INTO authentified_user 
+(email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, DTYPE) 
+VALUES 
+('senjare2@gmail.com', 
+ '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
+ 'Basic', 'User', 'default.jpg', 
+ false, true, NULL, 
+ 1, NULL, CURRENT_TIMESTAMP, 
+ 'AuthentifiedUser');
 
 INSERT INTO OFFER_CATEGORY (IS_ACCEPTED, IS_ENABLED, DESCRIPTION, NAME, OFFER_TYPE)
 VALUES
@@ -205,8 +216,8 @@ INSERT INTO EVENT (
 ) VALUES 
 -- Paris
 (
-    CAST('2025-08-01 01:35:00' AS TIMESTAMP),
-    CAST('2025-08-01 23:00:00' AS TIMESTAMP),
+    CAST('2025-08-09 01:35:00' AS TIMESTAMP),
+    CAST('2025-08-09 23:00:00' AS TIMESTAMP),
     FALSE,
     48.8566,
     2.3522,
