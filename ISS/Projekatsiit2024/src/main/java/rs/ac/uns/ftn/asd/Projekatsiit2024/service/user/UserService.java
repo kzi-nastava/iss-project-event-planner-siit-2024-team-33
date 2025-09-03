@@ -126,11 +126,11 @@ public class UserService {
 			throw new UserUpdateException("The user with such role doesn't exist.");
 		}
 		
-		if (!encoder.matches(updatePassword.getOldPassword(), user.getPassword())) {
+		if (updatePassword.getOldPassword() == null || !encoder.matches(updatePassword.getOldPassword(), user.getPassword())) {
 			throw new InvalidPasswordException("Old password doesn't match.");
 		}
 		
-		if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", updatePassword.getNewPassword())) {
+		if (updatePassword.getNewPassword() == null || !Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", updatePassword.getNewPassword())) {
 			throw new InvalidPasswordFormatException("Password is not of valid format.");
 		}
 		

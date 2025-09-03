@@ -27,7 +27,9 @@ public class AuthenticationService implements UserDetailsService {
 		}
 	}
 
-	public Boolean isEmailAvailable(String email) {
+	public Boolean isEmailNotAvailable(String email) {
+		if (email == null)
+			return false;
 		AuthentifiedUser user = aUserRepository.findByEmail(email);
 		if (user == null || user.getIsVerified() == false) {
 			return false;

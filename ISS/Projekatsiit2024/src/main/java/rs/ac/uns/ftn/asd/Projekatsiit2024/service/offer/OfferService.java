@@ -23,11 +23,11 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ProductRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ServiceRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferCategoryRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.ProductRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.ServiceRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
 

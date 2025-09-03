@@ -22,7 +22,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'John', 'Doe', 'jbl.jpg', 
  false, true, NULL, 
- 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 2, NULL, CURRENT_TIMESTAMP, 
  'Berlin, Germany', '123-456-789', 
  'Organizer');
 
@@ -34,7 +34,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Provider', 'Company', 'Untitled.png', 
  false, true, NULL, 
- 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 3, NULL, CURRENT_TIMESTAMP, 
  'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
  'Provider');
 
@@ -46,7 +46,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Alice', 'Johnson', 'admin2.jpg', 
  false, true, NULL, 
- 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 0, NULL, CURRENT_TIMESTAMP, 
  'Admin');
 
 -- Another Organizer
@@ -57,7 +57,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Steve', 'Williams', 'organizer2.jpg', 
  false, true, NULL, 
- 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
+ 2, NULL, CURRENT_TIMESTAMP,
  'Madrid, Spain', '321-654-987', 
  'Organizer');
  
@@ -69,7 +69,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Basic', 'User', 'default.jpg',
  false, true, NULL, 
- 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 1, NULL, CURRENT_TIMESTAMP, 
  'AuthentifiedUser');
 
  INSERT INTO authentified_user 
@@ -79,7 +79,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Provider part 2', 'lethal company', 'Untitled.png', 
  false, true, NULL, 
- 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 3, NULL, CURRENT_TIMESTAMP, 
  'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
  'Provider');
 
@@ -91,7 +91,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Basic', 'User', 'default.jpg', 
  false, true, NULL, 
- 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+ 1, NULL, CURRENT_TIMESTAMP, 
  'AuthentifiedUser');
 
 INSERT INTO OFFER_CATEGORY (IS_ACCEPTED, IS_ENABLED, DESCRIPTION, NAME, OFFER_TYPE)
