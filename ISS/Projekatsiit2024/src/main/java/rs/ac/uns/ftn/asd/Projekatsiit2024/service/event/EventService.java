@@ -122,8 +122,8 @@ public class EventService {
 		if (eventDTO.getEventTypeId() == null)
 			throw new EventValidationException("No such event type can be used to create an event.");
         Optional<EventType> eventType = eventTypeRepository.findById(eventDTO.getEventTypeId());
-        if (eventType.isEmpty() && !eventType.get().getIsActive())
-        	throw new EventValidationException("No such event type can be used to create an event.");
+        if (eventType.isEmpty() || !eventType.get().getIsActive())
+            throw new EventValidationException("No such event type can be used to create an event.");
         event.setEventType(eventType.get());
         
         //check event data

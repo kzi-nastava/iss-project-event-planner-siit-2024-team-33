@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.service.event;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -32,6 +33,10 @@ public class EventTypeService {
 	@Autowired
 	private OfferCategoryRepository offerCategoryRepository;
 	
+	
+	public List<EventType> getActiveEventTypes() {
+	    return eventTypeRepository.getActiveEventTypes();
+	}
 	
 	
 	public Page<GetEventTypeDTO> readEventTypes(Pageable pageable) {
