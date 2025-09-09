@@ -18,10 +18,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.invitationService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferReservationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.communication.invitationService;
 
 @Service
 public class OfferReservationService {

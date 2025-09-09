@@ -10,8 +10,8 @@ import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.Notification;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.Role;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.Notification;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 

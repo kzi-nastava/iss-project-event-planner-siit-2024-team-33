@@ -71,6 +71,21 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+	        <groupId>org.seleniumhq.selenium</groupId>
+	        <artifactId>selenium-java</artifactId>
+	        <scope>test</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>io.github.bonigarcia</groupId>
+	        <artifactId>webdrivermanager</artifactId>
+	        <version>5.5.0</version>
+	    </dependency>
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-test</artifactId>
+		    <scope>test</scope>
+		</dependency>
 	    <dependency>
 	        <groupId>org.springframework.boot</groupId>
 	        <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -92,50 +107,55 @@
 		    <groupId>org.glassfish.jaxb</groupId>
 		    <artifactId>jaxb-runtime</artifactId>
 		</dependency>
-	<dependency>
-	    <groupId>org.junit.jupiter</groupId>
-	    <artifactId>junit-jupiter</artifactId>
-	    <version>5.10.2</version>
-	    <scope>test</scope>
-	</dependency>
-	    <dependency>
-        <groupId>org.seleniumhq.selenium</groupId>
-        <artifactId>selenium-java</artifactId>
-        <version>4.23.0</version>
-        <scope>test</scope>
-    </dependency>
-	<dependency>
-	    <groupId>io.github.bonigarcia</groupId>
-	    <artifactId>webdrivermanager</artifactId>
-	    <version>5.8.0</version>
-	</dependency>
-
-	<dependency>
-	  <groupId>com.itextpdf</groupId>
-	  <artifactId>itext7-core</artifactId>
-	  <version>8.0.2</version>
-	  <type>pom</type>
-	</dependency>
-	<dependency>
-	    <groupId>net.sf.jasperreports</groupId>
-	    <artifactId>jasperreports</artifactId>
-	    <version>7.0.3</version>
-	</dependency>
-	<dependency>
-	    <groupId>net.sf.jasperreports</groupId>
-	    <artifactId>jasperreports-fonts</artifactId>
-	    <version>7.0.3</version>
-	</dependency>
-	<dependency>
-	    <groupId>net.sf.jasperreports</groupId>
-	    <artifactId>jasperreports-pdf</artifactId>
-	    <version>7.0.3</version>
-	</dependency>
-	<dependency>
-	    <groupId>net.sf.jasperreports</groupId>
-	    <artifactId>jasperreports-chart-themes</artifactId>
-	    <version>7.0.3</version>
-	</dependency>
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter</artifactId>
+		    <version>5.10.2</version>
+		    <scope>test</scope>
+		</dependency>
+		    <dependency>
+	        <groupId>org.seleniumhq.selenium</groupId>
+	        <artifactId>selenium-java</artifactId>
+	        <version>4.23.0</version>
+	        <scope>test</scope>
+	    </dependency>
+		<dependency>
+		    <groupId>io.github.bonigarcia</groupId>
+		    <artifactId>webdrivermanager</artifactId>
+		    <version>5.8.0</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.itextpdf</groupId>
+		  <artifactId>itext7-core</artifactId>
+		  <version>8.0.2</version>
+		  <type>pom</type>
+		</dependency>
+		<dependency>
+		    <groupId>net.sf.jasperreports</groupId>
+		    <artifactId>jasperreports</artifactId>
+		    <version>7.0.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>net.sf.jasperreports</groupId>
+		    <artifactId>jasperreports-fonts</artifactId>
+		    <version>7.0.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>net.sf.jasperreports</groupId>
+		    <artifactId>jasperreports-pdf</artifactId>
+		    <version>7.0.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>net.sf.jasperreports</groupId>
+		    <artifactId>jasperreports-chart-themes</artifactId>
+		    <version>7.0.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>pdfbox</artifactId>
+		    <version>2.0.30</version>
+		    <scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

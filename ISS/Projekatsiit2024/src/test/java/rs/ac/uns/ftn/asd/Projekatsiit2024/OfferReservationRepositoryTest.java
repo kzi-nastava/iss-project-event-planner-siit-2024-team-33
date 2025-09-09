@@ -11,6 +11,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferReservationRepository;
 
 import java.sql.Date;
 import java.sql.Time;

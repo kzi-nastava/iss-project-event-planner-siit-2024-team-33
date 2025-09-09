@@ -31,21 +31,17 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventTypeValidationExc
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.event.EventTypeService;
 
 @RestController
 @RequestMapping("/api/eventTypes")
-public class EventTypeController {
-	@Autowired
-	private EventTypeRepository eventTypeRepo;
-	
+public class EventTypeController {	
 	@Autowired 
 	EventTypeService eventTypeService;
 	
 	@GetMapping("/active")
 	public ResponseEntity<List<MinimalEventTypeDTO>> getEventTypes() {
-		List<EventType> types = eventTypeRepo.getActiveEventTypes();
+		List<EventType> types = eventTypeService.getActiveEventTypes();
 		List<MinimalEventTypeDTO> minTypes = types.stream().map(type -> new MinimalEventTypeDTO(type)).toList();
 		return ResponseEntity.ok(minTypes);
 	}

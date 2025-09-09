@@ -26,8 +26,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventStatistics.EventAttendance;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.eventStatistics.EventRatingsCounter;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.event.EventValidationException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.reportPDF.PdfGenerationException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventRating;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.EventRating;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
@@ -94,7 +94,7 @@ public class ReportPDFService {
     	if (event.getIsPrivate()) {
     		//if event is private and user is logged out
     		if (userPrincipal == null)
-    			throw new EventValidationException("You have to be logged in into account which has"
+    			throw new EventValidationException("You have to be logged into account which has"
     					+ " permition to view this private event.");
     		
     		AuthentifiedUser user = userPrincipal.getUser();

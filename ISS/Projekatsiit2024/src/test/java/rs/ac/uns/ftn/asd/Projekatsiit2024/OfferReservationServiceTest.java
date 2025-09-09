@@ -28,6 +28,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferReservationService;
 
 public class OfferReservationServiceTest {

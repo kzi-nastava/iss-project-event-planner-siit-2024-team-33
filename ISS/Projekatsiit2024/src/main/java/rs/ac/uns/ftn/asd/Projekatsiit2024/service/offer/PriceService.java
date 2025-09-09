@@ -19,7 +19,7 @@ import com.itextpdf.layout.element.Paragraph;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
 
 @Service
 public class PriceService {

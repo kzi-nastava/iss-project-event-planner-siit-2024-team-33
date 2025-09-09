@@ -17,13 +17,13 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.user.UpgradeUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserUpgradeException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.verification.EmailSendingException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.verification.VerificationTokenException;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.VerificationToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.VerificationToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.UnverifiedUserUpgrade;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.VerificationTokenRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.communication.VerificationTokenRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.DynamicMailSender;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.communication.DynamicMailSender;
 
 @Service
 public class VerificationService {

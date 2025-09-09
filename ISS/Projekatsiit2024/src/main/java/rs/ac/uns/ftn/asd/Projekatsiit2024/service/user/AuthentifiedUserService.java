@@ -29,6 +29,9 @@ public class AuthentifiedUserService {
 	
     public AuthentifiedUser createAuthentifiedUser(RegisterUser registerUser) throws AuthentifiedUserValidationException {
         
+    	if (registerUser.getEmail() == null)
+    		throw new AuthentifiedUserValidationException("Email is not of valid format.");
+    	
 		//is there a verified user or one which needs to verify the account
 		//that already uses this email
 		LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
@@ -86,20 +89,20 @@ public class AuthentifiedUserService {
 	
 	private boolean isDataCorrect(AuthentifiedUser aUser, boolean isUpdate) throws AuthentifiedUserValidationException {
 		
-		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", aUser.getEmail())) {
+		if (aUser.getEmail() == null || !Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", aUser.getEmail())) {
 			throw new AuthentifiedUserValidationException("Email is not of valid format.");
 		}
 		
 		if(!isUpdate) {
-			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", aUser.getPassword())) {
+			if (aUser.getPassword() == null || !Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", aUser.getPassword())) {
 				throw new AuthentifiedUserValidationException("Password is not of valid format.");
 			}
 		}
 		
-		if (!Pattern.matches("^[a-zA-Z]{1,50}$", aUser.getName())) {
+		if (aUser.getName() == null || !Pattern.matches("^[a-zA-Z]{1,50}$", aUser.getName())) {
 			throw new AuthentifiedUserValidationException("Name is not of valid format.");
 		}
-		if (!Pattern.matches("^[a-zA-Z]{1,50}$", aUser.getSurname())) {
+		if (aUser.getSurname() == null || !Pattern.matches("^[a-zA-Z]{1,50}$", aUser.getSurname())) {
 			throw new AuthentifiedUserValidationException("Surname is not of valid format.");
 		}
 		
