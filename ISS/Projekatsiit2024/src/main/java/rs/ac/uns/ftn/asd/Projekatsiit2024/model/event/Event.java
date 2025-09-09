@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.model.event;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -59,7 +60,7 @@ public class Event {
 
     //event reservations
     @OneToMany(mappedBy = "event")
-    private List<OfferReservation> reservations;
+    private List<OfferReservation> reservations = new ArrayList<>();
     @OneToMany(mappedBy = "event")
     private List<BudgetItem> budgetItems;
     

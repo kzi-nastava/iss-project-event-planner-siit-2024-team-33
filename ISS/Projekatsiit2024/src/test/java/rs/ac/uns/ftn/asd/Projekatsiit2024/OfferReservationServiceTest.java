@@ -18,7 +18,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
 
+import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.offerReservation.ServiceBookingException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.*;
@@ -26,8 +28,11 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferReservationService;
 
 public class OfferReservationServiceTest {
@@ -37,7 +42,8 @@ public class OfferReservationServiceTest {
 
     @Mock
     private EventRepository eventRepo;
-
+    @Mock
+    private AuthentifiedUserRepository userRepo;
     @Mock
     private OfferReservationRepository offerReservationRepo;
 
@@ -93,13 +99,21 @@ public class OfferReservationServiceTest {
     @Test
     @DisplayName("createOfferReservation - should create offer reservation")
     public void testCreateOfferReservation_Success() {
+        Provider provider = new Provider();
+        provider.setId(1);
+        provider.setEmail("provider@example.com");
+        Organizer organizer = new Organizer();
+        organizer.setId(2);
+        organizer.setEmail("organizer@example.com");
+        
         Offer offer = new Offer();
         offer.setOfferID(1);
-
+        offer.setProvider(provider);
+        
         Event event = new Event();
         event.setId(2);
         event.setDateOfEvent(LocalDateTime.now().plusMonths(1));
-
+        event.setOrganizer(organizer);
         when(offerRepo.findById(1)).thenReturn(Optional.of(offer));
         when(eventRepo.findById(2)).thenReturn(Optional.of(event));
 
@@ -172,11 +186,17 @@ public class OfferReservationServiceTest {
     @Test
     @DisplayName("createOfferReservation - throws error if reservation end time is before start time")
     public void testCreateOfferReservationInvalidArgumentsEndTimeBeforeStartTime() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            reservationService.createOfferReservation(LocalDate.now().plusDays(3), 0, 2, LocalTime.now(), LocalTime.now().minusHours(1));
-        });
+    	Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+    	    reservationService.createOfferReservation(
+    	        LocalDate.now().plusDays(3),
+    	        1,
+    	        2,
+    	        LocalTime.of(14, 0),
+    	        LocalTime.of(13, 0)
+    	    );
+    	});
 
-        assertTrue(exception.getMessage().contains("Invalid argument: End time cannot be earlier than start time."));
+    	assertTrue(exception.getMessage().contains("End time cannot be earlier than start time"));
     }
     @Test
     @DisplayName("createOfferReservation - throws error if reservation date is before today")
@@ -193,18 +213,30 @@ public class OfferReservationServiceTest {
     @Test
     @DisplayName("bookAService - throws error if reservation for 1 offer is already booked for THIS or ANOTHER service")
     public void testReserveAlreadyReservedOffer() {
+        Provider provider = new Provider();
+        provider.setId(1);
+        provider.setEmail("provider@example.com");
+        Organizer organizer = new Organizer();
+        organizer.setId(2);
+        organizer.setEmail("organizer@example.com");
+        
         Offer offer = new Offer();
         offer.setId(10);
+        offer.setProvider(provider);
 
         Event event = new Event();
         event.setId(1);
         event.setDateOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0)));
         event.setEndOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(20, 0)));
+        event.setReservations(new ArrayList<>());
+        event.setOrganizer(organizer);
+
         
         Event eventSecond = new Event();
-        event.setId(2);
-        event.setDateOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0)));
-        event.setEndOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(20, 0)));
+        eventSecond.setId(2);
+        eventSecond.setDateOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0)));
+        eventSecond.setEndOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(20, 0)));
+        eventSecond.setReservations(new ArrayList<>());
         
         OfferReservation existingReservation = new OfferReservation();
         existingReservation.setId(1);
@@ -221,9 +253,12 @@ public class OfferReservationServiceTest {
         when(offerRepo.findById(10)).thenReturn(Optional.of(offer));
         when(eventRepo.findById(1)).thenReturn(Optional.of(event));
         when(eventRepo.findById(2)).thenReturn(Optional.of(eventSecond));
-        when(offerReservationRepo.findByOfferId(10)).thenReturn(List.of(existingReservation));
-        
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        when(userRepo.findById(1)).thenReturn(Optional.of(provider));
+        when(userRepo.findById(2)).thenReturn(Optional.of(organizer));
+        when(offerReservationRepo.save(any())).thenReturn(existingReservation);
+        when(offerReservationRepo.findByOfferId(offer.getOfferID()))
+        .thenReturn(List.of(existingReservation));        
+        Exception exception = assertThrows(ServiceBookingException.class, () -> {
             reservationService.bookAService(1, 10, requestedStart, requestedEnd);
         });
         
@@ -250,10 +285,10 @@ public class OfferReservationServiceTest {
         LocalDateTime requestedStart = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0));
         LocalDateTime requestedEnd = LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(17, 0));
         
-        when(offerRepo.findById(10)).thenReturn(Optional.of(offer));
+        when(offerRepo.findById(offer.getId())).thenReturn(Optional.of(offer));
         when(eventRepo.findById(1)).thenReturn(Optional.of(event));
         
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(ServiceBookingException.class, () -> {
             reservationService.bookAService(1, 10, requestedStart, requestedEnd);
         });
         
@@ -318,7 +353,7 @@ public class OfferReservationServiceTest {
         when(offerReservationRepo.findById(2)).thenReturn(Optional.of(existingReservation2));
         
         
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(ServiceBookingException.class, () -> {
             reservationService.bookAService(1, 1, requestedStart, requestedEnd);
         });
         
@@ -333,10 +368,16 @@ public class OfferReservationServiceTest {
     @Test
     @DisplayName("bookAService- shouldn't throw error, no time collision at all.")
     public void BookAServiceSuccess() {
-    	//We use this one to reserve service with
+        Provider provider = new Provider();
+        provider.setId(1);
+        provider.setEmail("provider@example.com");
+        Organizer organizer = new Organizer();
+        organizer.setId(2);
+        organizer.setEmail("organizer@example.com");
+        
     	Offer offer = new Offer();
         offer.setId(1);
-        
+        offer.setProvider(provider);
         //Already reserved one
         Offer offerReserved1 = new Offer();
         offerReserved1.setId(2);
@@ -345,7 +386,8 @@ public class OfferReservationServiceTest {
         event.setId(1);
         event.setDateOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(12, 0)));
         event.setEndOfEvent(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(20, 0)));
-        
+        event.setReservations(new ArrayList<>());
+        event.setOrganizer(organizer);
         
         OfferReservation existingReservation1 = new OfferReservation();
         existingReservation1.setId(1);
