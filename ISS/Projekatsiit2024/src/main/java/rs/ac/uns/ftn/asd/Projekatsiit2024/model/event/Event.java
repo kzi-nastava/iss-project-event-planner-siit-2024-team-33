@@ -17,7 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventRating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.EventRating;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;

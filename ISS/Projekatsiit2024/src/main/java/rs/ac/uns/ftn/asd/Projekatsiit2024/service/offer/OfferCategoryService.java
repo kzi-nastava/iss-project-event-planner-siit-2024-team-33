@@ -17,10 +17,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferCategoryRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AdminRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.NotificationService;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.service.communication.NotificationService;
 
 @Service
 public class OfferCategoryService {

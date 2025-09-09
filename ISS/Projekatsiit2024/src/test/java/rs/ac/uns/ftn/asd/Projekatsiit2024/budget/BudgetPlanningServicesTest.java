@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,11 +32,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.BudgetItemRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.BudgetItemRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferCategoryRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.BudgetService;
 
 public class BudgetPlanningServicesTest {

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.EventRating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.EventRating;
 
 @Getter
 @Setter

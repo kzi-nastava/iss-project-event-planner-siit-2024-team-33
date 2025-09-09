@@ -41,7 +41,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PostServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.PutServiceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.service.ServiceFilterDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.ServiceService;

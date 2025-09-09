@@ -18,8 +18,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.budget.PutBudgetItemDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.productPurchase.PostProductPurchaseDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferCategoryRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

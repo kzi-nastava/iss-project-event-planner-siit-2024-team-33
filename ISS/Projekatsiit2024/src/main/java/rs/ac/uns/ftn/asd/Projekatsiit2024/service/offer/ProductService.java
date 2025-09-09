@@ -30,12 +30,12 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.product.Product;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.ProductRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferCategoryRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferReservationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.ProductRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
 
@@ -84,10 +84,13 @@ public class ProductService {
 		
 		//provider which creates the product
 	    Provider provider = providerRepo.findById(userPrincipal.getUser().getId()).orElseThrow();
-		    
+	    
+	    List<Integer> eventTypeIdsOfProduct = product.getEventTypeIds();
+	    if (product.getEventTypeIds() == null)
+	    	eventTypeIdsOfProduct = new ArrayList<Integer>();  
 		//find product event types, all of them have to be active and existing
-	    List<EventType> productEventTypes = eventTypeRepo.findActiveEventsByIds(product.getEventTypeIds());
-	    if(productEventTypes.size() < product.getEventTypeIds().size())
+	    List<EventType> productEventTypes = eventTypeRepo.findActiveEventsByIds(eventTypeIdsOfProduct);
+	    if(productEventTypes.size() < eventTypeIdsOfProduct.size())
 	    	throw new ProductValidationException("Not all of event types you want "
 	    			+ "associated with this product exist or are active.");
 	    
@@ -128,6 +131,10 @@ public class ProductService {
 	
 	private OfferCategory createWithoutCategory(Integer existingCategoryId) {
 		
+		if (existingCategoryId == null)
+			throw new OfferCategoryValidationException("No such existing offer category can be used for creation "
+	    			+ "of this product.");
+		
 	    Optional<OfferCategory> category = 
 	    		offerCategoryRepo.findValidProductCategory(existingCategoryId, OfferType.PRODUCT);
 	    
@@ -140,6 +147,10 @@ public class ProductService {
 	
 	
 	private OfferCategory createWithCategory(PostOfferCategoryDTO offerCategory) {
+		
+		if (offerCategory == null)
+			throw new OfferCategoryValidationException("Offer category has to have name and description.");
+		
 		OfferCategory oc = new OfferCategory();
 		oc.setName(offerCategory.getName());
 		oc.setDescription(offerCategory.getDescription());
@@ -153,11 +164,11 @@ public class ProductService {
 	}
 	
 	private boolean isOfferCategoryDataCorrect(OfferCategory offerCategory) {
-		if (!Pattern.matches("^.{1,50}$", offerCategory.getName()))
+		if (offerCategory.getName() == null || !Pattern.matches("^.{1,50}$", offerCategory.getName()))
 		    throw new OfferCategoryValidationException("Name must be between 1 and 50 characters.");
 		if (offerCategoryRepo.existsByNameIgnoreCase(offerCategory.getName()))
 		    throw new OfferCategoryValidationException("Offer category name already exists.");
-		if (!Pattern.matches("^.{1,250}$", offerCategory.getDescription()))
+		if (offerCategory.getDescription() == null || !Pattern.matches("^.{1,250}$", offerCategory.getDescription()))
 			throw new OfferCategoryValidationException("Description must be between 1 and 250 characters.");
 		
 		return true;
@@ -165,11 +176,11 @@ public class ProductService {
 	
 	
 	private boolean isProductDataCorrect(Product product) {
-		if (!Pattern.matches("^.{1,50}$", product.getName()))
+		if (product.getName() == null || !Pattern.matches("^.{1,50}$", product.getName()))
 		    throw new ProductValidationException("Name must be between 1 and 50 characters.");
-		if (!Pattern.matches("^.{1,250}$", product.getDescription()))
+		if (product.getDescription() == null || !Pattern.matches("^.{1,250}$", product.getDescription()))
 			throw new ProductValidationException("Description must be between 1 and 250 characters.");
-		if (product.getPrice() == null && product.getPrice() < 0)
+		if (product.getPrice() == null || product.getPrice() < 0)
 			throw new ProductValidationException("Price must be specified.");
 		if (product.getDiscount() == null || product.getDiscount() > product.getPrice())
 		    throw new ProductValidationException("Discount must be less than a price.");
@@ -198,9 +209,12 @@ public class ProductService {
 	    	throw new ProductValidationException("You cannot update product which you didn't create.");
 
 		
+	    List<Integer> eventTypeIdsOfProduct = product.getEventTypeIds();
+	    if (product.getEventTypeIds() == null)
+	    	eventTypeIdsOfProduct = new ArrayList<Integer>();  
 	    //find product event types, all of them have to be active and existing
-	    List<EventType> productEventTypes = eventTypeRepo.findActiveEventsByIds(product.getEventTypeIds());
-	    if(productEventTypes.size() < product.getEventTypeIds().size())
+	    List<EventType> productEventTypes = eventTypeRepo.findActiveEventsByIds(eventTypeIdsOfProduct);
+	    if(productEventTypes.size() < eventTypeIdsOfProduct.size())
 	    	throw new ProductValidationException("Not all of event types you want "
 	    			+ "associated with this product exist or are active.");
 	    

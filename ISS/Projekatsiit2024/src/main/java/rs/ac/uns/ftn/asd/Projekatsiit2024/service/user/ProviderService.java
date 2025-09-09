@@ -20,9 +20,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.UserDeletionException;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.auth.RoleRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.ProviderRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.utils.ImageManager;
@@ -58,6 +58,10 @@ public class ProviderService {
 	
     public Provider createProvider(RegisterUser registerUser) throws ProviderValidationException {
         
+    	if (registerUser.getEmail() == null)
+    		throw new ProviderValidationException("Email is not of valid format.");
+    	
+    	
 		LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
 
         // Check for existing email usage
@@ -141,32 +145,32 @@ public class ProviderService {
 	}
 	
 	private boolean isDataCorrect(Provider provider, boolean isUpdate) throws ProviderValidationException {
-		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", provider.getEmail())) {
+		if (provider.getEmail() == null || !Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", provider.getEmail())) {
 			throw new ProviderValidationException("Email is not of valid format.");
 		}
 		
 		if(!isUpdate) {
-			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", provider.getPassword())) {
+			if (provider.getPassword() == null || !Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", provider.getPassword())) {
 				throw new ProviderValidationException("Password is not of valid format.");
 			}
 		}
 		
-		if (!Pattern.matches("^[a-zA-Z]{1,50}$", provider.getName())) {
+		if (provider.getName() == null || !Pattern.matches("^[a-zA-Z]{1,50}$", provider.getName())) {
 			throw new ProviderValidationException("Name is not of valid format.");
 		}
-		if (!Pattern.matches("^[a-zA-Z]{1,50}$", provider.getSurname())) {
+		if (provider.getSurname() == null || !Pattern.matches("^[a-zA-Z]{1,50}$", provider.getSurname())) {
 			throw new ProviderValidationException("Surname is not of valid format.");
 		}
-		if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", provider.getResidency()) || provider.getResidency().length() > 150)
+		if (provider.getResidency() == null || !Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", provider.getResidency()) || provider.getResidency().length() > 150)
     	    throw new ProviderValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
 		
-		if (!Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", provider.getPhoneNumber())) {
+		if (provider.getPhoneNumber() == null || !Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", provider.getPhoneNumber())) {
 			throw new ProviderValidationException("Phone number is not of valid format.");
 		}
-		if (!Pattern.matches("^.{20,}$", provider.getDescription())) {
+		if (provider.getDescription() == null || !Pattern.matches("^.{20,}$", provider.getDescription())) {
 			throw new ProviderValidationException("Description is not of valid format.");
 		}
-		if (!Pattern.matches("^[a-zA-Z0-9]{0,20}$", provider.getProviderName())) {
+		if (provider.getProviderName() == null || !Pattern.matches("^[a-zA-Z0-9]{0,20}$", provider.getProviderName())) {
 			throw new ProviderValidationException("Provider name is not of valid format.");
 		}
 		

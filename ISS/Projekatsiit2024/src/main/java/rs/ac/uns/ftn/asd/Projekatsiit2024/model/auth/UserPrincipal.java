@@ -2,9 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.security.core.userdetails.UserDetails;

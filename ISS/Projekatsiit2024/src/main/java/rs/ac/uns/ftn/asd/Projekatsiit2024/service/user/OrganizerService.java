@@ -41,6 +41,9 @@ public class OrganizerService {
 	
     public Organizer createOrganizer(RegisterUser registerUser) 
     		throws OrganizerValidationException {
+    	
+    	if (registerUser.getEmail() == null)
+    		throw new OrganizerValidationException("Email is not of valid format.");
 		
 		LocalDateTime thresholdDate = LocalDateTime.now().minusHours(24);
 
@@ -103,27 +106,27 @@ public class OrganizerService {
 	
 	private boolean isDataCorrect(Organizer organizer, boolean isUpdate) throws OrganizerValidationException {
 		
-		if (!Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", organizer.getEmail())) {
+		if (organizer.getEmail() == null || !Pattern.matches("^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", organizer.getEmail())) {
 			throw new OrganizerValidationException("Email is not of valid format.");
 		}
 		
 		if(!isUpdate) {
-			if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", organizer.getPassword())) {
+			if (organizer.getPassword() == null || !Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$", organizer.getPassword())) {
 				throw new OrganizerValidationException("Password is not of valid format.");
 			}
 		}
 		
-		if (!Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getName())) {
+		if (organizer.getName() == null || !Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getName())) {
 			throw new OrganizerValidationException("Name is not of valid format.");
 		}
-		if (!Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getSurname())) {
+		if (organizer.getSurname() == null || !Pattern.matches("^[a-zA-Z]{1,50}$", organizer.getSurname())) {
 			throw new OrganizerValidationException("Surname is not of valid format.");
 		}
-		if (!Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", organizer.getResidency()) || organizer.getResidency().length() > 150)
+		if (organizer.getResidency() == null || !Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", organizer.getResidency()) || organizer.getResidency().length() > 150)
     	    throw new OrganizerValidationException("Residency must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
 		
 		
-		if (!Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", organizer.getPhoneNumber())) {
+		if (organizer.getPhoneNumber() == null || !Pattern.matches("^\\+?[0-9\\s()-]{7,15}$", organizer.getPhoneNumber())) {
 			throw new OrganizerValidationException("Phone number is not of valid format.");
 		}
 		

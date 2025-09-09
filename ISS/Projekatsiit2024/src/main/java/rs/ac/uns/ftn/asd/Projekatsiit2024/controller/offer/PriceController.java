@@ -22,7 +22,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.prices.PriceItemDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.prices.PutPriceDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.OfferService;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.service.offer.PriceService;
 

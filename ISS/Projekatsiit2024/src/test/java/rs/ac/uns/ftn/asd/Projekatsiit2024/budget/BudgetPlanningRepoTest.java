@@ -18,11 +18,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.BudgetItem;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferType;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.BudgetItemRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.BudgetItemRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferCategoryRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")

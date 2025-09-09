@@ -30,10 +30,10 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.Offer;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferCategory;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Provider;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.BudgetItemRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferCategoryRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.BudgetItemRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferCategoryRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferReservationRepository;
 
 @Service
 public class BudgetService {

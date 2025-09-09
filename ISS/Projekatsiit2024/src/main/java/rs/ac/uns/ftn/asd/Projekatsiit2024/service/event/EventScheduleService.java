@@ -17,8 +17,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.exception.user.AuthentifiedUserValidat
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.auth.UserPrincipal;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.offer.OfferReservationRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
 
 @Service

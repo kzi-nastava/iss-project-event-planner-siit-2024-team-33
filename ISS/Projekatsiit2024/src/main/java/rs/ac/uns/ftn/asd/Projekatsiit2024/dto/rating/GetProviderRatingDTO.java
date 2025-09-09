@@ -2,7 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.dto.rating;
 
 import lombok.Getter;
 import lombok.Setter;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.model.ProviderRating;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.ProviderRating;
 
 @Getter
 @Setter

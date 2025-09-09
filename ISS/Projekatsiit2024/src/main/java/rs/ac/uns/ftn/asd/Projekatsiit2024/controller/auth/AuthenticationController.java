@@ -57,7 +57,7 @@ public class AuthenticationController {
 	
 	@GetMapping("/check-email")
 	public ResponseEntity<Boolean> checkEmailAvailability(@RequestParam String email) {
-	    boolean isTaken = authenticationService.isEmailAvailable(email);
+	    boolean isTaken = authenticationService.isEmailNotAvailable(email);
 	    return ResponseEntity.ok(isTaken);
 	}
 }
