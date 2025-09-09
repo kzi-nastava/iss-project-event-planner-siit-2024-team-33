@@ -143,8 +143,13 @@ public class EventService {
     	if (event.getNumOfAttendees() == null || event.getNumOfAttendees() < 0)
     		throw new EventValidationException("Number of attendees can't be less than 0.");
     	
-    	if (event.getPlace() == null || !Pattern.matches("^[A-Za-z][A-Za-z\\-\\' ]*[A-Za-z], [A-Za-z][A-Za-z\\-\\' ]*[A-Za-z]$", event.getPlace()) || event.getPlace().length() > 150)
-    	    throw new EventValidationException("Place must be in the format 'City, Country' with no leading/trailing spaces and only letters, spaces, hyphens, or apostrophes.");
+    	if (event.getPlace() == null || !Pattern.matches(
+    	        "^[\\p{L}][\\p{L}\\-\\' ]*[\\p{L}], [\\p{L}][\\p{L}\\-\\' ]*[\\p{L}]$", 
+    	        event.getPlace()) || event.getPlace().length() > 150) {
+    	    throw new EventValidationException(
+    	        "Place must be in the format 'City, Country' with only letters (including accented), spaces, hyphens, or apostrophes, and no leading/trailing spaces."
+    	    );
+    	}
     	
     	if (event.getIsPrivate() == null)
     		throw new EventValidationException("Event has to have type of accessibility.");
@@ -159,7 +164,13 @@ public class EventService {
     	if (event.getDateOfEvent().isAfter(event.getEndOfEvent())) {
     		throw new EventValidationException("Event starting time can't be after ending time.");
     	}
-    	//TODO:latitude and longtitude validation
+    	
+    	if (event.getLatitude() == null || event.getLatitude() < -90 || event.getLatitude() > 90) {
+    	    throw new EventValidationException("Latitude must be between -90 and 90.");
+    	}
+    	if (event.getLongitude() == null || event.getLongitude() < -180 || event.getLongitude() > 180) {
+    	    throw new EventValidationException("Longitude must be between -180 and 180.");
+    	}
     	
     	return true;
     }

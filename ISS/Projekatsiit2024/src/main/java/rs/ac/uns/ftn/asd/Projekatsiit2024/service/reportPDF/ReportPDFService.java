@@ -94,7 +94,7 @@ public class ReportPDFService {
     	if (event.getIsPrivate()) {
     		//if event is private and user is logged out
     		if (userPrincipal == null)
-    			throw new EventValidationException("You have to be logged in into account which has"
+    			throw new EventValidationException("You have to be logged into account which has"
     					+ " permition to view this private event.");
     		
     		AuthentifiedUser user = userPrincipal.getUser();

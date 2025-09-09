@@ -49,7 +49,7 @@ public class EventServiceTest {
     void setup() {
         MockitoAnnotations.openMocks(this);
 
-        // Organizer
+        //organizer
         organizer = new Organizer();
         organizer.setEmail("organizer@test.com");
         organizer.setPassword("password");
@@ -64,18 +64,18 @@ public class EventServiceTest {
         organizer.setResidency("Belgrade, Serbia");
         organizer.setPhoneNumber("123456789");
 
-        // UserPrincipal
+        //userPrincipal
         userPrincipal = mock(UserPrincipal.class);
         when(userPrincipal.getUser()).thenReturn(organizer);
 
-        // Default EventType
+        //default eventType
         defaultEventType = new EventType();
         defaultEventType.setId(1);
         defaultEventType.setName("Conference");
         defaultEventType.setIsActive(true);
         when(eventTypeRepository.findById(1)).thenReturn(Optional.of(defaultEventType));
 
-        // Default DTO
+        //default DTO
         validDTO = new CreateEventDTO();
         validDTO.setName("Valid Event");
         validDTO.setDescription("Valid Description");

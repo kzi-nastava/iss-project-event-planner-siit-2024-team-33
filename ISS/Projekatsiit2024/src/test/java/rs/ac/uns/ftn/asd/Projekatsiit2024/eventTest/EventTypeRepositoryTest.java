@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.EventType;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
@@ -22,7 +21,6 @@ public class EventTypeRepositoryTest {
 	
 	@Test
     void getActiveEventTypes_ShouldReturnOnlyActiveEventTypes() {
-        // Arrange
         EventType active = new EventType();
         active.setName("Conference");
         active.setDescription("Active EventType");
@@ -36,10 +34,8 @@ public class EventTypeRepositoryTest {
         eventTypeRepository.save(inactive);
         eventTypeRepository.flush();
 
-        // Act
         List<EventType> result = eventTypeRepository.getActiveEventTypes();
         
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getName()).isEqualTo("Conference");
@@ -48,7 +44,6 @@ public class EventTypeRepositoryTest {
 
     @Test
     void getActiveEventTypes_ShouldReturnEmptyListWhenNoActiveEventTypesExist() {
-        // Arrange
         EventType inactive1 = new EventType();
         inactive1.setName("Conference");
         inactive1.setIsActive(false);
@@ -60,10 +55,8 @@ public class EventTypeRepositoryTest {
         eventTypeRepository.save(inactive2);
         eventTypeRepository.flush();
 
-        // Act
         List<EventType> result = eventTypeRepository.getActiveEventTypes();
         
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
     }
