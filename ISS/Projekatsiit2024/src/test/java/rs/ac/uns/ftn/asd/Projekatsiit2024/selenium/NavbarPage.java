@@ -12,6 +12,9 @@ public class NavbarPage {
 	@FindBy(css = ".profile-icon img")
 	private WebElement profileIcon;
 	
+	 @FindBy(id = "events")
+	 private WebElement eventsButton;
+	
 	public NavbarPage(WebDriver driver) {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
@@ -20,4 +23,8 @@ public class NavbarPage {
 	public void openSideProfile() {
 		profileIcon.click();
 	}
+	
+	public void goToEvents() {
+        eventsButton.click();
+    }
 }

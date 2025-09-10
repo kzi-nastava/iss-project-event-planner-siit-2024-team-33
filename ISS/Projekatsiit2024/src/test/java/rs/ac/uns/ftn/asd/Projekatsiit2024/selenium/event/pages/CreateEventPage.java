@@ -1,7 +1,9 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.selenium.event.pages;
 
 import java.time.Duration;
+import java.util.List;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -64,5 +66,9 @@ public class CreateEventPage {
     public void confirmEvent() {
     	wait.until(ExpectedConditions.elementToBeClickable(confirmButton));
         confirmButton.click();
+    }
+    
+    public boolean isNextButtonEnabled() {
+        return nextButton.isEnabled();
     }
 }
