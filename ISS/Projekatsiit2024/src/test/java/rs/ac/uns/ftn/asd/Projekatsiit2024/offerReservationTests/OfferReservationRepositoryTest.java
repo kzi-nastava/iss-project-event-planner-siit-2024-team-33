@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.offerReservationTests;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

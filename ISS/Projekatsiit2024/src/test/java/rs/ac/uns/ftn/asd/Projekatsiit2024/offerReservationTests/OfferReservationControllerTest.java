@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2024;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.offerReservationTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

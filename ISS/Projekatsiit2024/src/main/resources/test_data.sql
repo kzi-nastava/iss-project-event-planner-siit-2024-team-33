@@ -199,9 +199,9 @@ INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (TRUE, 'A celebration of marriage.', 'Wedding'),
 (TRUE, 'An informal meeting or discussion.', 'Workshop'),
 (TRUE, 'A performance or display of artistic works.', 'Exhibition'),
-(FALSE, 'An organized public or private event with music and dancing.', 'Concert'),
+(TRUE, 'An organized public or private event with music and dancing.', 'Concert'),
 (TRUE, 'A meeting to discuss corporate goals or projects.', 'Business Meeting'),
-(FALSE, 'A sports-related event such as a game or tournament.', 'Sports Event'),
+(TRUE, 'A sports-related event such as a game or tournament.', 'Sports Event'),
 (TRUE, 'A community gathering or public fair.', 'Festival'),
 (TRUE, 'A casual outdoor gathering with food and entertainment.', 'Picnic');
 

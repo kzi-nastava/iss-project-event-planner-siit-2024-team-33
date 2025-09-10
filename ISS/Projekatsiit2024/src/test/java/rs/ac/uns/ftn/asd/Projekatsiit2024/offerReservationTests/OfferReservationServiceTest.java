@@ -1,5 +1,5 @@
 // test/unit/offerReservationServiceTest.java
-package rs.ac.uns.ftn.asd.Projekatsiit2024;
+package rs.ac.uns.ftn.asd.Projekatsiit2024.offerReservationTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
