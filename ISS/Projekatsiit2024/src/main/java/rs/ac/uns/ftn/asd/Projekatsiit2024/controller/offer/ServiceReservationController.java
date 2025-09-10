@@ -74,53 +74,6 @@ public class ServiceReservationController {
 	        return ResponseEntity.status(409).body(null);
 	    }
 	}
-
-
-	@GetMapping("/{reservationId}")
-	public ResponseEntity<GetServiceReservationDTO> getServiceReservationById(
-	        @PathVariable Integer serviceID, 
-	        @PathVariable Integer reservationId) {
-
-	    
-	    OfferReservation reservation = oRR.findById(reservationId)
-	            .orElse(null);
-
-	    
-	    GetServiceReservationDTO reservationDTO = new GetServiceReservationDTO(reservation);
-	    return ResponseEntity.ok(reservationDTO);
-	}
-
-    @PutMapping("/{reservationId}")
-    public ResponseEntity<CreatedServiceReservationDTO> updateServiceReservation(
-            @PathVariable Integer serviceID,
-            @PathVariable Integer reservationId,
-            @RequestBody PostServiceReservationDTO postServiceReservationDTO) throws ParseException, java.text.ParseException {
-
-        boolean serviceExists = serviceService.checkIfServiceExists(serviceID);
-        if (!serviceExists) {
-            return ResponseEntity.notFound().build();
-        }
-
-        try {
-        	LocalDateTime startDateTime = LocalDateTime.parse(postServiceReservationDTO.getReservationDate()+"T"+postServiceReservationDTO.getStartTime());
-        	LocalDateTime endDateTime = LocalDateTime.parse(postServiceReservationDTO.getReservationDate()+"T"+postServiceReservationDTO.getEndTime());
-	        LocalDate reservationDate = LocalDate.parse(postServiceReservationDTO.getReservationDate());
-
-            OfferReservation updatedReservation = oRS.updateReservation(
-                    reservationId,
-                    serviceID,
-                    reservationDate,
-                    startDateTime.toLocalTime(),
-                    endDateTime.toLocalTime()
-            );
-
-            CreatedServiceReservationDTO updatedDTO = new CreatedServiceReservationDTO(updatedReservation);
-            return ResponseEntity.ok(updatedDTO);
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(409).body(null);
-        }
-    }
-    
     @GetMapping("/my-reservations")
     public ResponseEntity<List<GetServiceReservationDTO>> getMyReservationsForService( @PathVariable Integer serviceID,@AuthenticationPrincipal UserPrincipal userPrincipal) {
     	AuthentifiedUser user = userPrincipal.getUser();

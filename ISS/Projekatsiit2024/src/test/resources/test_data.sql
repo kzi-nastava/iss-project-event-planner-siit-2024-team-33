@@ -199,9 +199,9 @@ INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (TRUE, 'A celebration of marriage.', 'Wedding'),
 (TRUE, 'An informal meeting or discussion.', 'Workshop'),
 (TRUE, 'A performance or display of artistic works.', 'Exhibition'),
-(FALSE, 'An organized public or private event with music and dancing.', 'Concert'),
+(TRUE, 'An organized public or private event with music and dancing.', 'Concert'),
 (TRUE, 'A meeting to discuss corporate goals or projects.', 'Business Meeting'),
-(FALSE, 'A sports-related event such as a game or tournament.', 'Sports Event'),
+(TRUE, 'A sports-related event such as a game or tournament.', 'Sports Event'),
 (TRUE, 'A community gathering or public fair.', 'Festival'),
 (TRUE, 'A casual outdoor gathering with food and entertainment.', 'Picnic');
 
@@ -342,12 +342,12 @@ INSERT INTO EVENT (
     FALSE,
     40.7128,
     -74.0060,
-    150,
+    300,
     5,
     4,
-    'Annual Winter Gala',
-    'Winter Wonderland',
-    'New York City'
+    'Awesome wedding',
+    'Wedding at jew york city',
+    'Jew York City'
 ),
 (
     CAST('2024-12-15 07:00:00' AS TIMESTAMP),
@@ -358,9 +358,9 @@ INSERT INTO EVENT (
     150,
     5,
     1,
-    'Annual Winter Gala',
-    'Winter Wonderland',
-    'New York City'
+    'all and Everything',
+    'Everything and all',
+    'Berlin'
 ),
 (
     CAST('2024-12-15 07:00:00' AS TIMESTAMP),
@@ -452,7 +452,7 @@ INSERT INTO EVENT (
 ),
 (
     '2025-11-18 14:00:00', '2025-11-18 20:00:00', FALSE,
-    48.8566, 2.3522, 120,
+    48.8566, 2.3522, 250,
     5, 5,
     'Art and photography exhibition featuring local Parisian artists.',
     'Paris Art Expo',

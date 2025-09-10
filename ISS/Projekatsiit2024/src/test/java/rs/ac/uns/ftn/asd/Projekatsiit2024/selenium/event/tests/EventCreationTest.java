@@ -91,9 +91,10 @@ public class EventCreationTest extends BaseSeleniumTest {
         
         Thread.sleep(500);
 
-        //selecting second option
-        createEventPage.budgetData().chooseEventType("Conference");
-        
+        // Select second event type — recommendations auto-wait
+        createEventPage.budgetData().chooseEventType("Conference", 3);
+
+        // Assert recommendations
         List<WebElement> recommendations = createEventPage.budgetData().getRecommendations();
         assertEquals(3, recommendations.size(), "Expected exactly 3 recommendations to be displayed");
 
