@@ -22,7 +22,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'John', 'Doe', 'jbl.jpg', 
  false, true, NULL, 
- 2, NULL, CURRENT_TIMESTAMP, 
+ 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'Berlin, Germany', '123-456-789', 
  'Organizer');
 
@@ -34,7 +34,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Provider', 'Company', 'Untitled.png', 
  false, true, NULL, 
- 3, NULL, CURRENT_TIMESTAMP, 
+ 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
  'Provider');
 
@@ -46,7 +46,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Alice', 'Johnson', 'admin2.jpg', 
  false, true, NULL, 
- 0, NULL, CURRENT_TIMESTAMP, 
+ 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'Admin');
 
 -- Another Organizer
@@ -57,7 +57,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Steve', 'Williams', 'organizer2.jpg', 
  false, true, NULL, 
- 2, NULL, CURRENT_TIMESTAMP,
+ 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
  'Madrid, Spain', '321-654-987', 
  'Organizer');
  
@@ -69,7 +69,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Basic', 'User', 'default.jpg',
  false, true, NULL, 
- 1, NULL, CURRENT_TIMESTAMP, 
+ 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'AuthentifiedUser');
 
  INSERT INTO authentified_user 
@@ -79,7 +79,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Provider part 2', 'lethal company', 'Untitled.png', 
  false, true, NULL, 
- 3, NULL, CURRENT_TIMESTAMP, 
+ 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'Paris, France', '987-654-321', 'TechProvider', 'Provider of tech services', 
  'Provider');
 
@@ -91,7 +91,7 @@ VALUES
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Basic', 'User', 'default.jpg', 
  false, true, NULL, 
- 1, NULL, CURRENT_TIMESTAMP, 
+ 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
  'AuthentifiedUser');
 
 INSERT INTO OFFER_CATEGORY (IS_ACCEPTED, IS_ENABLED, DESCRIPTION, NAME, OFFER_TYPE)
@@ -199,9 +199,9 @@ INSERT INTO EVENT_TYPE(IS_ACTIVE, DESCRIPTION, NAME) VALUES
 (TRUE, 'A celebration of marriage.', 'Wedding'),
 (TRUE, 'An informal meeting or discussion.', 'Workshop'),
 (TRUE, 'A performance or display of artistic works.', 'Exhibition'),
-(FALSE, 'An organized public or private event with music and dancing.', 'Concert'),
+(TRUE, 'An organized public or private event with music and dancing.', 'Concert'),
 (TRUE, 'A meeting to discuss corporate goals or projects.', 'Business Meeting'),
-(FALSE, 'A sports-related event such as a game or tournament.', 'Sports Event'),
+(TRUE, 'A sports-related event such as a game or tournament.', 'Sports Event'),
 (TRUE, 'A community gathering or public fair.', 'Festival'),
 (TRUE, 'A casual outdoor gathering with food and entertainment.', 'Picnic');
 
@@ -342,12 +342,12 @@ INSERT INTO EVENT (
     FALSE,
     40.7128,
     -74.0060,
-    150,
+    300,
     5,
     4,
-    'Annual Winter Gala',
-    'Winter Wonderland',
-    'New York City'
+    'Awesome wedding',
+    'Wedding at jew york city',
+    'Jew York City'
 ),
 (
     CAST('2024-12-15 07:00:00' AS TIMESTAMP),
@@ -358,9 +358,9 @@ INSERT INTO EVENT (
     150,
     5,
     1,
-    'Annual Winter Gala',
-    'Winter Wonderland',
-    'New York City'
+    'all and Everything',
+    'Everything and all',
+    'Berlin'
 ),
 (
     CAST('2024-12-15 07:00:00' AS TIMESTAMP),
@@ -377,7 +377,7 @@ INSERT INTO EVENT (
 );
 
 INSERT INTO EVENT_TYPE_RECOMMENDED_CATEGORIES(EVENT_TYPE_ID, RECOMMENDED_CATEGORIES_ID) VALUES (2,1), (2,2), (2,3);
-INSERT INTO EVENT_TYPE_RECOMMENDED_CATEGORIES(EVENT_TYPE_ID, RECOMMENDED_CATEGORIES_ID) VALUES (1,1), (1,2), (1,3);
+INSERT INTO EVENT_TYPE_RECOMMENDED_CATEGORIES(EVENT_TYPE_ID, RECOMMENDED_CATEGORIES_ID) VALUES (1,1), (1,2), (1,3), (1,6);
 
 INSERT INTO notification (content, time_of_sending, is_read,is_selected, receiver_id)
 VALUES 
@@ -452,7 +452,7 @@ INSERT INTO EVENT (
 ),
 (
     '2025-11-18 14:00:00', '2025-11-18 20:00:00', FALSE,
-    48.8566, 2.3522, 120,
+    48.8566, 2.3522, 250,
     5, 5,
     'Art and photography exhibition featuring local Parisian artists.',
     'Paris Art Expo',

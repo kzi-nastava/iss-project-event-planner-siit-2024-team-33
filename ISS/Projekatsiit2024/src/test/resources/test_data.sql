@@ -342,12 +342,12 @@ INSERT INTO EVENT (
     FALSE,
     40.7128,
     -74.0060,
-    150,
+    300,
     5,
     4,
-    'Annual Winter Gala',
-    'Winter Wonderland',
-    'New York City'
+    'Awesome wedding',
+    'Wedding at jew york city',
+    'Jew York City'
 ),
 (
     CAST('2024-12-15 07:00:00' AS TIMESTAMP),
@@ -358,9 +358,9 @@ INSERT INTO EVENT (
     150,
     5,
     1,
-    'Annual Winter Gala',
-    'Winter Wonderland',
-    'New York City'
+    'all and Everything',
+    'Everything and all',
+    'Berlin'
 ),
 (
     CAST('2024-12-15 07:00:00' AS TIMESTAMP),
@@ -452,7 +452,7 @@ INSERT INTO EVENT (
 ),
 (
     '2025-11-18 14:00:00', '2025-11-18 20:00:00', FALSE,
-    48.8566, 2.3522, 120,
+    48.8566, 2.3522, 250,
     5, 5,
     'Art and photography exhibition featuring local Parisian artists.',
     'Paris Art Expo',
