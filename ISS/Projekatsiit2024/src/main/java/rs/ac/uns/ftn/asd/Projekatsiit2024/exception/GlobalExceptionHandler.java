@@ -125,9 +125,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ServiceBookingException.class)
     public ResponseEntity<Map<String, String>> handleServiceBookingException(ServiceBookingException ex) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("message", ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        Map<String, String> body = new HashMap<>();
+        body.put("errorCode", ex.getErrorCode());
+        body.put("message", ex.getMessage());
+        return ResponseEntity.badRequest().body(body);
     }
 	
 	

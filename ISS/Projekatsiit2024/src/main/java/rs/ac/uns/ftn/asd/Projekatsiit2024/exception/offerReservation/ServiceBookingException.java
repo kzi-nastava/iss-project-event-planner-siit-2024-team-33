@@ -13,6 +13,10 @@ public class ServiceBookingException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public String getErrorCode() {
+        return errorCode;
+    }
+    
     public ServiceBookingException(String message) {
         super(message);
         this.errorCode = "";

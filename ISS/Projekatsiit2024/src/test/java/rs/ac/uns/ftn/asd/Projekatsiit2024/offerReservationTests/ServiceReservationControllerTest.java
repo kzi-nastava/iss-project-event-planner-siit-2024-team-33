@@ -13,6 +13,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.auth.AuthenticationRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.auth.UserToken;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.dto.serviceReservation.PostServiceReservationDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.event.Event;
+import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.OfferReservation;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.offer.service.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.Organizer;
@@ -50,6 +51,9 @@ public class ServiceReservationControllerTest {
     @Autowired
     private AuthentifiedUserRepository userRepository;
 
+    @Autowired
+    private OfferReservationRepository offerReservationRepo;
+    
     // Utility to login and get JWT token
     private String loginAndGetToken(String email, String password) throws Exception {
         AuthenticationRequest request = new AuthenticationRequest(email, password);
@@ -65,7 +69,7 @@ public class ServiceReservationControllerTest {
 
     @Test
     @Transactional
-    void reserveService_successful() throws Exception {
+    void reserveService_unsuccessful() throws Exception {
         String token = loginAndGetToken("organizer2@example.com", "pass1234");
 
         Organizer organizer = (Organizer) userRepository.findByEmail("organizer2@example.com");
@@ -85,18 +89,48 @@ public class ServiceReservationControllerTest {
         LocalTime eventEndTime = event.getEndOfEvent().toLocalTime();
 
         dto.setReservationDate(eventDate.toString());
-        dto.setStartTime(eventStartTime.plusHours(1).toString()); 
-        dto.setEndTime(eventStartTime.plusHours(2).toString());
+        dto.setStartTime(eventStartTime.minusHours(1).toString()); 
+        dto.setEndTime(eventEndTime.plusHours(1).toString());
         
         mockMvc.perform(post("/api/services/{serviceID}/reservations", service.getId())
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.reservationId").exists())
-            .andExpect(jsonPath("$.serviceName").value("Paris Wine Experience"))
-            .andExpect(jsonPath("$.eventName").value(event.getName()));
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.errorCode").value("BAD_TIME_RANGE"));
+    }
+    
+    @Test
+    @Transactional
+    void reserveService_timeCollisionWithAnotherEvent() throws Exception {
+        String token = loginAndGetToken("organizer2@example.com", "pass1234");
 
+        Event event = eventRepository.findById(2)
+                .orElseThrow(() -> new IllegalStateException("Event not found"));
+        Service service = serviceRepository.findById(12)
+                .orElseThrow(() -> new IllegalStateException("Service not found"));
+
+        OfferReservation offerRes = new OfferReservation();
+        offerRes.setDateOfReservation(event.getDateOfEvent().toLocalDate());
+        offerRes.setStartTime(LocalDateTime.of(event.getDateOfEvent().toLocalDate(), LocalTime.of(12, 0)));
+        offerRes.setEndTime(LocalDateTime.of(event.getDateOfEvent().toLocalDate(), LocalTime.of(14, 0)));
+        offerRes.setEvent(event);
+        offerRes.setOffer(service);
+        offerRes.setId(100);
+        offerReservationRepo.save(offerRes);
+        
+        PostServiceReservationDTO dto = new PostServiceReservationDTO();
+        dto.setEventId(event.getId());
+        dto.setReservationDate(event.getDateOfEvent().toLocalDate().toString());
+        dto.setStartTime("12:30");
+        dto.setEndTime("13:30");
+
+        mockMvc.perform(post("/api/services/{serviceID}/reservations", service.getId())
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.errorCode").value("TIME_COLLISION_WITH_ANOTHER_EVENT"));
     }
 
     @Test
