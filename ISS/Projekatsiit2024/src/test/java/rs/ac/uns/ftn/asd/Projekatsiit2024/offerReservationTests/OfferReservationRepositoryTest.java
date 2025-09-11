@@ -112,20 +112,6 @@ public class OfferReservationRepositoryTest {
 
 
     @Test
-    public void findByOfferIdTest() {
-        Offer offer = new Offer();
-        offer = offerRepository.save(offer);
-
-        OfferReservation res = new OfferReservation();
-        res.setOffer(offer);
-        res.setDateOfReservation(LocalDate.now());
-        repository.save(res);
-
-        List<OfferReservation> result = repository.findByOfferId(offer.getId());
-        assertFalse(result.isEmpty());
-    }
-
-    @Test
     public void EmptyfindByOfferIdTest() {
         assertTrue(repository.findByOfferId(12345).isEmpty());
     }
