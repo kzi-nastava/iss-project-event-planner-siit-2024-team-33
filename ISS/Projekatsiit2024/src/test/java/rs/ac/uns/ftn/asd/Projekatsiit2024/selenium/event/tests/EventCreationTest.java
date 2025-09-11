@@ -318,7 +318,7 @@ public class EventCreationTest extends BaseSeleniumTest {
         driver.get(baseUrl + "/events/creation");
 
         // 2️⃣ Create event with random title
-        String eventTitle = "Test Event " + System.currentTimeMillis();
+        String eventTitle = "T" + System.currentTimeMillis();
 
         CreateEventPage createEventPage = new CreateEventPage(driver);
         LocalDate eventDate = LocalDate.now().plusDays(7);

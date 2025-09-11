@@ -27,10 +27,6 @@ public class CreatedEventDTO {
     
     private Set<CreatedEventActivityDTO> eventActivities;
     
-    
-    //TODO: add for private list of people in event if needed
-    //TODO: add for budget and organization if needed
-    
     public CreatedEventDTO(Event event) {
     	this.setId(event.getId());
     	this.setName(event.getName());
