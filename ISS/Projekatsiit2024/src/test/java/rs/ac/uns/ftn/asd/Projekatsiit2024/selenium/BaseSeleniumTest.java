@@ -1,15 +1,21 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.selenium;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -32,13 +38,22 @@ public class BaseSeleniumTest {
 	
 	protected WebDriver driver;
 	protected String baseUrl = "http://localhost:4200";
+	protected Path downloadDir;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         //automatically downloads correct ChromeDriver version
         WebDriverManager.chromedriver().setup();
+        
+        downloadDir = Files.createTempDirectory("pdf-downloads");
+        Map<String, Object> prefs = new HashMap<>();
+        prefs.put("download.default_directory", downloadDir.toAbsolutePath().toString());
+        prefs.put("plugins.always_open_pdf_externally", true);
+        
+        ChromeOptions options = new ChromeOptions();
+        options.setExperimentalOption("prefs", prefs);
 
-        driver = new ChromeDriver();
+        driver = new ChromeDriver(options);
         driver.manage().window().maximize();
     }
 

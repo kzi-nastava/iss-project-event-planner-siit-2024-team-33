@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2024.selenium.event.pages;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -84,7 +85,6 @@ public class EventMandatoryDataPage {
 		wait.until(ExpectedConditions.visibilityOf(endDateInput)).sendKeys(endDate);
 		wait.until(ExpectedConditions.visibilityOf(endTimeInput)).sendKeys(endTime);
 		
-		// Map
 		wait.until(ExpectedConditions.elementToBeClickable(openMapButton)).click();
 		
 		WebElement mapCanvas = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#map")));
@@ -94,5 +94,12 @@ public class EventMandatoryDataPage {
 		actions.moveToElement(mapCanvas, xOffset, yOffset).click().perform();
 		
 		wait.until(ExpectedConditions.elementToBeClickable(confirmMapButton)).click();
+	}
+	
+	public List<String> getValidationMessages() {
+	    return driver.findElements(By.cssSelector("small.input-format.invalid-input"))
+	                 .stream()
+	                 .map(WebElement::getText)
+	                 .toList();
 	}
 }

@@ -48,8 +48,7 @@ public class EventServiceTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-
-        //organizer
+        
         organizer = new Organizer();
         organizer.setEmail("organizer@test.com");
         organizer.setPassword("password");
@@ -64,7 +63,6 @@ public class EventServiceTest {
         organizer.setResidency("Belgrade, Serbia");
         organizer.setPhoneNumber("123456789");
 
-        //userPrincipal
         userPrincipal = mock(UserPrincipal.class);
         when(userPrincipal.getUser()).thenReturn(organizer);
 
@@ -82,6 +80,8 @@ public class EventServiceTest {
         validDTO.setNumOfAttendees(100);
         validDTO.setIsPrivate(false);
         validDTO.setPlace("Belgrade, Serbia");
+        validDTO.setLatitude(44.8176);
+        validDTO.setLongitude(20.4569);
         validDTO.setDateOfEvent(LocalDateTime.now().plusDays(1));
         validDTO.setEndOfEvent(LocalDateTime.now().plusDays(1).plusHours(2));
         validDTO.setEventTypeId(1);
@@ -135,7 +135,7 @@ public class EventServiceTest {
     @Test
     @Order(4)
     void createEvent_WhenNameTooShort_ShouldThrowException() {
-        validDTO.setName("abc"); // too short
+        validDTO.setName("abc");
 
         assertThrows(EventValidationException.class,
             () -> eventService.createEvent(userPrincipal, validDTO));
@@ -144,7 +144,7 @@ public class EventServiceTest {
     @Test
     @Order(5)
     void createEvent_WhenDescriptionTooLong_ShouldThrowException() {
-        validDTO.setDescription("a".repeat(300)); // too long
+        validDTO.setDescription("a".repeat(300));
 
         assertThrows(EventValidationException.class,
             () -> eventService.createEvent(userPrincipal, validDTO));
@@ -162,7 +162,7 @@ public class EventServiceTest {
     @Test
     @Order(7)
     void createEvent_WhenInvalidPlace_ShouldThrowException() {
-        validDTO.setPlace("InvalidPlaceFormat"); // not "City, Country"
+        validDTO.setPlace("InvalidPlaceFormat");
 
         assertThrows(EventValidationException.class,
             () -> eventService.createEvent(userPrincipal, validDTO));
@@ -195,5 +195,80 @@ public class EventServiceTest {
 
         assertThrows(EventActivityValidationException.class,
             () -> eventService.createEvent(userPrincipal, validDTO));
+    }
+    
+    @Test
+    @Order(11)
+    void createEvent_WhenActivityTimeOutsideEvent_ShouldThrowException() {
+        CreateEventActivityDTO earlyActivity = new CreateEventActivityDTO();
+        earlyActivity.setName("Early Activity");
+        earlyActivity.setDescription("Starts before event");
+        earlyActivity.setStartingTime(validDTO.getDateOfEvent().minusHours(1));
+        earlyActivity.setEndingTime(validDTO.getDateOfEvent().plusMinutes(30));
+        earlyActivity.setLocation("Hall 2");
+
+        validDTO.getEventActivities().clear();
+        validDTO.getEventActivities().add(earlyActivity);
+
+        EventActivityValidationException ex1 = assertThrows(
+            EventActivityValidationException.class,
+            () -> eventService.createEvent(userPrincipal, validDTO)
+        );
+        assertTrue(ex1.getMessage().contains("can't be outside of time when event is taking place"));
+
+        CreateEventActivityDTO lateActivity = new CreateEventActivityDTO();
+        lateActivity.setName("Late Activity");
+        lateActivity.setDescription("Ends after event");
+        lateActivity.setStartingTime(validDTO.getDateOfEvent().plusHours(1));
+        lateActivity.setEndingTime(validDTO.getEndOfEvent().plusHours(1));
+        lateActivity.setLocation("Hall 3");
+
+        validDTO.getEventActivities().clear();
+        validDTO.getEventActivities().add(lateActivity);
+
+        EventActivityValidationException ex2 = assertThrows(
+            EventActivityValidationException.class,
+            () -> eventService.createEvent(userPrincipal, validDTO)
+        );
+        assertTrue(ex2.getMessage().contains("can't be outside of time when event is taking place"));
+    }
+    
+    @Test
+    @Order(12)
+    void createEvent_WhenLatitudeOrLongitudeInvalid_ShouldThrowException() {
+        validDTO.setLatitude(-91.0);
+        validDTO.setLongitude(20.0);
+
+        EventValidationException ex1 = assertThrows(
+            EventValidationException.class,
+            () -> eventService.createEvent(userPrincipal, validDTO)
+        );
+        assertTrue(ex1.getMessage().contains("Latitude must be between -90 and 90"));
+
+        validDTO.setLatitude(91.0);
+        validDTO.setLongitude(20.0);
+
+        EventValidationException ex2 = assertThrows(
+            EventValidationException.class,
+            () -> eventService.createEvent(userPrincipal, validDTO)
+        );
+        assertTrue(ex2.getMessage().contains("Latitude must be between -90 and 90"));
+
+        validDTO.setLatitude(44.8176);
+        validDTO.setLongitude(-181.0);
+
+        EventValidationException ex3 = assertThrows(
+            EventValidationException.class,
+            () -> eventService.createEvent(userPrincipal, validDTO)
+        );
+        assertTrue(ex3.getMessage().contains("Longitude must be between -180 and 180"));
+
+        validDTO.setLongitude(181.0);
+
+        EventValidationException ex4 = assertThrows(
+            EventValidationException.class,
+            () -> eventService.createEvent(userPrincipal, validDTO)
+        );
+        assertTrue(ex4.getMessage().contains("Longitude must be between -180 and 180"));
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -17,7 +18,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.event.EventTypeRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("test-spring")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class EventTypeControllerTest {
 	
 	@Autowired
@@ -27,14 +29,11 @@ public class EventTypeControllerTest {
 	private EventTypeRepository eventTypeRepository;
 	
 	@BeforeEach
-    void setup() {
-        eventTypeRepository.deleteAll();
-
+    void setup() {		
         EventType defaultType = new EventType();
         defaultType.setIsActive(true);
         defaultType.setName("All");
         defaultType.setDescription("A generic type of event.");
-        defaultType.setId(1);
         eventTypeRepository.save(defaultType);
 
         EventType activeType = new EventType();
@@ -62,8 +61,9 @@ public class EventTypeControllerTest {
 	
 	@Test
     void getEventTypes_ShouldReturnDefaultTypeEvenIfNoOtherActiveTypesExist() throws Exception {
-        eventTypeRepository.deleteAll();
-        EventType defaultType = new EventType();
+		eventTypeRepository.deleteAll();
+		
+		EventType defaultType = new EventType();
         defaultType.setIsActive(true);
         defaultType.setName("All");
         defaultType.setDescription("A generic type of event.");
