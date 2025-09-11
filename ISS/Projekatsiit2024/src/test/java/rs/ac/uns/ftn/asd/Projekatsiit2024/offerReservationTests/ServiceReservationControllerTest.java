@@ -54,7 +54,6 @@ public class ServiceReservationControllerTest {
     @Autowired
     private OfferReservationRepository offerReservationRepo;
     
-    // Utility to login and get JWT token
     private String loginAndGetToken(String email, String password) throws Exception {
         AuthenticationRequest request = new AuthenticationRequest(email, password);
         String response = mockMvc.perform(post("/api/auth/login")
