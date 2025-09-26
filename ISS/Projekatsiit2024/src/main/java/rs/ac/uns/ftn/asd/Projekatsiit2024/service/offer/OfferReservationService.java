@@ -113,13 +113,13 @@ public class OfferReservationService {
         AuthentifiedUser organizer = event.getOrganizer();
         String providerStr = "Your offer: " + offer.getName() + ", got reserved for " + dateOfReservation+ ", for an evet: " +event.getName()+ ". by Organizer: " + organizer.getEmail();
         String organizerStr = "You successfully reserved an offer: " +offer.getName() +", for an event: "+ event.getName() + "\n Offer you reserved is owned by provider: " +provider.getEmail()+".";
-        invitationService.sendEmail(null, null, provider.getEmail(), "Your offer has been reserved", providerStr);
-        invitationService.sendEmail(null, null, organizer.getEmail(), "You have successfully reserved an offer.", organizerStr);
+        invitationService.sendEmail(provider.getEmail(), "Your offer has been reserved", providerStr);
+        invitationService.sendEmail(organizer.getEmail(), "You have successfully reserved an offer.", organizerStr);
         offerReservationRepo.save(offerReservation);
 
         return offerReservation;
+
     }
-    	//No use as of now
     public OfferReservation createAndFlushOfferReservation(
             LocalDate dateOfReservation,
             Integer offerId,

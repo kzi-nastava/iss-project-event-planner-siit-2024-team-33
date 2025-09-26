@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -37,8 +38,11 @@ public class invitationService {
 
     @Autowired
     private InvitationRepository invitationRepo;
+    @Value("${mail.sender.email}")
+    private String senderEmail;
+    @Autowired
+    private JavaMailSender mailSender;
     
-
     @Transactional
     public void createInvitations(
         PostInvitationDTO Sentinvitation,
@@ -74,7 +78,7 @@ public class invitationService {
                      + "<p><a href=\"" + registerLink + "\">" + registerLink + "</a></p>";
             }
 
-            sendEmail(inviter.getEmail(), inviter.getPassword(), email, subject, body);
+            sendEmail(email, subject, body);
         }
     }
     
@@ -135,25 +139,22 @@ public class invitationService {
 
 
 
-    public void sendEmail(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
-        JavaMailSender mailSender = DynamicMailSender.createMailSender("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");
-
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper;
-		try {
-			helper = new MimeMessageHelper(message, true, "UTF-8");
-	        helper.setFrom("hogridersunited@gmail.com");
-	        helper.setTo(recipientEmail);
-	        helper.setSubject(subject);
-	        helper.setText(body, true);
-
+    public void sendEmail(String recipientEmail, String subject, String body) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            
+            helper.setFrom(senderEmail);
+            helper.setTo(recipientEmail);
+            helper.setSubject(subject);
+            helper.setText(body, true);
+            
             mailSender.send(message);
-            System.out.println("Email sent successfully!");
-		} catch (MessagingException e) {
-            System.err.println("Failed to send email: " + e.getMessage());
-			e.printStackTrace();
-		}
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send email: " + e.getMessage(), e);
+        }
     }
+
 
     public List<Invitation> getInvitationsByForEvent(Integer id){
     	Optional<Event> ev = eventRepo.findById(id);

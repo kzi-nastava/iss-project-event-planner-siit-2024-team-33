@@ -23,7 +23,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.AuthentifiedUser;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.model.user.UnverifiedUserUpgrade;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.communication.VerificationTokenRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2024.repository.user.AuthentifiedUserRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2024.service.communication.DynamicMailSender;
 
 @Service
 public class VerificationService {
@@ -35,9 +34,11 @@ public class VerificationService {
     @Autowired
     private UserUpgradeService userUpgradeService;
     
-    @Value("${sendgrid.api.key}")
-    private String sendGridApiKey;
-    
+    @Value("${mail.sender.email}")
+    private String senderEmail;
+    @Autowired
+    private JavaMailSender mailSender;
+
     
     @Transactional
 	public UnverifiedUserUpgrade upgradeUser(UserPrincipal userPrincipal, UpgradeUser upgradeUser) 
@@ -63,11 +64,10 @@ public class VerificationService {
 //            String verificationUrl = "http://localhost:4200/authentication/verification?token=" + token;
             String verificationUrl = "http://192.168.2.8:8080/api/verify?token=" + token;
             
-            JavaMailSender mailSender = DynamicMailSender.createMailSender(sendGridApiKey);
             
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(user.getEmail());
-            message.setFrom("hogridersunited@gmail.com");
+            message.setFrom(senderEmail);
             message.setSubject("Account Verification");
             message.setText("Click the link to verify your account:\n\n" + verificationUrl);
 

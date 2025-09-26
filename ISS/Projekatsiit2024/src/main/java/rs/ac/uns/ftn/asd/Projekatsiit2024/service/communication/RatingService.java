@@ -98,26 +98,21 @@ public class RatingService {
         }
     }
     
-    public List<Rating> getRatingsByProvider(int providerId){
-    	List<Rating> ratingsForProvider = ratingRepository.findByProviderId(providerId);
-    	
-    	return ratingsForProvider;
-    }
     
     public List<Rating> getRatingsByOfferId(int offerId) {
         return ratingRepository.findByOfferIdAndAcceptedTrue(offerId);
     }
-    
     public List<Rating> getAllRatings() {
-        return ratingRepository.findAll();
+        return ratingRepository.findByIsDeletedFalseAndAcceptedTrue();
+    }
+    
+    public Page<Rating> getAllRatings(Pageable pageable) {
+        return ratingRepository.findByIsDeletedFalseAndAcceptedFalse(pageable); // include not accepted
     }
 
     public Rating getRatingById(int ratingId) {
         return ratingRepository.findById(ratingId)
                 .orElseThrow(() -> new IllegalArgumentException(""));
-    }
-    public Page<Rating> getAllRatings(Pageable pageable) {
-        return ratingRepository.findAll(pageable);
     }
     
     //THIS HERE IS FOR EVENTS. UP THERE IS FOR OFFERS
@@ -169,7 +164,7 @@ public class RatingService {
     }
 
     public Page<EventRating> getAllEventRatings(Pageable pageable) {
-        return eventRatingRepository.findAll(pageable); 
+        return eventRatingRepository.findByIsDeletedFalseAndAcceptedTrue(pageable);
     }
 
     public EventRating getRatingEventById(int ratingId) {

@@ -35,13 +35,6 @@ public class RatingController {
     @Autowired
     private AuthentifiedUserRepository userRepo;
     
-    //Get all comments on all offers of a provider
-    @GetMapping(value="/provider/{providerId}")
-    public ResponseEntity<List<GetRatingDTO>> getProviderRatings(@PathVariable int providerId) {
-    	List<Rating> ratings = ratingService.getRatingsByProvider(providerId).stream()
-    			.filter(r -> r.getAccepted() && !r.getIsDeleted()).toList();
-    	return new ResponseEntity<List<GetRatingDTO>>(ratings.stream().map(r -> new GetRatingDTO(r)).toList(), HttpStatus.OK);
-    }
 
     @GetMapping
     public ResponseEntity<Page<GetRatingDTO>> getAllRatings(

@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -43,7 +44,8 @@ public class Event {
     
     //event logistics
     @ManyToOne
-    private Organizer organizer;
+    @JoinColumn(name = "organizer_id")
+    private AuthentifiedUser organizer;
     @ManyToOne
     private EventType eventType;
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
