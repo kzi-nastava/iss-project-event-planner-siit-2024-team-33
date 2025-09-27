@@ -53,7 +53,7 @@ VALUES
 INSERT INTO authentified_user 
 (email, password, name, surname, picture, is_deleted, is_verified, suspension_end_date, role_id, last_password_reset_date, date_of_creation, residency, phone_number, DTYPE) 
 VALUES 
-('organizer2@example.com', 
+('mirkodjukic314@gmail.com', 
  '$2a$12$mtBxcimVjok61JeRMS9.VefhFdTj61GQrlYjziOpzdaz3F0eZVinS', 
  'Steve', 'Williams', 'organizer2.jpg', 
  false, true, NULL, 
