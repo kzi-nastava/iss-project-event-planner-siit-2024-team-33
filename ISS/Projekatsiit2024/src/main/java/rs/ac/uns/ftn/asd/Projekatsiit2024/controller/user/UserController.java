@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2024.controller.user;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -163,4 +164,21 @@ public class UserController {
 	                .body("An error occurred while unblocking the user.");
 	    }
 	}
+	
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping(value = "/blocked", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<GetUserDTO>> getBlockedUsers(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+	    int blockerId = userPrincipal.getUser().getId();
+	    try {
+	        List<AuthentifiedUser> blockedUsers = userService.getBlockedUsers(blockerId);
+	        List<GetUserDTO> dtos = blockedUsers.stream()
+	                                            .map(GetUserDTO::from)
+	                                            .toList();
+	        return ResponseEntity.ok(dtos);
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(null);
+	    }
+	}
+
 }

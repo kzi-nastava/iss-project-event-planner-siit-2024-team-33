@@ -188,7 +188,12 @@ public class UserService {
 		}
 	}
 	
-		
+	public List<AuthentifiedUser> getBlockedUsers(int blockerId) {
+	    AuthentifiedUser blocker = userRepo.findById(blockerId)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+	    return blocker.getBlockedUsers();
+	}
+
 	public void blockAUser(Integer blockerID, String blockedEmail) {
 	    Optional<AuthentifiedUser> blocker = userRepo.findById(blockerID);
 	    AuthentifiedUser blocked = userRepo.findByEmail(blockedEmail);
@@ -207,6 +212,7 @@ public class UserService {
 	    me.setBlockedUsers(blockedUsers);
 	    userRepo.save(me);
 	}
+
 
 	public void unblockAUser(Integer blockerID, String blockedEmail) {
 	    Optional<AuthentifiedUser> blocker = userRepo.findById(blockerID);
