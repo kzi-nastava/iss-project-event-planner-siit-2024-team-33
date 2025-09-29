@@ -406,8 +406,6 @@ VALUES
  TRUE,
  2);
  INSERT INTO rating (rating_value, comment, accepted, is_deleted, author_id, offer_id) VALUES
-(5, 'Excellent deal, highly recommend!', FALSE, FALSE, 1, 1),
-(4, 'Good value for the price.', FALSE, FALSE, 2, 1),
 (3, 'Average offer, nothing special.', FALSE, FALSE, 3, 2),
 (5, 'Absolutely fantastic!', FALSE, FALSE, 1, 3),
 (2, 'Not worth the money.', FALSE, FALSE, 2, 2),
@@ -417,8 +415,6 @@ VALUES
 (5, 'Best deal I have ever found!', FALSE, FALSE, 2, 3);
 
 INSERT INTO event_rating (rating_value, comment, accepted, is_deleted, author_id, event_id) VALUES
-(5, 'Amazing event, had a great time!', TRUE, FALSE, 2, 1),
-(4, 'Really good overall.', TRUE, FALSE, 3, 1),
 (3, 'It was okay, some things could improve.', FALSE, FALSE, 4, 1),
 (2, 'Not what I expected.', FALSE, FALSE, 1, 1),
 (1, 'Very disappointing experience.', FALSE, FALSE, 5, 1);
@@ -442,7 +438,7 @@ INSERT INTO EVENT (
     organizer_id, event_type_id, description, name, place
 ) VALUES
 (
-    '2025-09-30 20:00:00', '2025-10-01 01:00:00', FALSE,
+    '2025-10-02 20:00:00', '2025-10-03 01:00:00', FALSE,
     48.8566, 2.3522, 500,
     5, 7,
     'Paris Electronic Music Festival with top DJs.',

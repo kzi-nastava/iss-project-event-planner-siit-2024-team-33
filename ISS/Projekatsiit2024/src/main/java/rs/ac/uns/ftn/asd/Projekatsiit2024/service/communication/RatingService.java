@@ -164,7 +164,7 @@ public class RatingService {
     }
 
     public Page<EventRating> getAllEventRatings(Pageable pageable) {
-        return eventRatingRepository.findByIsDeletedFalseAndAcceptedTrue(pageable);
+        return eventRatingRepository.findByIsDeletedFalseAndAcceptedFalse(pageable);
     }
 
     public EventRating getRatingEventById(int ratingId) {

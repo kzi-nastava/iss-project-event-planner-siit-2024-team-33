@@ -11,6 +11,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2024.model.communication.EventRating;
 public interface EventRatingRepository extends JpaRepository<EventRating, Integer> {
 	List<EventRating> findByEventIdAndAcceptedTrue(Integer eventId);
 	List<EventRating> findByIsDeletedFalseAndAcceptedTrue();
-	Page<EventRating> findByIsDeletedFalseAndAcceptedTrue(Pageable pageable);
+	Page<EventRating> findByIsDeletedFalseAndAcceptedFalse(Pageable pageable);
 
 }
