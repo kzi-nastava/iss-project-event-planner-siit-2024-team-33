@@ -61,8 +61,8 @@ public class VerificationService {
             verificationToken.setExpirationDate(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));
             tokenRepo.save(verificationToken);
 
-//            String verificationUrl = "http://localhost:4200/authentication/verification?token=" + token;
-            String verificationUrl = "http://192.168.2.8:8080/api/users/verification?token=" + token;
+            String verificationUrl = "http://localhost:4200/authentication/verification?token=" + token;
+            //String verificationUrl = "http://192.168.2.8:8080/api/users/verification?token=" + token;
             
             
             SimpleMailMessage message = new SimpleMailMessage();
