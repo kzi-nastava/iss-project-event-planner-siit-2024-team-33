@@ -63,7 +63,7 @@ public class VerificationService {
 
             String verificationUrl = "http://localhost:4200/authentication/verification?token=" + token;
             //String verificationUrl = "http://192.168.2.8:8080/api/users/verification?token=" + token;
-            
+            //NAPRAVI UJUTRO DA OVDE UMESTO LOCALHOST BUDE SERGEJEV IP ILISTA VEC
             
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(user.getEmail());
